@@ -1,0 +1,376 @@
+.header{
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    border-bottom: 1px solid var(--lightGrey);
+}
+
+.header.light{
+    position: absolute;
+    top: 0;
+    left: 0;
+    border-bottom: 1px solid transparent;
+    z-index: 3;
+}
+
+.headerTop{
+    width: 100%;
+    border-bottom: 1px solid var(--lightGrey);
+}
+
+.header.light .headerTop{
+    border-bottom: 1px solid transparent;
+}
+
+@media (max-width: 768px) {
+    .headerTop{
+        border-bottom: none;
+    }
+}
+
+.headerTopInner{
+    padding: 2.5rem 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+}
+
+@media (max-width: 768px) {
+    .headerTopInner{
+        padding: 2rem 0;
+    }
+}
+
+.headerBottom{
+    width: 100%;
+}
+
+@media (max-width: 768px) {
+    .headerBottom{
+        display: none;
+    }
+}
+
+.headerBottomInner{
+    width: 100%;
+    padding: 1.8rem 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+}
+
+.headerMenuButton{
+    display: none;
+    padding: 0;
+    width: 32px;
+    height: 32px;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    color: var(--mainDark);
+}
+
+.headerMenuButton svg{
+    width: 25px;
+    height: 24px;
+}
+
+@media (max-width: 768px) {
+    .headerMenuButton{
+        display: flex;
+    }
+}
+
+.headerLogo{
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: var(--black);
+    font-size: 2.2rem;
+    font-weight: 700;
+    font-family: 'Comfortaa', sans-serif;
+}
+
+.header.light .headerLogo{
+    color: var(--white);
+}
+
+.headerLogo.mobile{
+    display: none;
+}
+
+.headerLogo svg{
+    color: var(--main);
+    width: 32px;
+    height: 32px;
+    flex-shrink: 0;
+}
+
+@media (max-width: 768px) {
+    .headerLogo.mobile{
+        display: flex;
+    }
+
+    .headerLogo{
+        font-size: 1.8rem;
+    }
+
+    .headerLogo svg{
+        width: 24px;
+        height: 24px;
+    }
+}
+
+.headerNav{
+    display: flex;
+    align-items: center;
+    gap: 18px;
+}
+
+@media (max-width: 768px) {
+    .headerNav{
+        flex-direction: column;
+        align-items: flex-start;
+    }
+}
+
+.headerNavLink{
+    text-transform: uppercase;
+    color: var(--black);
+    font-weight: 600;
+    font-size: 1.3rem;
+    padding-bottom: 0.5rem;
+    position: relative;
+}
+
+.header.light .headerNavLink{
+    color: var(--white);
+}
+
+.headerNavLink:before{
+    content: "";
+    display: block;
+    width: 100%;
+    height: 2px;
+    background: var(--main);
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    opacity: 0;
+    transition: .2s linear;
+}
+
+.header.light .headerNavLink:before{
+    background: var(--white);
+}
+
+@media (any-hover: hover) {
+    .headerNavLink:hover{
+        color: var(--mainDark);
+    }
+
+    .headerNavLink:hover:before{
+        opacity: 1;
+    }
+}
+
+.headerProfile{
+    width: 28px;
+    height: 28px;
+    flex-shrink: 0;
+    color: var(--main);
+    padding: 0;
+}
+
+.header.light .headerProfile{
+    color: var(--white);
+}
+
+.headerProfile svg{
+    width: 100%;
+    height: 100%;
+}
+
+.headerTopWrapper{
+    display: flex;
+    align-items: center;
+    gap: 40px;
+}
+
+@media (max-width: 768px) {
+    .headerTopWrapper{
+        display: none;
+    }
+}
+
+.headerLocation{
+    display: flex;
+    align-items: center;
+    gap: 3px;
+    padding: 0;
+}
+
+.headerLocation svg:first-child{
+    width: 20px;
+    height: 20px;
+    flex-shrink: 0;
+    color: var(--main);
+}
+
+.headerCity{
+    font-size: 1.3rem;
+    font-weight: 500;
+    color: var(--black);
+}
+
+.headerLocation svg:last-child{
+    width: 12px;
+    height: 12px;
+    color: var(--black);
+}
+
+.header.light .headerCity, .header.light .headerLocation svg:last-child{
+    color: var(--white);
+}
+
+.headerTheme{
+    display: flex;
+    align-items: center;
+    gap: 7px;
+}
+
+.headerThemeName{
+    font-size: 1.3rem;
+    font-weight: 500;
+    transition: color .2s linear;
+    color: var(--grey);
+}
+
+@media (any-hover: hover) {
+    .headerThemeName{
+        cursor: pointer;
+    }
+}
+
+.headerThemeName.active{
+    color: var(--black);
+}
+
+.header.light .headerThemeName.active{
+    color: var(--white);
+}
+
+.headerThemeSwitch{
+    width: 40px;
+    height: 20px;
+    border-radius: 50px;
+    background: var(--lightGrey);
+    position: relative;
+}
+
+.headerThemeSwitchIndicator{
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background: var(--white);
+    display: flex;
+    position: relative;
+    position: absolute;
+    top: 2px;
+    left: 20px;
+    transition: .2s linear;
+}
+
+.headerThemeSwitchIndicator.dark{
+    left: 2px;
+    background: var(--black);
+}
+
+.headerThemeSwitchIndicator svg{
+    width: 80%;
+    height: 80%;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    transition: opacity .2s linear;
+    color: #F2CF74;
+    fill: #F2CF74;
+}
+
+.headerThemeSwitchIndicator.dark svg:last-child{
+    opacity: 1;
+}
+
+.headerThemeSwitchIndicator svg:last-child, .headerThemeSwitchIndicator.dark svg:first-child{
+    opacity: 0;
+}
+
+// Мобильное меню
+.mobileMenu{
+    width: 100%;
+    height: 100dvh;
+    background: rgba(0, 0, 0, .5);
+    position: fixed;
+    top: 0;
+    left: 0;
+    opacity: 0;
+    transition: opacity .2s linear;
+    pointer-events: none;
+    z-index: 5;
+}
+
+.mobileMenuContent{
+    width: 100%;
+    height: 100%;
+    max-width: 400px;
+    background: var(--white);
+    padding: 4rem 2rem;
+    transform: translateX(-110%);
+    opacity: 0;
+    transition: .2s linear;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 40px;
+    overflow-y: auto;
+}
+
+@media (max-width: 768px) {
+    .mobileMenu.active{
+        opacity: 1;
+        pointer-events: all;
+    }
+
+    .mobileMenu.active .mobileMenuContent{
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+@media (max-width: 480px) {
+    .mobileMenuContent{
+        max-width: 280px;
+    }
+}
+
+.mobileMenuClose{
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    width: 32px;
+    height: 32px;
+    padding: 0;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--main);
+}
+
+.mobileMenuClose svg{
+    width: 28px;
+    height: 28px;
+}

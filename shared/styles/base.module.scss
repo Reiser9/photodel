@@ -1,0 +1,31 @@
+.scroll, .scroll2{
+	overflow: hidden;
+}
+
+.container{
+	width: 100%;
+	max-width: 1110px;
+	margin: 0 auto;
+}
+
+@media(max-width: 1140px){
+	.container{
+		max-width: 958px;
+	}
+}
+@media(max-width: 998px){
+	.container{
+		max-width: 728px;
+	}
+}
+@media(max-width: 768px){
+	.container{
+		max-width: 460px;
+	}
+}
+@media(max-width: 480px){
+	.container{
+		max-width: 100%;
+		padding: 0rem 1.6rem;
+	}
+}

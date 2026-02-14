@@ -1,0 +1,122 @@
+@font-face {
+    font-family: 'Montserrat';
+    src: url('/fonts/Montserrat.ttf') format('truetype');
+    font-weight: 100 900;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Comfortaa';
+    src: url('/fonts/Comfortaa.ttf') format('truetype');
+    font-weight: 100 900;
+    font-style: normal;
+}
+
+:root {
+    font-size: 10px;
+}
+
+html {
+    /* Colors */
+    --main: #50A398;
+    --mainLight: #ADFAF2;
+    --mainDark: #3C8278;
+
+    --grey: #9CA3A1;
+    --lightGrey: #D2D9D8;
+    --lightWhite: #F4F6F6;
+    --black: #202424;
+    --white: #fff;
+
+    --input: #f5f7fa;
+    --inputDarken: #eaedf0;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    overflow-x: hidden;
+    font-size: 1.6rem;
+    font-family: "Montserrat", sans-serif;
+    touch-action: pan-y;
+}
+
+body.dark {
+    
+}
+
+*,
+*:after,
+*:before {
+    box-sizing: border-box;
+}
+
+a, button, input, textarea, select {
+    font-size: 1.6rem;
+    font-family: "Montserrat", sans-serif;
+}
+
+a, button, input, textarea, select, path, line, rect {
+    transition: 0.2s ease-in-out;
+}
+
+a {
+    text-decoration: none;
+    cursor: default;
+}
+
+ul, ol {
+    margin: 0;
+    padding: 0;
+}
+
+li {
+    list-style-type: none;
+}
+
+h1, h2, h3, h4, h5, h5, h6, p {
+    margin: 0;
+    font-weight: normal;
+}
+
+input::-webkit-outer-spin-button, input::-webkit-inner-spin-button {
+    appearance: none;
+}
+
+button, input {
+    border: none;
+    background: none;
+    outline: none;
+    padding: 0;
+}
+
+input {
+    cursor: text;
+}
+
+input::placeholder {
+    
+}
+
+// ::-webkit-scrollbar {
+//     width: 0;
+//     height: 0;
+// }
+
+@media (any-hover: hover) {
+    a,
+    button {
+        cursor: pointer;
+    }
+}
+
+@media (any-hover: none) {
+    a,
+    button {
+        cursor: default;
+    }
+
+    .ant-tooltip{
+        display: none!important;
+    }
+}

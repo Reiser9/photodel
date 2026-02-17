@@ -1,0 +1,39 @@
+.actions{
+    width: 100%;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 0.5rem;
+}
+
+.action{
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 1.2rem;
+    color: var(--black);
+    font-weight: 500;
+}
+
+.action svg{
+    width: 18px;
+    height: 18px;
+    flex-shrink: 0;
+    color: var(--main);
+}
+
+.action.like svg{
+    color: var(--red);
+}
+
+.action.like.active svg{
+    fill: var(--red);
+}
+
+.action.comment svg{
+    color: var(--grey);
+}
+
+.action.active svg{
+    fill: var(--main);
+}

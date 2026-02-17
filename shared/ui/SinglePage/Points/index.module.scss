@@ -1,0 +1,26 @@
+.points{
+    width: 100%;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+}
+
+.point{
+    width: calc(100% / 2 - 16px / 2);
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 1.3rem;
+    color: var(--black);
+}
+
+.point svg{
+    width: 24px;
+    height: 24px;
+    flex-shrink: 0;
+    color: var(--main);
+}
+
+.point.full{
+    width: 100%;
+}

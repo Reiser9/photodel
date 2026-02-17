@@ -1,0 +1,18 @@
+.datepickerInner{
+    width: 100%;
+    display: flex;
+	flex-direction: column;
+	align-items: flex-start;
+}
+
+.datepicker{
+    width: 100%;
+}
+
+.datepickerTitle{
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: var(--grey);
+    margin-bottom: 0.3rem;
+    padding-left: 1.9rem;
+}

@@ -1,0 +1,15 @@
+.ratingValue{
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    color: var(--black);
+    font-size: 1.4rem;
+    font-weight: 600;
+}
+
+.ratingValue svg{
+    width: 18px;
+    height: 18px;
+    flex-shrink: 0;
+    color: var(--yellow);
+}

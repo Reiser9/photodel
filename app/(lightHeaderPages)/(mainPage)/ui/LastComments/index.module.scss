@@ -1,0 +1,105 @@
+.lastcomments{
+    width: 100%;
+    padding: 4rem 0;
+}
+
+.lastcommentsInner{
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 30px;
+}
+
+.lastcommentsTitle{
+    font-size: 2.4rem;
+    color: var(--main);
+    font-weight: 700;
+    font-family: 'Comfortaa', sans-serif;
+}
+
+@media (max-width: 768px) {
+    .lastcommentsTitle{
+        font-size: 2rem;
+    }
+}
+
+.lastcommentsItems{
+    width: 100%;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 30px;
+}
+
+.lastcommentsItem{
+    width: calc(100% / 3 - 60px / 3);
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+}
+
+@media (max-width: 998px) {
+    .lastcommentsItem{
+        width: 100%;
+    }
+}
+
+.lastcommentsItemTitle{
+    color: var(--mainDark);
+    font-size: 1.4rem;
+    font-weight: 500;
+}
+
+.lastcommentsItemText{
+    font-size: 1.4rem;
+    color: var(--black);
+}
+
+.lastcommentsItemInfo{
+    margin-top: auto;
+}
+
+.lastcommentsItemDate{
+    font-size: 1.3rem;
+    color: var(--grey);
+}
+
+.lastcommentsItemAuthor{
+    display: flex;
+    align-items: center;
+    gap: 7px;
+}
+
+.lastcommentsItemAvatar{
+    width: 32px;
+    height: 32px;
+    position: relative;
+    overflow: hidden;
+    border-radius: 8px;
+}
+
+.lastcommentsItemAvatar img{
+    object-fit: cover;
+}
+
+.lastcommentsItemName{
+    font-size: 1.3rem;
+    font-weight: 500;
+    color: var(--mainDark);
+    position: relative;
+    padding-left: 1rem;
+}
+
+.lastcommentsItemName:before{
+    content: "";
+    display: block;
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+    background: var(--mainDark);
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    left: 0;
+}

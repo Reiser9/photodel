@@ -1,23 +1,99 @@
-import React from "react";
+"use client";
+
+import React, { AnchorHTMLAttributes, ButtonHTMLAttributes } from "react";
+import Link from "next/link";
 import cn from "classnames";
 
 import styles from "./index.module.scss";
 
-type Props = {
-    disabled?: boolean;
-    classNames?: string;
-    children: React.ReactNode;
-};
+import { Preloader } from "../Preloader";
 
-const Button: React.FC<Props> = ({ disabled, classNames, children }) => {
+type Props = {
+    auto?: boolean;
+    loading?: boolean;
+    disabled?: boolean;
+    small?: boolean;
+    levitation?: boolean;
+    href?: string;
+    color?: "primary" | "danger";
+    variant?: "fill" | "outline";
+    wrapperStyle?: React.CSSProperties;
+    wrapperClass?: string;
+    children: React.ReactNode;
+} & ButtonHTMLAttributes<HTMLButtonElement> &
+    AnchorHTMLAttributes<HTMLAnchorElement>;
+
+const Button: React.FC<Props> = ({
+    auto = false,
+    loading = false,
+    disabled = false,
+    small = false,
+    levitation = false,
+    href,
+    color = "primary",
+    variant = "fill",
+    wrapperStyle,
+    wrapperClass,
+    className,
+    children,
+    ...props
+}) => {
+    const content = (): React.ReactNode => {
+        const defaultClasses = cn(
+            styles.button,
+            styles[color],
+            styles[variant],
+            className,
+            {
+                [styles.disabled]: disabled || loading,
+                [styles.small]: small,
+            },
+        );
+
+        if (disabled) {
+            return (
+                <button className={defaultClasses}>
+                    {!loading && children}
+                </button>
+            );
+        }
+
+        if (href) {
+            return (
+                <Link
+                    prefetch={false}
+                    href={href}
+                    className={defaultClasses}
+                    {...props}
+                >
+                    {!loading && children}
+                </Link>
+            );
+        }
+
+        return (
+            <button className={defaultClasses} {...props}>
+                {!loading && children}
+            </button>
+        );
+    };
+
     return (
-        <button
-            className={cn(styles.button, classNames, {
-                [styles.disabled]: disabled,
+        <div
+            className={cn(styles.buttonInner, wrapperClass, {
+                [styles.auto]: auto,
+                [styles.levitation]: levitation,
             })}
+            style={wrapperStyle}
         >
-            {children}
-        </button>
+            {content()}
+
+            {loading && (
+                <span className={styles.buttonPreloader}>
+                    <Preloader small theme={color} />
+                </span>
+            )}
+        </div>
     );
 };
 

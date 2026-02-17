@@ -1,0 +1,18 @@
+.textPoint{
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 3px;
+}
+
+.textPointTitle{
+    font-size: 1.4rem;
+    font-weight: 600;
+    color: var(--black);
+}
+
+.textPointText{
+    font-size: 1.4rem;
+    color: var(--black);
+}

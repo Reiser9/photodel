@@ -1,0 +1,64 @@
+.userInfoBlock{
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 13px;
+}
+
+.userInfoBlock.full{
+    width: 100%;
+}
+
+.userInfoBlockStatus{
+    font-size: 1.2rem;
+    color: var(--grey);
+}
+
+.userInfoBlockInfo{
+    display: flex;
+    align-items: center;
+    gap: 7px;
+}
+
+.userInfoBlockImg{
+    width: 32px;
+    height: 32px;
+    overflow: hidden;
+    border-radius: 8px;
+    position: relative;
+    flex-shrink: 0;
+}
+
+.userInfoBlock.medium .userInfoBlockImg{
+    width: 48px;
+    height: 48px;
+}
+
+.userInfoBlockImg img{
+    object-fit: cover;
+}
+
+.userInfoBlockName{
+    font-size: 1.2rem;
+    font-weight: 500;
+    padding-left: 1rem;
+    position: relative;
+    color: var(--grey);
+}
+
+.userInfoBlock.medium .userInfoBlockName{
+    font-size: 1.4rem;
+}
+
+.userInfoBlockName:before{
+    content: "";
+    display: block;
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+    position: absolute;
+    top: 50%;
+    left: 0;
+    transform: translateY(-50%);
+    background: var(--grey);
+}

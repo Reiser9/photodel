@@ -1,0 +1,71 @@
+.selectInner{
+	display: flex;
+	flex-direction: column;
+	align-items: flex-start;
+}
+
+.selectInner.full{
+    width: 100%;
+}
+
+.selectTitle{
+	font-size: 1.2rem;
+    font-weight: 600;
+    color: var(--grey);
+    margin-bottom: 0.3rem;
+    padding-left: 1.9rem;
+}
+
+.selectWrapper{
+	width: 100%;
+	position: relative;
+}
+
+.selectWrapper > svg:not(.selectArrow){
+	color: #00A31E;
+	width: 24px;
+	height: 24px;
+	flex-shrink: 0;
+	position: absolute;
+	top: 16px;
+	left: 16px;
+}
+
+.select{
+	width: 100%;
+	padding: 1rem 1.9rem;
+	color: var(--black);
+	border: 1px solid var(--lightGrey);
+	border-radius: 30px;
+    font-size: 1.3rem;
+    outline: none;
+	min-height: 44px;
+}
+
+.select option{
+    padding: 1.2rem;
+}
+
+.select.withIcon{
+	padding: 1.6rem 3.2rem 1.6rem 4.8rem;
+}
+
+.selectMessage{
+	margin-top: 0.2rem;
+    padding-left: 1.9rem;
+    font-size: 1.2rem;
+    color: var(--red);
+    font-weight: 500;
+}
+
+.selectArrow{
+	position: absolute;
+	top: 50%;
+	right: 21px;
+	pointer-events: none;
+	transform: translateY(-50%);
+	color: var(--black);
+	width: 12px;
+	height: 12px;
+	flex-shrink: 0;
+}

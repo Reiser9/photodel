@@ -3,6 +3,7 @@
 import React from "react";
 import cn from "classnames";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 
 import styles from "./index.module.scss";
 import base from "@/shared/styles/base.module.scss";
@@ -18,6 +19,11 @@ import {
     Sun,
 } from "@/shared/icons";
 import { useThemeContext } from "@/shared/context/ThemeProvider";
+import { HoverMenu, MenuLink } from "@/shared/ui/HoverMenu";
+import { Modal } from "@/shared/ui/Modal";
+import { Input } from "@/shared/ui/Input";
+import { Button } from "@/shared/ui/Button";
+import { Checkbox } from "@/shared/ui/Checkbox";
 
 type Props = {
     light?: boolean;
@@ -25,8 +31,16 @@ type Props = {
 
 const Header: React.FC<Props> = ({ light = false }) => {
     const [menuIsOpen, setMenuIsOpen] = React.useState(false);
+    const [profileMenu, setProfileMenu] = React.useState(false);
+
+    const [authModal, setAuthModal] = React.useState(false);
+    const [registerModal, setRegisterModal] = React.useState(false);
+    const [recoveryModal, setRecoveryModal] = React.useState(false);
 
     const { theme, toggleTheme, chooseTheme } = useThemeContext();
+    const pathname = usePathname();
+
+    const profileMenuRef = React.useRef<HTMLDivElement>(null);
 
     return (
         <>
@@ -103,9 +117,34 @@ const Header: React.FC<Props> = ({ light = false }) => {
                                 Фотодел
                             </Link>
 
-                            <button className={styles.headerProfile}>
-                                <Profile />
-                            </button>
+                            <div
+                                className={styles.headerProfile}
+                                ref={profileMenuRef}
+                                onClick={() => setProfileMenu((prev) => !prev)}
+                            >
+                                <HoverMenu
+                                    button={<Profile />}
+                                    value={profileMenu}
+                                    setValue={setProfileMenu}
+                                >
+                                    <MenuLink
+                                        onClick={() => {
+                                            setAuthModal(true);
+                                            setProfileMenu(false);
+                                        }}
+                                    >
+                                        Войти
+                                    </MenuLink>
+                                    <MenuLink
+                                        onClick={() => {
+                                            setRegisterModal(true);
+                                            setProfileMenu(false);
+                                        }}
+                                    >
+                                        Зарегистрироваться
+                                    </MenuLink>
+                                </HoverMenu>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -119,19 +158,41 @@ const Header: React.FC<Props> = ({ light = false }) => {
                             </Link>
 
                             <nav className={styles.headerNav}>
-                                <Link href="/profies" className={styles.headerNavLink}>
+                                <Link
+                                    href="/profies"
+                                    className={cn(styles.headerNavLink, {
+                                        [styles.active]:
+                                            pathname === "/profies",
+                                    })}
+                                >
                                     Профи рядом
                                 </Link>
 
-                                <Link href="/places" className={styles.headerNavLink}>
+                                <Link
+                                    href="/places"
+                                    className={cn(styles.headerNavLink, {
+                                        [styles.active]: pathname === "/places",
+                                    })}
+                                >
                                     Места для съемок
                                 </Link>
 
-                                <Link href="/photos" className={styles.headerNavLink}>
+                                <Link
+                                    href="/photos"
+                                    className={cn(styles.headerNavLink, {
+                                        [styles.active]: pathname === "/photos",
+                                    })}
+                                >
                                     Фотографии
                                 </Link>
 
-                                <Link href="/trainings" className={styles.headerNavLink}>
+                                <Link
+                                    href="/trainings"
+                                    className={cn(styles.headerNavLink, {
+                                        [styles.active]:
+                                            pathname === "/trainings",
+                                    })}
+                                >
                                     Обучение
                                 </Link>
                             </nav>
@@ -158,19 +219,35 @@ const Header: React.FC<Props> = ({ light = false }) => {
                     </button>
 
                     <nav className={styles.headerNav}>
-                        <Link href="/" className={styles.headerNavLink} onClick={() => setMenuIsOpen(false)}>
+                        <Link
+                            href="/profies"
+                            className={styles.headerNavLink}
+                            onClick={() => setMenuIsOpen(false)}
+                        >
                             Профи рядом
                         </Link>
 
-                        <Link href="/" className={styles.headerNavLink} onClick={() => setMenuIsOpen(false)}>
+                        <Link
+                            href="/places"
+                            className={styles.headerNavLink}
+                            onClick={() => setMenuIsOpen(false)}
+                        >
                             Места для съемок
                         </Link>
 
-                        <Link href="/" className={styles.headerNavLink} onClick={() => setMenuIsOpen(false)}>
+                        <Link
+                            href="/photos"
+                            className={styles.headerNavLink}
+                            onClick={() => setMenuIsOpen(false)}
+                        >
                             Фотографии
                         </Link>
 
-                        <Link href="/" className={styles.headerNavLink} onClick={() => setMenuIsOpen(false)}>
+                        <Link
+                            href="/trainings"
+                            className={styles.headerNavLink}
+                            onClick={() => setMenuIsOpen(false)}
+                        >
                             Обучение
                         </Link>
                     </nav>
@@ -178,9 +255,7 @@ const Header: React.FC<Props> = ({ light = false }) => {
                     <button className={styles.headerLocation}>
                         <Pin />
 
-                        <span className={styles.headerCity}>
-                            Москва
-                        </span>
+                        <span className={styles.headerCity}>Москва</span>
 
                         <ArrowDown />
                     </button>
@@ -203,8 +278,7 @@ const Header: React.FC<Props> = ({ light = false }) => {
                                 className={cn(
                                     styles.headerThemeSwitchIndicator,
                                     {
-                                        [styles.dark]:
-                                            theme === "dark",
+                                        [styles.dark]: theme === "dark",
                                     },
                                 )}
                             >
@@ -224,6 +298,112 @@ const Header: React.FC<Props> = ({ light = false }) => {
                     </div>
                 </div>
             </div>
+
+            <Modal
+                value={authModal}
+                setValue={setAuthModal}
+                title="Вход"
+                size="small"
+            >
+                <div className={styles.authForm}>
+                    <Input title="E-mail" full />
+                    <Input title="Пароль" full type="password" />
+
+                    <Checkbox id="auth_remember" label="Запомнить меня" />
+
+                    <Button>Войти</Button>
+
+                    <div className={styles.authLinks}>
+                        <button
+                            className={styles.authLink}
+                            onClick={() => {
+                                setAuthModal(false);
+                                setRecoveryModal(true);
+                            }}
+                        >
+                            Напомнить пароль
+                        </button>
+                        <button
+                            className={styles.authLink}
+                            onClick={() => {
+                                setAuthModal(false);
+                                setRegisterModal(true);
+                            }}
+                        >
+                            Зарегистрироваться
+                        </button>
+                    </div>
+                </div>
+            </Modal>
+
+            <Modal
+                value={registerModal}
+                setValue={setRegisterModal}
+                title="Регистрация"
+                size="small"
+            >
+                <div className={styles.authForm}>
+                    <Input title="Имя" full />
+                    <Input title="Фамилия" full />
+                    <Input title="E-mail" full />
+                    <Input title="Пароль" full type="password" />
+                    <Input title="Повторите пароль" full type="password" />
+
+                    <Checkbox id="is_adult" label="Мне есть 18 лет" />
+                    <Checkbox
+                        id="register_profi"
+                        label="Я регистрируюсь как Профи"
+                    />
+
+                    <Button>Зарегистрироваться</Button>
+
+                    <div className={styles.authLinks}>
+                        <button
+                            className={styles.authLink}
+                            onClick={() => {
+                                setRegisterModal(false);
+                                setAuthModal(true);
+                            }}
+                        >
+                            У меня уже есть аккаунт
+                        </button>
+                    </div>
+                </div>
+            </Modal>
+
+            <Modal
+                value={recoveryModal}
+                setValue={setRecoveryModal}
+                title="Напомнить пароль"
+                size="small"
+            >
+                <div className={styles.authForm}>
+                    <Input title="E-mail" full />
+
+                    <Button>Отправить</Button>
+
+                    <div className={styles.authLinks}>
+                        <button
+                            className={styles.authLink}
+                            onClick={() => {
+                                setRecoveryModal(false);
+                                setAuthModal(true);
+                            }}
+                        >
+                            Я вспомнил пароль
+                        </button>
+                        <button
+                            className={styles.authLink}
+                            onClick={() => {
+                                setRecoveryModal(false);
+                                setRegisterModal(true);
+                            }}
+                        >
+                            Зарегистрироваться
+                        </button>
+                    </div>
+                </div>
+            </Modal>
         </>
     );
 };

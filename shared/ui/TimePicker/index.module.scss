@@ -1,0 +1,18 @@
+.timepickerInner{
+    width: 100%;
+    display: flex;
+	flex-direction: column;
+	align-items: flex-start;
+}
+
+.timepicker{
+    width: 100%;
+}
+
+.timepickerTitle{
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: var(--grey);
+    margin-bottom: 0.3rem;
+    padding-left: 1.9rem;
+}

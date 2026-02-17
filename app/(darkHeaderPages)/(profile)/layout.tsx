@@ -1,6 +1,9 @@
+"use client";
+
 import React from "react";
 import Link from "next/link";
 import cn from "classnames";
+import { usePathname } from "next/navigation";
 
 import styles from "./index.module.scss";
 import base from "@/shared/styles/base.module.scss";
@@ -17,93 +20,82 @@ import {
     Text,
 } from "@/shared/icons";
 
+const sidebarLinks = [
+    {
+        path: "/profile",
+        name: "Мой профиль",
+        icon: <Profile />,
+        exact: true,
+    },
+    {
+        path: "/profile/photos",
+        name: "Фотографии",
+        icon: <Photo />,
+    },
+    {
+        path: "/profile/places",
+        name: "Места для съемок",
+        icon: <Pin2 />,
+    },
+    {
+        path: "/profile/photosessions",
+        name: "Фотосессии",
+        icon: <Book />,
+    },
+    {
+        path: "/profile/trainings",
+        name: "Обучение",
+        icon: <Text />,
+    },
+    {
+        path: "/profile/team",
+        name: "Команда",
+        icon: <Team />,
+    },
+    {
+        path: "/profile/reviews",
+        name: "Отзывы",
+        icon: <Reviews />,
+    },
+    {
+        path: "/profile/requests",
+        name: "Запросы",
+        icon: <Edit />,
+    },
+    {
+        path: "/profile/favorites",
+        name: "Избранное",
+        icon: <Bookmark2 />,
+    },
+];
+
 const ProfileLayout: React.FC<{ children: React.ReactNode }> = ({
     children,
 }) => {
+    const pathname = usePathname();
+
     return (
         <div className={styles.profile}>
             <div className={base.container}>
                 <div className={styles.profileInner}>
                     <div className={styles.profileSidebar}>
-                        <Link
-                            href="/profile"
-                            className={cn(
-                                styles.profileSidebarLink,
-                                styles.active,
-                            )}
-                        >
-                            <Profile />
-                            Мой профиль
-                        </Link>
-
-                        <Link
-                            href="/profile"
-                            className={styles.profileSidebarLink}
-                        >
-                            <Photo />
-                            Фотографии
-                        </Link>
-
-                        <Link
-                            href="/profile"
-                            className={styles.profileSidebarLink}
-                        >
-                            <Pin2 />
-                            Места для съемок
-                        </Link>
-
-                        <Link
-                            href="/profile"
-                            className={styles.profileSidebarLink}
-                        >
-                            <Book />
-                            Фотосессии
-                        </Link>
-
-                        <Link
-                            href="/profile"
-                            className={styles.profileSidebarLink}
-                        >
-                            <Text />
-                            Обучение
-                        </Link>
-
-                        <Link
-                            href="/profile"
-                            className={styles.profileSidebarLink}
-                        >
-                            <Team />
-                            Команда
-                        </Link>
-
-                        <Link
-                            href="/profile"
-                            className={styles.profileSidebarLink}
-                        >
-                            <Reviews />
-                            Отзывы
-                        </Link>
-
-                        <Link
-                            href="/profile"
-                            className={styles.profileSidebarLink}
-                        >
-                            <Edit />
-                            Запросы
-                        </Link>
-
-                        <Link
-                            href="/profile"
-                            className={styles.profileSidebarLink}
-                        >
-                            <Bookmark2 />
-                            Избранное
-                        </Link>
+                        {sidebarLinks.map((data, id) => (
+                            <Link
+                                key={id}
+                                href={data.path}
+                                className={cn(styles.profileSidebarLink, {
+                                    [styles.active]: data.exact
+                                        ? pathname === data.path
+                                        : pathname.startsWith(data.path),
+                                })}
+                            >
+                                {data.icon}
+                                {data.name}
+                            </Link>
+                        ))}
                     </div>
 
-                    <div className={styles.profileContent}>
-                        {children}
-                    </div>
+                    <div className={styles.profileContent}>{children}</div>
                 </div>
             </div>
         </div>

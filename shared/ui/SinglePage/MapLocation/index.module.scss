@@ -1,0 +1,43 @@
+.mapLocationBlock{
+    width: 100%;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.mapLocationBlock svg{
+    width: 20px;
+    height: 20px;
+    flex-shrink: 0;
+    color: var(--main);
+}
+
+.mapLocation, .mapLocationDistance{
+    color: var(--black);
+    font-size: 1.3rem;
+}
+
+.mapLocationDistance{
+    position: relative;
+    padding-left: .6rem;
+}
+
+.mapLocationDistance:before{
+    content: "";
+    display: block;
+    width: 1px;
+    height: 75%;
+    background: var(--black);
+    position: absolute;
+    top: 50%;
+    left: 0;
+    transform: translateY(-50%);
+}
+
+.mapLocationMap{
+    width: 100%;
+    height: 200px;
+    border-radius: 8px;
+    border: 1px solid var(--lightGrey);
+    overflow: hidden;
+}

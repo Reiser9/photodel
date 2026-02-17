@@ -1,0 +1,183 @@
+.hoverMenuWrapper{
+    display: flex;
+    position: relative;
+}
+
+.hoverMenuOverlay{
+    width: 215px;
+    padding-top: 8px;
+    position: absolute;
+    top: 100%;
+    right: 0;
+    z-index: 10;
+    transition: .2s ease-in-out;
+}
+
+.hoverMenuOverlay.right{
+    right: auto;
+    left: 0;
+}
+
+.hoverMenuOverlay.center{
+    right: auto;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+.hoverMenuOverlay.big{
+    width: 280px;
+}
+
+@media (any-hover: none) and (max-width: 768px) {
+    .hoverMenuOverlay{
+        position: fixed;
+        top: 0;
+        left: 0;
+        height: 100dvh;
+        background: rgba(0, 0, 0, .5);
+        z-index: 1100;
+        overflow-x: hidden;
+        overflow-y: auto;
+        display: block;
+    }
+
+    .hoverMenuOverlay, .hoverMenuOverlay.big{
+        width: 100%;
+    }
+}
+
+.hoverMenu{
+    width: 100%;
+    display: flex;
+}
+
+@media (any-hover: none) and (max-width: 768px) {
+    .hoverMenu{
+        min-height: calc(100% - 5rem);
+        margin: 5rem 0 0 0;
+        align-items: flex-end;
+        justify-content: center;
+    }
+}
+
+.hoverMenuContent{
+    width: 100%;
+    padding: 0.8rem 0;
+    border-radius: 10px;
+    border: 1px solid var(--lightGrey);
+    background: var(--white);
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    transition: .2s ease-in-out;
+    max-height: calc(100dvh - 65px);
+    overflow-y: auto;
+}
+
+@keyframes fadeInContent{
+    0%{
+        transform: translateY(100dvh);
+    }
+    100%{
+        transform: translateY(0);
+    }
+}
+
+@media (any-hover: none) and (max-width: 768px) {
+    .hoverMenuContent{
+        border-radius: 4px 4px 0 0;
+        position: relative;
+        padding: 4rem 0 1.6rem 0;
+        transform: translateY(100dvh);
+    }
+
+    .hoverMenuContent:before{
+        content: "";
+        display: block;
+        width: 75px;
+        height: 2px;
+        border-radius: 50px;
+        background: var(--lightGrey);
+        position: absolute;
+        top: 16px;
+        left: 50%;
+        transform: translateX(-50%);
+    }
+
+    .hoverMenuContent{
+        animation: fadeInContent .2s ease-in-out forwards;
+    }
+}
+
+.hoverMenuLink{
+    width: 100%;
+    padding: 0.8rem 1.4rem;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: .2s linear;
+    font-size: 1.3rem;
+    color: var(--black);
+}
+
+@media (any-hover: none) {
+    .hoverMenuOverlay{
+        animation: fadeInOverlay .2s ease-in-out forwards;
+    }
+}
+
+@keyframes fadeInOverlay{
+    0%{
+        pointer-events: none;
+        background: none;
+    }
+    100%{
+        pointer-events: all;
+        background: rgba(0, 0, 0, .5);
+    }
+}
+
+@media (any-hover: hover) {
+    .hoverMenuLink{
+        cursor: pointer;
+    }
+
+    .hoverMenuOverlay{
+        opacity: 0;
+        pointer-events: none;
+    }
+
+    .hoverMenuWrapper:hover .hoverMenuOverlay{
+        opacity: 1;
+        pointer-events: all;
+    }
+}
+
+.hoverMenuLink:hover{
+    color: var(--main);
+    background: var(--lightWhite);
+}
+
+.hoverMenuLink svg{
+    width: 22px;
+    flex-shrink: 0;
+}
+
+.hoverMenuLink:hover svg{
+    color: var(--main);
+}
+
+.hoverMenuLink.delete:hover{
+    color: var(--error);
+    background: var(--errorB);
+}
+
+.hoverMenuLink.delete:hover svg{
+    color: var(--error);
+}
+
+.disabled{
+    opacity: 0.6;
+    pointer-events: none;
+    filter: grayscale(1);
+}

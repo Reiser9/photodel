@@ -167,6 +167,14 @@
     background: var(--white);
 }
 
+.headerNavLink.active{
+    color: var(--mainDark);
+}
+
+.headerNavLink.active:before{
+    opacity: 1;
+}
+
 @media (any-hover: hover) {
     .headerNavLink:hover{
         color: var(--mainDark);
@@ -373,4 +381,35 @@
 .mobileMenuClose svg{
     width: 28px;
     height: 28px;
+}
+
+.authForm{
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 20px;
+    margin-top: 2rem;
+}
+
+@media (max-width: 540px) {
+    .authForm{
+        margin-top: 0.8rem;
+    }
+}
+
+.authLinks{
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+}
+
+.authLink{
+    text-align: center;
+    font-size: 1.4rem;
+    font-weight: 600;
+    color: var(--mainDark);
+    padding: 0;
 }

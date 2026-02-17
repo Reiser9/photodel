@@ -1,12 +1,16 @@
-import React from "react";
 import Image from "next/image";
 import Link from "next/link";
 
 import styles from "./index.module.scss";
 import base from "@/shared/styles/base.module.scss";
 
-import { AdvSearch, Profile, Search } from "@/shared/icons";
+import { Profile, Search } from "@/shared/icons";
 import { InfoBlock } from "./ui/InfoBlock";
+import { PhotosBlock } from "./ui/PhotosBlock";
+import { PlacesBlock } from "./ui/PlacesBlock";
+import { ProfiesBlock } from "./ui/ProfiesBlock";
+import { LastComments } from "./ui/LastComments";
+
 import { Button } from "@/shared/ui/Button";
 
 const MainPage = () => {
@@ -50,58 +54,13 @@ const MainPage = () => {
                 </div>
             </section>
 
-            <section className={styles.profi}>
-                <div className={base.container}>
-                    <div className={styles.profiInner}>
-                        <div className={styles.profiTop}>
-                            <div className={styles.profiTitleInner}>
-                                <p className={styles.profiTitle}>
-                                    Популярные Профи
-                                </p>
-                            </div>
-                        </div>
+            <ProfiesBlock />
 
-                        <Link href="/" className={styles.profiLink}>
-                            <AdvSearch />
-                            Расширенный поиск Профи
-                        </Link>
-                    </div>
-                </div>
-            </section>
+            <PlacesBlock />
 
-            <section className={styles.place}>
-                <div className={base.container}>
-                    <div className={styles.profiInner}>
-                        <div className={styles.profiTop}>
-                            <div className={styles.profiTitleInner}>
-                                <p className={styles.profiTitle}>
-                                    Лучшие места для съемок
-                                </p>
-                            </div>
-                        </div>
+            <PhotosBlock />
 
-                        <Link href="/" className={styles.profiLink}>
-                            <AdvSearch />
-                            Расширенный поиск Мест для съемки
-                        </Link>
-                    </div>
-                </div>
-            </section>
-
-            <section className={styles.profi}>
-                <div className={base.container}>
-                    <div className={styles.profiInner}>
-                        <p className={styles.photoTitle}>
-                            Популярные фотографии
-                        </p>
-
-                        <Link href="/" className={styles.profiLink}>
-                            <AdvSearch />
-                            Расширенный поиск фотографий
-                        </Link>
-                    </div>
-                </div>
-            </section>
+            <LastComments />
 
             <InfoBlock />
 
@@ -121,7 +80,7 @@ const MainPage = () => {
                             заказы прямо сейчас!
                         </p>
 
-                        <Button classNames={styles.bannerButton}>
+                        <Button auto className={styles.bannerButton}>
                             Зарегистрироваться
                         </Button>
                     </div>

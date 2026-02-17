@@ -1,0 +1,93 @@
+.photoByIdImageInner{
+    width: 100%;
+    position: relative;
+    overflow: hidden;
+    border-radius: 8px;
+    aspect-ratio: 1.68 / 1;
+    background: var(--lightGrey);
+}
+
+.photoByIdImageInner img{
+    object-fit: cover;
+}
+
+.photoByIdActions{
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin-top: 2rem;
+    flex-wrap: wrap;
+}
+
+.photoByIdActionsContent{
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.photoByIdAction{
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 1.2rem;
+    font-weight: 500;
+    color: var(--black);
+}
+
+.photoByIdAction svg{
+    width: 18px;
+    height: 18px;
+    flex-shrink: 0;
+    color: var(--main);
+}
+
+.photoByIdAction.like svg{
+    color: var(--red);
+}
+
+.photoByIdAction.comment svg{
+    color: var(--grey);
+}
+
+.photoByIdAction.like.active svg{
+    fill: var(--red);
+}
+
+.photoByIdAction.favorite.active svg{
+    fill: var(--main);
+}
+
+.photoByIdDate{
+    font-size: 1.2rem;
+    font-weight: 500;
+    color: var(--grey);
+}
+
+.photoByIdTextInner{
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 11px;
+    margin-top: 2rem;
+}
+
+.photoByIdTextTitle{
+    font-size: 1.6rem;
+    font-weight: 600;
+    color: var(--black);
+}
+
+.photoByIdTextDescription{
+    display: flex;
+    width: 100%;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+.photoByIdTextDescription, .photoByIdTextDescription p{
+    font-size: 1.4rem;
+    color: var(--black);
+}

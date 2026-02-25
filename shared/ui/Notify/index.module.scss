@@ -1,0 +1,102 @@
+.notifyItem{
+    width: 100%;
+    padding: 1.2rem 1.2rem 2rem 1.6rem;
+    position: relative;
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    border-radius: 4px;
+    overflow: hidden;
+    cursor: pointer;
+    background: var(--main);
+}
+
+.notifyItem svg{
+    color: var(--main);
+}
+
+.notifyItem:before{
+    content: "";
+    display: block;
+    width: 4px;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    background: var(--main);
+}
+
+.notifyItemIconWrapper{
+    width: 24px;
+    display: flex;
+    flex-shrink: 0;
+}
+
+.notifyItemIconWrapper svg{
+    width: 100%;
+}
+
+.notifyItemWrapper{
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+}
+
+.success{
+    background: #D7E7DA;
+}
+
+.success svg{
+    color: #00A31E;
+}
+
+.notifyItem.success:before{
+    background: #00A31E;
+}
+
+.info{
+    background: #E6F2FE;
+}
+
+.info svg{
+    color: var(--main);
+}
+
+.notifyItem.info:before{
+    background: var(--main);
+}
+
+.error{
+    background: #FEE7EA;
+}
+
+.error svg{
+    color: var(--red);
+}
+
+.notifyItem.error:before{
+    background: var(--red);
+}
+
+.warn{
+    background: #FEF9E7;
+}
+
+.warn svg{
+    color: var(--yellow);
+}
+
+.notifyItem.warn:before{
+    background: var(--yellow);
+}
+
+.notifyItemTitle{
+    font-size: 1.4rem;
+    font-weight: 600;
+}
+
+.notifyItemText{
+    font-size: 1.2rem;
+}

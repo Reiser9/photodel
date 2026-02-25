@@ -1,35 +1,33 @@
-import { createSlice } from '@reduxjs/toolkit';
-import type { PayloadAction } from '@reduxjs/toolkit';
-
-import type { VerificationCodeData } from '@/entities/user';
+import { createSlice } from "@reduxjs/toolkit";
+import type { PayloadAction } from "@reduxjs/toolkit";
 
 type UserStateType = {
     isAuth: boolean;
-    verificationCodeData: VerificationCodeData | null;
+    isVerified: boolean;
 };
 
 const initialState: UserStateType = {
     isAuth: false,
-    verificationCodeData: null,
+    isVerified: false,
 };
 
 export const userSlice = createSlice({
-    name: 'user',
+    name: "user",
     initialState,
     reducers: {
         setIsAuth: (state, action: PayloadAction<boolean>) => {
             state.isAuth = action.payload;
         },
-        initVerificationCodeData: (state, action: PayloadAction<VerificationCodeData | null>) => {
-            state.verificationCodeData = action.payload;
+        setIsVerified: (state, action: PayloadAction<boolean>) => {
+            state.isVerified = action.payload;
         },
         setUserData: (state) => {
             state.isAuth = false;
-            state.verificationCodeData = null;
+            state.isVerified = false;
         },
     },
 });
 
-export const { setIsAuth, initVerificationCodeData, setUserData } = userSlice.actions;
+export const { setIsAuth, setIsVerified, setUserData } = userSlice.actions;
 
 export default userSlice.reducer;

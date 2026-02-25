@@ -55,3 +55,7 @@ export { Timer } from "./Timer";
 export { FocalLength } from "./FocalLength";
 export { CloseCircle } from "./CloseCircle";
 export { Case } from "./Case";
+export { Warn } from "./Warn";
+export { Comment2 } from "./Comment2";
+export { Remove } from "./Remove";
+export { Edit2 } from "./Edit2";

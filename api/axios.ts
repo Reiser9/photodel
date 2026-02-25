@@ -12,6 +12,12 @@ const axiosInstance: AxiosInstance = axios.create({
     },
 });
 
+const publicEndpoints = [
+    '/health',
+    '/auth/login',
+    '/auth/register',
+];
+
 export const isAccessTokenValid = (accessToken: string | null) => {
     if (!accessToken) return false;
 
@@ -33,6 +39,10 @@ export const isAccessTokenValid = (accessToken: string | null) => {
 axiosInstance.interceptors.request.use(
     async (req) => {
         const accessToken = localStorage.getItem('accessToken');
+
+        if (publicEndpoints.includes(req.url || '')) {
+            return req;
+        }
 
         if (!accessToken) {
             return req;

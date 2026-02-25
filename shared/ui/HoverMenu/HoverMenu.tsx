@@ -1,17 +1,19 @@
-'use client';
+"use client";
 
-import React from 'react';
-import ReactDOM from 'react-dom';
-import cn from 'classnames';
+import React from "react";
+import ReactDOM from "react-dom";
+import cn from "classnames";
 
-import styles from './index.module.scss';
+import styles from "./index.module.scss";
 
 type Props = {
     value: boolean;
     setValue: (value: boolean) => void;
     button: React.ReactNode;
     big?: boolean;
-    placement?: 'left' | 'center' | 'right';
+    placement?: "left" | "center" | "right";
+    overlayClass?: string;
+    contentClass?: string;
     children?: React.ReactNode;
 };
 
@@ -20,7 +22,9 @@ const HoverMenu: React.FC<Props> = ({
     setValue,
     button,
     big = false,
-    placement = 'left',
+    placement = "left",
+    overlayClass,
+    contentClass,
     children,
     ...props
 }) => {
@@ -34,37 +38,52 @@ const HoverMenu: React.FC<Props> = ({
 
     React.useEffect(() => {
         const handleOutsideClick = (e: MouseEvent) => {
-            if (menuRef.current && !menuRef.current.contains(e.target as Node)) {
+            if (
+                menuRef.current &&
+                !menuRef.current.contains(e.target as Node)
+            ) {
                 closeMenu();
             }
         };
 
-        document.addEventListener('click', handleOutsideClick);
+        document.addEventListener("click", handleOutsideClick);
 
         return () => {
-            document.removeEventListener('click', handleOutsideClick);
+            document.removeEventListener("click", handleOutsideClick);
         };
     }, []);
 
     React.useEffect(() => {
-        const isMobileScreen = window.matchMedia('(max-width: 768px) and (hover: none) and (pointer: coarse)').matches;
+        const isMobileScreen = window.matchMedia(
+            "(max-width: 768px) and (hover: none) and (pointer: coarse)",
+        ).matches;
         setIsMobile(isMobileScreen);
     }, []);
 
     React.useEffect(() => {
-        const isHoverScreen = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
+        const isHoverScreen = window.matchMedia(
+            "(hover: hover) and (pointer: fine)",
+        ).matches;
         setIsCanHover(isHoverScreen);
     }, []);
 
     const hoverMenuContent = (
         <div
-            className={cn(styles.hoverMenuOverlay, styles[placement], {
-                [styles.big]: big,
-            })}
+            className={cn(
+                styles.hoverMenuOverlay,
+                overlayClass,
+                styles[placement],
+                {
+                    [styles.big]: big,
+                },
+            )}
             onClick={closeMenu}
         >
             <div className={styles.hoverMenu}>
-                <div className={styles.hoverMenuContent} onClick={(e) => e.stopPropagation()}>
+                <div
+                    className={cn(styles.hoverMenuContent, contentClass)}
+                    onClick={(e) => e.stopPropagation()}
+                >
                     {children}
                 </div>
             </div>
@@ -76,7 +95,9 @@ const HoverMenu: React.FC<Props> = ({
             {button}
 
             {(value || isCanHover) &&
-                (isMobile ? ReactDOM.createPortal(hoverMenuContent, document.body) : hoverMenuContent)}
+                (isMobile
+                    ? ReactDOM.createPortal(hoverMenuContent, document.body)
+                    : hoverMenuContent)}
         </div>
     );
 };

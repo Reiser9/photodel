@@ -383,33 +383,184 @@
     height: 28px;
 }
 
-.authForm{
-    width: 100%;
+.profileWrapper{
     display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 20px;
-    margin-top: 2rem;
+    align-items: center;
+    gap: 18px;
 }
 
-@media (max-width: 540px) {
-    .authForm{
-        margin-top: 0.8rem;
+.profileNotifyInner{
+    position: relative;
+    display: flex;
+}
+
+.profileCounter{
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: var(--main);
+    position: absolute;
+    top: 0;
+    left: 0;
+    color: var(--white);
+    font-size: 0.9rem;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    top: -7px;
+    left: -6px;
+    pointer-events: none;
+}
+
+.profileNotify{
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    flex-shrink: 0;
+}
+
+.profileNotify svg{
+    width: 18px;
+    height: 18px;
+    flex-shrink: 0;
+    color: var(--mainDark);
+}
+
+.profileContent{
+    position: relative;
+}
+
+.profileAvatar{
+    width: 24px;
+    height: 24px;
+    border-radius: 4px;
+    overflow: hidden;
+    position: relative;
+    background: var(--lightGrey);
+}
+
+@media (any-hover: hover) {
+    .profileAvatar{
+        cursor: pointer;
     }
 }
 
-.authLinks{
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 20px;
+div.profileOverlay{
+    width: 270px;
+    background: transparent!important;
+    padding-top: 1rem;
 }
 
-.authLink{
-    text-align: center;
+@media (max-width: 768px) {
+    div.profileOverlay{
+        width: 100%;
+        background: rgba(0, 0, 0, .5)!important;
+    }
+}
+
+div.profileOverlay:before{
+    content: "";
+    display: block;
+    width: 8px;
+    height: 8px;
+    background: var(--white);
+    position: absolute;
+    top: 6px;
+    right: 10px;
+    transform: rotate(45deg);
+    z-index: -1;
+    pointer-events: none;
+}
+
+.header:not(.light) div.profileOverlay:before{
+    background: var(--lightGrey);
+}
+
+@media (max-width: 768px) {
+    div.profileOverlay:before{
+        display: none;
+    }
+}
+
+div.profileMenuContent{
+    padding: 1.6rem;
+    border-radius: 0;
+    border: 1px solid transparent;
+}
+
+.header:not(.light) div.profileMenuContent{
+    border: 1px solid var(--lightGrey);
+}
+
+@media (max-width: 768px) {
+    div.profileMenuContent{
+        padding: 4.2rem 1.6rem 3.2rem 1.6rem;
+    }
+}
+
+.profileMenuUser{
+    width: 100%;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.profileMenuUserImg{
+    width: 36px;
+    height: 36px;
+    flex-shrink: 0;
+    border-radius: 8px;
+    flex-shrink: 0;
+    overflow: hidden;
+    position: relative;
+    background: var(--lightGrey);
+}
+
+.profileMenuUserImg img{
+    object-fit: cover;
+}
+
+.profileMenuUserWrapper{
+    display: flex;
+    align-items: center;
+    gap: 7px;
+}
+
+.profileMenuUserName{
     font-size: 1.4rem;
-    font-weight: 600;
+    font-weight: 500;
+    color: var(--black);
+}
+
+.profileMenuNav{
+    width: 100%;
+    margin-top: 2.3rem;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+.profileMenuNavLink{
+    width: 100%;
+    display: inline-block;
+    padding: 0.7rem 0 .7rem .8rem;
+    border-top: 1px solid var(--lightGrey);
     color: var(--mainDark);
-    padding: 0;
+    font-size: 1.3rem;
+    text-align: left;
+}
+
+.profileMenuNavLink.active{
+    font-weight: 600;
+}
+
+@media (any-hover: hover) {
+    .profileMenuNavLink:hover{
+        background: var(--input);
+    }
 }

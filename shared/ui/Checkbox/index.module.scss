@@ -3,13 +3,17 @@
     display: flex;
 }
 
+.checkboxInner.auto{
+    width: auto;
+}
+
 .checkbox{
     display: none;
 }
 
 .checkbox:checked + .checkboxLabel:after{
     opacity: 1;
-    top: 5.5px;
+    top: 7.5px;
 }
 
 .checkbox:checked + .checkboxLabel:before{
@@ -23,7 +27,7 @@
     line-height: 1.5;
     display: flex;
     position: relative;
-    padding-left: 2.8rem;
+    padding-left: 2.5rem;
 }
 
 .checkboxLabel:before{
@@ -34,7 +38,7 @@
     border-radius: 4px;
     position: absolute;
     left: 0;
-    top: 1px;
+    top: 2.5px;
     border: 1px solid var(--lightGrey);
     transition: .2s linear;
 }

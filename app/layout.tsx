@@ -7,6 +7,7 @@ import "react-loading-skeleton/dist/skeleton.css";
 import { ReactQueryProvider, ReduxProvider } from "@/shared/providers";
 import { ThemeProvider } from "@/shared/context";
 import { InitialWrapper } from "@/shared/wrappers/InitialWrapper";
+import { NotifiesWrapper } from "@/shared/wrappers/NotifiesWrapper";
 
 export const metadata: Metadata = {
     title: "Фотодел",
@@ -35,7 +36,11 @@ export default function RootLayout({
                                 baseColor="var(--input)"
                                 highlightColor="var(--inputDarken)"
                             >
-                                <InitialWrapper>{children}</InitialWrapper>
+                                <InitialWrapper>
+                                    <NotifiesWrapper>
+                                        {children}
+                                    </NotifiesWrapper>
+                                </InitialWrapper>
                             </SkeletonTheme>
                         </ThemeProvider>
                     </ReactQueryProvider>

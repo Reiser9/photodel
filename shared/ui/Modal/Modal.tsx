@@ -15,6 +15,7 @@ type Props = {
     size?: "default" | "small";
     onClose?: () => void;
     children: React.ReactNode;
+    isNotClosed?: boolean;
 };
 
 const Modal: React.FC<Props> = ({
@@ -23,6 +24,7 @@ const Modal: React.FC<Props> = ({
     title,
     size = "default",
     onClose = () => {},
+    isNotClosed = false,
     children,
 }) => {
     const closeModal = () => {
@@ -39,10 +41,12 @@ const Modal: React.FC<Props> = ({
 
         if (value) {
             document.addEventListener("keydown", handleKeyDown);
+            document.body.classList.add("scroll");
         }
 
         return () => {
             document.removeEventListener("keydown", handleKeyDown);
+            document.body.classList.remove("scroll");
         };
     }, [value]);
 
@@ -60,12 +64,14 @@ const Modal: React.FC<Props> = ({
                     <div className={styles.modalTitleInner}>
                         {title && <p className={styles.modalTitle}>{title}</p>}
 
-                        <button
-                            className={styles.modalCrossButton}
-                            onClick={closeModal}
-                        >
-                            <Close />
-                        </button>
+                        {!isNotClosed && (
+                            <button
+                                className={styles.modalCrossButton}
+                                onClick={closeModal}
+                            >
+                                <Close />
+                            </button>
+                        )}
                     </div>
 
                     {children && (

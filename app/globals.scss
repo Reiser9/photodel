@@ -43,6 +43,10 @@ body {
     touch-action: pan-y;
 }
 
+.scroll{
+    overflow: hidden;
+}
+
 body.dark {
     /* Colors */
     --main: #50A398;

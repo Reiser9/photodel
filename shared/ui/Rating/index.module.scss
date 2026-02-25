@@ -13,3 +13,23 @@
     flex-shrink: 0;
     color: var(--yellow);
 }
+
+.ratingReview{
+    display: flex;
+    align-items: center;
+    gap: 2px;
+    flex-shrink: 0;
+}
+
+.ratingReview svg{
+    color: transparent;
+    stroke: var(--lightGrey);
+    width: 18px;
+    height: 18px;
+    flex-shrink: 0;
+}
+
+.ratingReview svg.active{
+    color: var(--yellow);
+    stroke: var(--yellow);
+}

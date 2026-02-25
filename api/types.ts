@@ -1,10 +1,5 @@
 export type Error = {
-    message:
-        | string
-        | {
-              ru: string;
-              he: string;
-          };
+    message: string;
     errors: any[];
     statusCode: number;
 };

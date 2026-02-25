@@ -34,7 +34,7 @@ const UserInfoBlock: React.FC<Props> = ({
                 [styles.full]: full,
             })}
         >
-            <Link href={`/profile/${id}`} className={styles.userInfoBlockInfo}>
+            <Link href={`/user/${id}`} className={styles.userInfoBlockInfo}>
                 <span className={styles.userInfoBlockImg}>
                     <Image
                         src={image}

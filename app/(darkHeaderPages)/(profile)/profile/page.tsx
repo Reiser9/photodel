@@ -3,8 +3,10 @@
 import React from "react";
 import Image from "next/image";
 import cn from "classnames";
+import parse from "html-react-parser";
 import { Dayjs } from "dayjs";
 import { YMaps, Map, Placemark } from "@iminside/react-yandex-maps";
+import { useQuery } from "@tanstack/react-query";
 
 import styles from "./index.module.scss";
 
@@ -17,9 +19,9 @@ import {
     Location,
     Mail,
     Pin2,
-    Star,
     Trophy,
 } from "@/shared/icons";
+import { useUserInfo } from "@/features/user";
 import { Pro } from "@/shared/ui/Pro";
 import { Modal } from "@/shared/ui/Modal";
 import { Input } from "@/shared/ui/Input";
@@ -30,6 +32,8 @@ import { Checkbox } from "@/shared/ui/Checkbox";
 import { Button } from "@/shared/ui/Button";
 import { UserInfoBlock } from "@/shared/ui/UserInfoBlock";
 import { Rating } from "@/shared/ui/Rating";
+import { formatDateToRussianMonthYear } from "@/shared/utils/formatDateToMothYear";
+import { formatDate } from "@/shared/utils/formatDate";
 
 const ProfilePage = () => {
     const [requestModal, setRequestModal] = React.useState(false);
@@ -50,6 +54,8 @@ const ProfilePage = () => {
     const [needMakeup, setNeedMakeup] = React.useState(false);
     const [note, setNote] = React.useState("");
 
+    const { getShortInfo, getProfileInfo } = useUserInfo();
+
     const resetRequestForm = () => {
         setDate(null);
         setTime(null);
@@ -62,43 +68,80 @@ const ProfilePage = () => {
         setNote("");
     };
 
+    const { data } = useQuery({
+        queryKey: ["shortInfo"],
+        queryFn: () => getShortInfo(),
+        gcTime: 0,
+        refetchOnMount: true,
+    });
+
+    const { data: profileData } = useQuery({
+        queryKey: ["profileInfo"],
+        queryFn: () => getProfileInfo(),
+        gcTime: 0,
+        refetchOnMount: true,
+    });
+
+    const { avatar, firstName, lastName, createdAt, isVerified } = data || {};
+    const {
+        price,
+        conditions,
+        equipment,
+        geography,
+        languages,
+        proCategories,
+        specializations,
+        temporaryLocations,
+        socials,
+        about,
+    } = profileData || {};
+
     return (
         <>
             <div className={styles.profileContent}>
                 <div className={styles.profileInfoBlock}>
                     <div className={styles.profileInfo}>
                         <div className={styles.profileImage}>
-                            <Image src="/img/people2.png" alt="Аватар" fill />
+                            {avatar && (
+                                <Image
+                                    src={avatar}
+                                    alt={`Аватар пользователя ${firstName} ${lastName}`}
+                                    fill
+                                />
+                            )}
                         </div>
 
                         <div className={styles.profileInfoBox}>
                             <div className={styles.profileInfoNameInner}>
                                 <p className={styles.profileInfoName}>
-                                    Иванов Александр
+                                    {lastName} {firstName}
                                 </p>
 
                                 <Pro />
                             </div>
 
-                            <p className={styles.profileInfoOnline}>
-                                Заходил(а) 15 минут назад
-                            </p>
-
                             <div className={styles.profileInfoTags}>
                                 <div className={styles.profileInfoTag}>
-                                    <Clock2 />С декабря 2020
+                                    <Clock2 />
+                                    {formatDateToRussianMonthYear(createdAt)}
                                 </div>
 
-                                <div className={styles.profileInfoTag}>
-                                    <CheckShield />
-                                    Подтвержден
-                                </div>
+                                {isVerified && (
+                                    <div className={styles.profileInfoTag}>
+                                        <CheckShield />
+                                        Подтвержден
+                                    </div>
+                                )}
 
                                 <div className={styles.profileInfoTag}>
                                     <CheckCircle />
                                     Свободен
                                 </div>
                             </div>
+
+                            <Button auto href="/profile/edit">
+                                Редактировать
+                            </Button>
                         </div>
                     </div>
 
@@ -111,134 +154,79 @@ const ProfilePage = () => {
                         </p>
                     </div>
                 </div>
-
-                <div className={styles.profileLocationInner}>
-                    <button
-                        className={styles.profileLocationBlock}
-                        onClick={() => setCurrentLocationModal(true)}
-                    >
-                        <Pin2 />
-
-                        <span className={styles.profileLocationValue}>
-                            Москва, Хамовники
-                        </span>
-
-                        <span className={styles.profileLocationDistance}>
-                            7 км от Вас
-                        </span>
-                    </button>
-
-                    <button
-                        className={styles.profileLocationCurrent}
-                        onClick={() => setTempLocationModal(true)}
-                    >
-                        <Location />
-                        Сейчас в Коломбо, Шри-Ланка
-                    </button>
-                </div>
-
-                <div className={styles.profileButtons}>
-                    <button
-                        className={cn(styles.profileButton, styles.outline)}
-                        onClick={() => setMessageModal(true)}
-                    >
-                        <Mail />
-                        Написать сообщение
-                    </button>
-
-                    <button
-                        className={styles.profileButton}
-                        onClick={() => setRequestModal(true)}
-                    >
-                        <Edit />
-                        Запрос на съемку
-                    </button>
-
-                    <button className={styles.profileButton}>
-                        <Bookmark2 />
-                        Добавить в избранное
-                    </button>
-                </div>
             </div>
 
             <div className={styles.profileBlock}>
                 <p className={styles.profileBlockTitle}>Общие данные</p>
 
                 <div className={styles.profileBlockData}>
-                    <div className={styles.profileBlockDataItem}>
-                        <p>Категория:</p>
+                    {!!proCategories?.length && (
+                        <div className={styles.profileBlockDataItem}>
+                            <p>Категория:</p>
 
-                        <p>Фотограф</p>
-                    </div>
+                            <p>{proCategories.map((data) => data.name)}</p>
+                        </div>
+                    )}
 
-                    <div className={styles.profileBlockDataItem}>
-                        <p>Специализация:</p>
+                    {!!specializations?.length && (
+                        <div className={styles.profileBlockDataItem}>
+                            <p>Специализация:</p>
 
-                        <p>Природа, Репортаж, Предметная</p>
-                    </div>
+                            <p>{specializations.map((data) => data.name)}</p>
+                        </div>
+                    )}
 
-                    <div className={styles.profileBlockDataItem}>
-                        <p>География съемок:</p>
+                    {!!geography?.length && (
+                        <div className={styles.profileBlockDataItem}>
+                            <p>География съемок:</p>
 
-                        <p>Россия, Колумбия, Словакия</p>
-                    </div>
+                            <p>{geography.join(", ")}</p>
+                        </div>
+                    )}
 
-                    <div className={styles.profileBlockDataItem}>
-                        <p>Стоимость услуг:</p>
+                    {price && (
+                        <div className={styles.profileBlockDataItem}>
+                            <p>Стоимость услуг:</p>
 
-                        <p>от 5 000 руб./ час, 30 000 руб./ день</p>
-                    </div>
+                            <p>{price}</p>
+                        </div>
+                    )}
 
-                    <div className={styles.profileBlockDataItem}>
-                        <p>Условия работы:</p>
+                    {conditions && (
+                        <div className={styles.profileBlockDataItem}>
+                            <p>Условия работы:</p>
 
-                        <p>По предоплате, TFP - нет</p>
-                    </div>
+                            <p>{conditions}</p>
+                        </div>
+                    )}
 
-                    <div className={styles.profileBlockDataItem}>
-                        <p>Фототехника:</p>
+                    {equipment && (
+                        <div className={styles.profileBlockDataItem}>
+                            <p>Фототехника:</p>
 
-                        <p>Canon EOS 5D Mark IV, Pentax Optio X</p>
-                    </div>
+                            <p>{equipment}</p>
+                        </div>
+                    )}
 
-                    <div className={styles.profileBlockDataItem}>
-                        <p>Владение языками:</p>
+                    {!!languages?.length && (
+                        <div className={styles.profileBlockDataItem}>
+                            <p>Владение языками:</p>
 
-                        <p>Русский, Английский</p>
-                    </div>
+                            <p>{languages.join(", ")}</p>
+                        </div>
+                    )}
                 </div>
             </div>
 
-            <div className={styles.profileBlock}>
-                <p className={styles.profileBlockTitle}>Обо мне</p>
+            {about && (
+                <div className={styles.profileBlock}>
+                    <p className={styles.profileBlockTitle}>Обо мне</p>
 
-                <div className={styles.profileBlockAbout}>
-                    <p>
-                        Здравствуйте! Меня зовут Иванов Александр - я
-                        профессиональный фотограф.
-                    </p>
-
-                    <p>
-                        Вхожу в 10-ку Лучших свадебных фотографов Москвы за
-                        2017-2018 год по версии свадебного портала
-                        &ldquo;Свадебный эксперт&ldquo;.
-                    </p>
-
-                    <p>
-                        Профессиональная фотосъемка любых торжеств: свадьбы,
-                        юбилеи, корпоративы, утренники, выпускные, портфолио,
-                        репортаж, студийная съемка и др. Выбирая меня, Вы
-                        инвестируете в потрясающие эмоции на долгие-долгие годы!
-                    </p>
-
-                    <p>
-                        Если вам понравились мои фотографии, и вы хотели бы
-                        видеть меня фотографом на вашей свадьбе, свяжитесь со
-                        мной любым удобным способом, мы обязательно встретимся и
-                        обсудим детали.
-                    </p>
+                    <div className={styles.profileBlockAbout}>
+                        {parse(about)}
+                    </div>
                 </div>
-            </div>
+            )}
 
             <div className={styles.profileBlock}>
                 <p className={styles.profileBlockTitle}>Контакты</p>
@@ -252,6 +240,39 @@ const ProfilePage = () => {
                     </div>
                 </div>
             </div>
+
+            {!!temporaryLocations?.length && (
+                <div className={styles.profileBlock}>
+                    <p className={styles.profileBlockTitle}>
+                        Временная геолокация
+                    </p>
+
+                    {temporaryLocations.map((data) => (
+                        <div key={data.id} className={styles.profileBlockData}>
+                            <div className={styles.profileBlockDataItem}>
+                                <p>Нахожусь сейчас:</p>
+
+                                <p></p>
+                            </div>
+
+                            <div className={styles.profileBlockDataItem}>
+                                <p>Даты пребывания:</p>
+
+                                <p>
+                                    {formatDate(data.startDate)} -{" "}
+                                    {formatDate(data.endDate)}
+                                </p>
+                            </div>
+
+                            <div className={styles.profileBlockDataItem}>
+                                <p>Сообщение:</p>
+
+                                <p>{parse(data.comment)}</p>
+                            </div>
+                        </div>
+                    ))}
+                </div>
+            )}
 
             <div className={styles.profileBlock}>
                 <p className={styles.profileBlockTitle}>Статистика</p>
@@ -553,7 +574,7 @@ const ProfilePage = () => {
                             defaultState={{
                                 center: [55.751574, 37.573856],
                                 zoom: 5,
-                            }} 
+                            }}
                             width="100%"
                             height="100%"
                         >
@@ -578,7 +599,10 @@ const ProfilePage = () => {
                     </div>
 
                     <p className={styles.locationInfoText}>
-                        Всем привет! Практически весь декабрь провожу на Шри-Ланке. Готов поснимать на всем восточном побережье. Пишите в запросы и смотрите места для съемок. Недорого! Сделаю хорошую скидку!
+                        Всем привет! Практически весь декабрь провожу на
+                        Шри-Ланке. Готов поснимать на всем восточном побережье.
+                        Пишите в запросы и смотрите места для съемок. Недорого!
+                        Сделаю хорошую скидку!
                     </p>
                 </div>
             </Modal>

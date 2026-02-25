@@ -1,0 +1,13 @@
+.notifyContent{
+    width: 100%;
+    max-width: 280px;
+    position: fixed;
+    bottom: 0;
+    right: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+    padding: 4px;
+    z-index: 1101;
+}

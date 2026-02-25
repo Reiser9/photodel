@@ -3,7 +3,9 @@
 import React from "react";
 import cn from "classnames";
 import Link from "next/link";
+import Image from "next/image";
 import { usePathname } from "next/navigation";
+import { useQuery } from "@tanstack/react-query";
 
 import styles from "./index.module.scss";
 import base from "@/shared/styles/base.module.scss";
@@ -14,33 +16,52 @@ import {
     Close,
     Menu,
     Moon,
+    Notify,
     Pin,
     Profile,
     Sun,
 } from "@/shared/icons";
 import { useThemeContext } from "@/shared/context/ThemeProvider";
+import { Login, Register, Recovery, VerifyModal } from "../Auth";
+import { useAppSelector } from "@/shared/hooks/useRedux";
+import { useAuth, useUserInfo } from "@/features/user";
 import { HoverMenu, MenuLink } from "@/shared/ui/HoverMenu";
-import { Modal } from "@/shared/ui/Modal";
-import { Input } from "@/shared/ui/Input";
-import { Button } from "@/shared/ui/Button";
-import { Checkbox } from "@/shared/ui/Checkbox";
+import { Pro } from "@/shared/ui/Pro";
+import { ConfirmModal } from "@/shared/ui/Modal";
 
 type Props = {
     light?: boolean;
 };
 
 const Header: React.FC<Props> = ({ light = false }) => {
+    const [confirmLogoutModal, setConfirmLogoutModal] = React.useState(false);
+
     const [menuIsOpen, setMenuIsOpen] = React.useState(false);
     const [profileMenu, setProfileMenu] = React.useState(false);
+    const [profileAuthMenu, setProfileAuthMenu] = React.useState(false);
 
     const [authModal, setAuthModal] = React.useState(false);
     const [registerModal, setRegisterModal] = React.useState(false);
     const [recoveryModal, setRecoveryModal] = React.useState(false);
 
     const { theme, toggleTheme, chooseTheme } = useThemeContext();
+    const { logout } = useAuth();
+    const { getShortInfo } = useUserInfo();
     const pathname = usePathname();
 
+    const { isAuth, isVerified } = useAppSelector((state) => state.user);
+
     const profileMenuRef = React.useRef<HTMLDivElement>(null);
+    const profileAuthMenuRef = React.useRef<HTMLDivElement>(null);
+
+    const { data } = useQuery({
+        queryKey: ["shortInfo"],
+        queryFn: () => getShortInfo(),
+        gcTime: 0,
+        refetchOnMount: true,
+    });
+
+    const { avatar, firstName, lastName } = data || {};
 
     return (
         <>
@@ -117,34 +138,204 @@ const Header: React.FC<Props> = ({ light = false }) => {
                                 Фотодел
                             </Link>
 
-                            <div
-                                className={styles.headerProfile}
-                                ref={profileMenuRef}
-                                onClick={() => setProfileMenu((prev) => !prev)}
-                            >
-                                <HoverMenu
-                                    button={<Profile />}
-                                    value={profileMenu}
-                                    setValue={setProfileMenu}
+                            {isAuth ? (
+                                <div className={styles.profileWrapper}>
+                                    <div className={styles.profileNotifyInner}>
+                                        <button
+                                            className={styles.profileNotify}
+                                        >
+                                            <Notify />
+                                        </button>
+
+                                        <p className={styles.profileCounter}>
+                                            2
+                                        </p>
+                                    </div>
+
+                                    <div
+                                        className={styles.profileContent}
+                                        ref={profileAuthMenuRef}
+                                        onClick={() =>
+                                            setProfileAuthMenu((prev) => !prev)
+                                        }
+                                    >
+                                        <HoverMenu
+                                            button={
+                                                <div
+                                                    className={
+                                                        styles.profileAvatar
+                                                    }
+                                                >
+                                                    {avatar && (
+                                                        <Image
+                                                            src={avatar}
+                                                            alt={`Аватар пользователя ${firstName} ${lastName}`}
+                                                            fill
+                                                        />
+                                                    )}
+                                                </div>
+                                            }
+                                            value={profileAuthMenu}
+                                            setValue={setProfileAuthMenu}
+                                            overlayClass={styles.profileOverlay}
+                                            contentClass={
+                                                styles.profileMenuContent
+                                            }
+                                        >
+                                            <div
+                                                className={
+                                                    styles.profileMenuUser
+                                                }
+                                            >
+                                                <div
+                                                    className={
+                                                        styles.profileMenuUserImg
+                                                    }
+                                                >
+                                                    {avatar && (
+                                                        <Image
+                                                            src={avatar}
+                                                            alt={`Аватар пользователя ${firstName} ${lastName}`}
+                                                            fill
+                                                        />
+                                                    )}
+                                                </div>
+
+                                                <div
+                                                    className={
+                                                        styles.profileMenuUserWrapper
+                                                    }
+                                                >
+                                                    <p
+                                                        className={
+                                                            styles.profileMenuUserName
+                                                        }
+                                                    >
+                                                        {lastName} {firstName}
+                                                    </p>
+
+                                                    <Pro />
+                                                </div>
+                                            </div>
+
+                                            <div
+                                                className={
+                                                    styles.profileMenuNav
+                                                }
+                                            >
+                                                <Link
+                                                    href="/profile"
+                                                    className={
+                                                        styles.profileMenuNavLink
+                                                    }
+                                                >
+                                                    Мой профиль
+                                                </Link>
+
+                                                <Link
+                                                    href="/profile"
+                                                    className={cn(
+                                                        styles.profileMenuNavLink,
+                                                        styles.active,
+                                                    )}
+                                                >
+                                                    1 новый запрос на съемку
+                                                </Link>
+
+                                                <Link
+                                                    href="/profile"
+                                                    className={cn(
+                                                        styles.profileMenuNavLink,
+                                                        styles.active,
+                                                    )}
+                                                >
+                                                    1 новый запрос на обучение
+                                                </Link>
+
+                                                <Link
+                                                    href="/profile"
+                                                    className={cn(
+                                                        styles.profileMenuNavLink,
+                                                        styles.active,
+                                                    )}
+                                                >
+                                                    1 новый запрос в команду
+                                                </Link>
+
+                                                <Link
+                                                    href="/profile"
+                                                    className={cn(
+                                                        styles.profileMenuNavLink,
+                                                        styles.active,
+                                                    )}
+                                                >
+                                                    1 новый запрос на покупку
+                                                </Link>
+
+                                                <Link
+                                                    href="/profile"
+                                                    className={
+                                                        styles.profileMenuNavLink
+                                                    }
+                                                >
+                                                    3 новых сообщения
+                                                </Link>
+
+                                                <button
+                                                    className={
+                                                        styles.profileMenuNavLink
+                                                    }
+                                                    onClick={() => {
+                                                        setProfileAuthMenu(
+                                                            false,
+                                                        );
+                                                        setConfirmLogoutModal(
+                                                            true,
+                                                        );
+                                                    }}
+                                                >
+                                                    Выйти
+                                                </button>
+                                            </div>
+                                        </HoverMenu>
+
+                                        <p className={styles.profileCounter}>
+                                            3
+                                        </p>
+                                    </div>
+                                </div>
+                            ) : (
+                                <div
+                                    className={styles.headerProfile}
+                                    ref={profileMenuRef}
+                                    onClick={() =>
+                                        setProfileMenu((prev) => !prev)
+                                    }
                                 >
-                                    <MenuLink
-                                        onClick={() => {
-                                            setAuthModal(true);
-                                            setProfileMenu(false);
-                                        }}
+                                    <HoverMenu
+                                        button={<Profile />}
+                                        value={profileMenu}
+                                        setValue={setProfileMenu}
                                     >
-                                        Войти
-                                    </MenuLink>
-                                    <MenuLink
-                                        onClick={() => {
-                                            setRegisterModal(true);
-                                            setProfileMenu(false);
-                                        }}
-                                    >
-                                        Зарегистрироваться
-                                    </MenuLink>
-                                </HoverMenu>
-                            </div>
+                                        <MenuLink
+                                            onClick={() => {
+                                                setAuthModal(true);
+                                                setProfileMenu(false);
+                                            }}
+                                        >
+                                            Войти
+                                        </MenuLink>
+                                        <MenuLink
+                                            onClick={() => {
+                                                setRegisterModal(true);
+                                                setProfileMenu(false);
+                                            }}
+                                        >
+                                            Зарегистрироваться
+                                        </MenuLink>
+                                    </HoverMenu>
+                                </div>
+                            )}
                         </div>
                     </div>
                 </div>
@@ -299,111 +490,55 @@ const Header: React.FC<Props> = ({ light = false }) => {
                 </div>
             </div>
 
-            <Modal
-                value={authModal}
-                setValue={setAuthModal}
-                title="Вход"
-                size="small"
-            >
-                <div className={styles.authForm}>
-                    <Input title="E-mail" full />
-                    <Input title="Пароль" full type="password" />
-
-                    <Checkbox id="auth_remember" label="Запомнить меня" />
-
-                    <Button>Войти</Button>
-
-                    <div className={styles.authLinks}>
-                        <button
-                            className={styles.authLink}
-                            onClick={() => {
-                                setAuthModal(false);
-                                setRecoveryModal(true);
-                            }}
-                        >
-                            Напомнить пароль
-                        </button>
-                        <button
-                            className={styles.authLink}
-                            onClick={() => {
-                                setAuthModal(false);
-                                setRegisterModal(true);
-                            }}
-                        >
-                            Зарегистрироваться
-                        </button>
-                    </div>
-                </div>
-            </Modal>
-
-            <Modal
-                value={registerModal}
-                setValue={setRegisterModal}
-                title="Регистрация"
-                size="small"
-            >
-                <div className={styles.authForm}>
-                    <Input title="Имя" full />
-                    <Input title="Фамилия" full />
-                    <Input title="E-mail" full />
-                    <Input title="Пароль" full type="password" />
-                    <Input title="Повторите пароль" full type="password" />
-
-                    <Checkbox id="is_adult" label="Мне есть 18 лет" />
-                    <Checkbox
-                        id="register_profi"
-                        label="Я регистрируюсь как Профи"
+            {!isAuth && (
+                <>
+                    <Login
+                        value={authModal}
+                        setValue={setAuthModal}
+                        recoveryCallback={() => {
+                            setAuthModal(false);
+                            setRecoveryModal(true);
+                        }}
+                        registerCallback={() => {
+                            setAuthModal(false);
+                            setRegisterModal(true);
+                        }}
                     />
 
-                    <Button>Зарегистрироваться</Button>
+                    <Register
+                        value={registerModal}
+                        setValue={setRegisterModal}
+                        loginCallback={() => {
+                            setRegisterModal(false);
+                            setAuthModal(true);
+                        }}
+                    />
 
-                    <div className={styles.authLinks}>
-                        <button
-                            className={styles.authLink}
-                            onClick={() => {
-                                setRegisterModal(false);
-                                setAuthModal(true);
-                            }}
-                        >
-                            У меня уже есть аккаунт
-                        </button>
-                    </div>
-                </div>
-            </Modal>
+                    <Recovery
+                        value={recoveryModal}
+                        setValue={setRecoveryModal}
+                        loginCallback={() => {
+                            setRecoveryModal(false);
+                            setAuthModal(true);
+                        }}
+                        registerCallback={() => {
+                            setRecoveryModal(false);
+                            setRegisterModal(true);
+                        }}
+                    />
+                </>
+            )}
 
-            <Modal
-                value={recoveryModal}
-                setValue={setRecoveryModal}
-                title="Напомнить пароль"
-                size="small"
-            >
-                <div className={styles.authForm}>
-                    <Input title="E-mail" full />
+            {isAuth && !isVerified && (
+                <VerifyModal value={true} setValue={() => {}} />
+            )}
 
-                    <Button>Отправить</Button>
-
-                    <div className={styles.authLinks}>
-                        <button
-                            className={styles.authLink}
-                            onClick={() => {
-                                setRecoveryModal(false);
-                                setAuthModal(true);
-                            }}
-                        >
-                            Я вспомнил пароль
-                        </button>
-                        <button
-                            className={styles.authLink}
-                            onClick={() => {
-                                setRecoveryModal(false);
-                                setRegisterModal(true);
-                            }}
-                        >
-                            Зарегистрироваться
-                        </button>
-                    </div>
-                </div>
-            </Modal>
+            <ConfirmModal
+                title="Вы точно хотите выйти из аккаунта?"
+                value={confirmLogoutModal}
+                setValue={setConfirmLogoutModal}
+                callback={() => logout()}
+            />
         </>
     );
 };

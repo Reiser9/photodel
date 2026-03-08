@@ -1,0 +1,125 @@
+.addPhotoWrapper{
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 20px;
+}
+
+.createTop{
+    width: 100%;
+    border-bottom: 1px solid var(--lightGrey);
+}
+
+.createBackLink{
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    color: var(--mainDark);
+    font-size: 1.3rem;
+    font-weight: 500;
+    padding: 1rem 0;
+}
+
+.createBackLink svg{
+    width: 12px;
+    flex-shrink: 0;
+    color: var(--main);
+}
+
+.addPhoto{
+    width: 100%;
+    display: flex;
+    align-items: flex-start;
+    gap: 30px;
+}
+
+.addPhotoContent{
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 20px;
+}
+
+.addPhotoBlock{
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+}
+
+.addPhotoBlockTitle{
+    font-weight: 600;
+    color: var(--black);
+}
+
+.addPhotoButtons{
+    width: 100%;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    justify-content: flex-end;
+}
+
+.addPhotoSidebar{
+    width: 100%;
+    max-width: 255px;
+    flex-shrink: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 1.5rem 3.8rem;
+    background: var(--lightWhite);
+    border-radius: 8px;
+}
+
+.addPhotoButton{
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 1.3rem;
+    color: var(--mainDark);
+    font-weight: 500;
+}
+
+.addPhotoButton svg{
+    width: 24px;
+    flex-shrink: 0;
+    color: var(--main);
+}
+
+.addPhotoLabel{
+    width: 100%;
+    height: 280px;
+    border-radius: 12px;
+    border: 1px dashed var(--main);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    font-size: 1.3rem;
+    font-weight: 500;
+    position: relative;
+    overflow: hidden;
+    color: var(--black);
+}
+
+.addPhotoLabel img{
+    object-fit: cover;
+}
+
+@media (any-hover: hover) {
+    .addPhotoLabel{
+        cursor: pointer;
+    }
+}
+
+.addPhotoLabel svg{
+    width: 24px;
+    height: 24px;
+    flex-shrink: 0;
+    color: var(--main);
+}

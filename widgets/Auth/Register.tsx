@@ -177,9 +177,9 @@ const Register: React.FC<Props> = ({ value, setValue, loginCallback }) => {
                 <Button loading={authIsLoading}>Зарегистрироваться</Button>
 
                 <div className={styles.authLinks}>
-                    <button className={styles.authLink} onClick={loginCallback}>
+                    <span className={styles.authLink} onClick={loginCallback}>
                         У меня уже есть аккаунт
-                    </button>
+                    </span>
                 </div>
             </form>
         </Modal>

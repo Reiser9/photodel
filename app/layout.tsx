@@ -8,6 +8,7 @@ import { ReactQueryProvider, ReduxProvider } from "@/shared/providers";
 import { ThemeProvider } from "@/shared/context";
 import { InitialWrapper } from "@/shared/wrappers/InitialWrapper";
 import { NotifiesWrapper } from "@/shared/wrappers/NotifiesWrapper";
+import { GeolocationWrapper } from "@/shared/wrappers/GeolocationWrapper";
 
 export const metadata: Metadata = {
     title: "Фотодел",
@@ -37,9 +38,11 @@ export default function RootLayout({
                                 highlightColor="var(--inputDarken)"
                             >
                                 <InitialWrapper>
-                                    <NotifiesWrapper>
-                                        {children}
-                                    </NotifiesWrapper>
+                                    <GeolocationWrapper>
+                                        <NotifiesWrapper>
+                                            {children}
+                                        </NotifiesWrapper>
+                                    </GeolocationWrapper>
                                 </InitialWrapper>
                             </SkeletonTheme>
                         </ThemeProvider>

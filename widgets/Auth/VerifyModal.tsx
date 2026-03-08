@@ -36,6 +36,7 @@ const VerifyModal: React.FC<Props> = ({ value, setValue }) => {
             setValue={setValue}
             title="Подтверждение почты"
             size="small"
+            isNotClosed
         >
             <form onSubmit={handleSubmit(onSubmit)} className={styles.authForm}>
                 <Input
@@ -63,18 +64,18 @@ const VerifyModal: React.FC<Props> = ({ value, setValue }) => {
                 <Button loading={authIsLoading}>Подтвердить</Button>
 
                 <div className={styles.authLinks}>
-                    <button
+                    <span
                         className={styles.authLink}
                         onClick={() => sendVerifyCode()}
                     >
                         Выслать код повторно
-                    </button>
-                    <button
+                    </span>
+                    <span
                         className={styles.authLink}
                         onClick={() => logout()}
                     >
                         Выйти из аккаунта
-                    </button>
+                    </span>
                 </div>
             </form>
         </Modal>

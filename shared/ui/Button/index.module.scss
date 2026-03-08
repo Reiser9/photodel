@@ -10,13 +10,13 @@
 
 .button {
     width: 100%;
-    padding: 1rem 2.5rem;
+    padding: 1.2rem 2.5rem;
     border-radius: 50px;
     background: var(--main);
     border: 1px solid var(--main);
     font-size: 1.4rem;
     font-weight: 600;
-    color: var(--white);
+    color: #fff;
     gap: 4px;
     display: inline-flex;
     align-items: center;
@@ -56,6 +56,11 @@
 .fill.primary {
     background: var(--main);
     border: 1px solid var(--main);
+}
+
+.fill.grey {
+    background: var(--grey);
+    border: 1px solid var(--grey);
 }
 
 .fill.danger {

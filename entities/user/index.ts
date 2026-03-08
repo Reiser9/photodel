@@ -9,4 +9,16 @@ export type {
     RecoveryVerifyData,
 } from "./auth/model";
 
-export type { Roles, UserInfo, ProfileInfo } from "./user/model";
+export type {
+    Roles,
+    UserInfo,
+    ProfileInfo,
+    Category,
+    Location,
+    Social,
+    Specialization,
+    TempLocation,
+    ProfileInfoDTO,
+    LocationDTO,
+    SocialUser,
+} from "./user/model";

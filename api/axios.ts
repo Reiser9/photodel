@@ -16,6 +16,9 @@ const publicEndpoints = [
     '/health',
     '/auth/login',
     '/auth/register',
+    '/auth/recovery-password',
+    '/auth/pro-categories',
+    '/auth/specializations',
 ];
 
 export const isAccessTokenValid = (accessToken: string | null) => {

@@ -19,6 +19,7 @@ import {
     Team,
     Text,
 } from "@/shared/icons";
+import { AuthWrapper } from "@/shared/wrappers/AuthWrapper";
 
 const sidebarLinks = [
     {
@@ -75,30 +76,32 @@ const ProfileLayout: React.FC<{ children: React.ReactNode }> = ({
     const pathname = usePathname();
 
     return (
-        <div className={styles.profile}>
-            <div className={base.container}>
-                <div className={styles.profileInner}>
-                    <div className={styles.profileSidebar}>
-                        {sidebarLinks.map((data, id) => (
-                            <Link
-                                key={id}
-                                href={data.path}
-                                className={cn(styles.profileSidebarLink, {
-                                    [styles.active]: data.exact
-                                        ? pathname === data.path
-                                        : pathname.startsWith(data.path),
-                                })}
-                            >
-                                {data.icon}
-                                {data.name}
-                            </Link>
-                        ))}
-                    </div>
+        <AuthWrapper>
+            <div className={styles.profile}>
+                <div className={base.container}>
+                    <div className={styles.profileInner}>
+                        <div className={styles.profileSidebar}>
+                            {sidebarLinks.map((data, id) => (
+                                <Link
+                                    key={id}
+                                    href={data.path}
+                                    className={cn(styles.profileSidebarLink, {
+                                        [styles.active]: data.exact
+                                            ? pathname === data.path
+                                            : pathname.startsWith(data.path),
+                                    })}
+                                >
+                                    {data.icon}
+                                    {data.name}
+                                </Link>
+                            ))}
+                        </div>
 
-                    <div className={styles.profileContent}>{children}</div>
+                        <div className={styles.profileContent}>{children}</div>
+                    </div>
                 </div>
             </div>
-        </div>
+        </AuthWrapper>
     );
 };
 

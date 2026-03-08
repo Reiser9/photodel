@@ -83,18 +83,18 @@ const Login: React.FC<Props> = ({
                 <Button loading={authIsLoading}>Войти</Button>
 
                 <div className={styles.authLinks}>
-                    <button
+                    <span
                         className={styles.authLink}
                         onClick={recoveryCallback}
                     >
                         Напомнить пароль
-                    </button>
-                    <button
+                    </span>
+                    <span
                         className={styles.authLink}
                         onClick={registerCallback}
                     >
                         Зарегистрироваться
-                    </button>
+                    </span>
                 </div>
             </form>
         </Modal>

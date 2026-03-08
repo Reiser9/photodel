@@ -1,0 +1,126 @@
+.profileEditInfo{
+    width: 100%;
+    display: flex;
+    align-items: flex-start;
+    gap: 20px;
+}
+
+.profileEditImg{
+    width: 100px;
+    height: 100px;
+    overflow: hidden;
+    border-radius: 8px;
+    background: var(--lightGrey);
+    position: relative;
+    flex-shrink: 0;
+}
+
+.profileEditImg img{
+    object-fit: cover;
+}
+
+.profileEditImgLabel{
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, .25);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+}
+
+.profileEditImgLabel svg{
+    width: 24px;
+    height: 24px;
+    flex-shrink: 0;
+}
+
+@media (any-hover: hover) {
+    .profileEditImgLabel{
+        cursor: pointer;
+    }
+}
+
+.profileEditInfoWrapper{
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 20px;
+}
+
+.profileEditInfoStatus{
+    width: 100%;
+    max-width: 200px;
+}
+
+.profileEditNameWrapper{
+    width: 100%;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.profileEditName{
+    font-weight: 600;
+    color: var(--black);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.profileEditName span{
+    width: 16px;
+    height: 16px;
+    color: var(--main);
+}
+
+@media (any-hover: hover) {
+    .profileEditName span{
+        cursor: pointer;
+    }
+}
+
+.profileEditNameForm{
+    width: 100%;
+    display: flex;
+    align-items: flex-end;
+    gap: 10px;
+}
+
+.profileEditProBuy{
+    font-size: 1.3rem;
+    font-weight: 500;
+    color: var(--mainDark);
+    padding: 0;
+}
+
+.profileEdit{
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 20px;
+}
+
+.profileEditButtons{
+    width: 100%;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    justify-content: flex-end;
+}
+
+.profileEditData{
+    width: 100%;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px 30px;
+}
+
+.profileEditDataItem{
+    width: calc(100% / 2 - 30px / 2);
+}

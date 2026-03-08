@@ -1,3 +1,5 @@
+"use client";
+
 import Image from "next/image";
 import Link from "next/link";
 
@@ -12,8 +14,11 @@ import { ProfiesBlock } from "./ui/ProfiesBlock";
 import { LastComments } from "./ui/LastComments";
 
 import { Button } from "@/shared/ui/Button";
+import { useAppSelector } from "@/shared/hooks/useRedux";
 
 const MainPage = () => {
+    const isAuth = useAppSelector((state) => state.user.isAuth);
+
     return (
         <>
             <section className={styles.main}>
@@ -80,9 +85,11 @@ const MainPage = () => {
                             заказы прямо сейчас!
                         </p>
 
-                        <Button auto className={styles.bannerButton}>
-                            Зарегистрироваться
-                        </Button>
+                        {!isAuth && (
+                            <Button auto className={styles.bannerButton}>
+                                Зарегистрироваться
+                            </Button>
+                        )}
                     </div>
                 </div>
             </section>

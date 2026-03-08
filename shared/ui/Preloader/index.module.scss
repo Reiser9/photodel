@@ -48,6 +48,13 @@
     border-left: 0.6em solid #EF3B3B;
 }
 
+.preloader.grey{
+    border-top: 0.6em solid rgba(156, 163, 161, 0.2);
+    border-right: 0.6em solid rgba(156, 163, 161, 0.2);
+    border-bottom: 0.6em solid rgba(156, 163, 161, 0.2);
+    border-left: 0.6em solid var(--grey);
+}
+
 .preloader.small {
     width: 20px;
     height: 20px;

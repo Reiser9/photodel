@@ -270,22 +270,6 @@
     }
 }
 
-.profileBlock{
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 20px;
-}
-
-.profileBlockTitle{
-    width: 100%;
-    padding-bottom: 0.7rem;
-    border-bottom: 1px solid var(--lightGrey);
-    font-weight: 600;
-    color: var(--main);
-}
-
 .profileBlockData{
     width: 100%;
     display: flex;

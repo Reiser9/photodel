@@ -1,12 +1,12 @@
-'use client';
+"use client";
 
-import cn from 'classnames';
-import { HTMLAttributes } from 'react';
+import cn from "classnames";
+import { HTMLAttributes } from "react";
 
-import styles from './index.module.scss';
+import styles from "./index.module.scss";
 
 type Props = {
-    theme?: 'primary' | 'danger';
+    theme?: "primary" | "grey" | "danger";
     small?: boolean;
     fill?: boolean;
     page?: boolean;
@@ -17,7 +17,7 @@ type Props = {
 } & HTMLAttributes<HTMLDivElement>;
 
 const Preloader: React.FC<Props> = ({
-    theme = 'primary',
+    theme = "primary",
     small = false,
     fill = false,
     page = false,

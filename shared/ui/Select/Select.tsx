@@ -1,24 +1,25 @@
 "use client";
 
-import React from "react";
 import cn from "classnames";
 import { Select as SelectAnt } from "antd";
-import { SelectProps } from 'antd/lib';
+import { SelectProps } from "antd/lib";
 
 import styles from "./index.module.scss";
 
 import { ArrowBottom, Close } from "@/shared/icons";
+import { Preloader } from "../Preloader";
+import { NotContent } from "../NotContent";
 
-type Option<T> = {
+type Option = {
     label: string;
-    value: T;
+    value: string | number;
 };
 
 type Props<T> = {
     placeholder?: string;
     value?: T | null;
     setValue?: (value: T) => void;
-    options?: Option<T>[];
+    options?: Option[];
     loading?: boolean;
     error?: boolean;
     errorMessage?: string;
@@ -30,6 +31,7 @@ type Props<T> = {
     wrapperClass?: string;
     className?: string;
     full?: boolean;
+    fieldRequired?: boolean;
 } & SelectProps<T>;
 
 const Select = <T,>({
@@ -37,8 +39,8 @@ const Select = <T,>({
     value,
     setValue,
     options,
-    notContentText = 'Ничего не найдено',
-    errorText = 'Произошла ошибка при загрузке данных',
+    notContentText = "Ничего не найдено",
+    errorText = "Произошла ошибка при загрузке данных",
     title,
     loading = false,
     error = false,
@@ -47,15 +49,21 @@ const Select = <T,>({
     wrapperClass,
     className,
     full,
+    fieldRequired = false,
     ...props
 }: Props<T>) => {
     return (
         <div
-            className={cn(styles.selectInner, {
+            className={cn(styles.selectInner, wrapperClass, {
                 [styles.full]: full,
             })}
         >
-            {title && <p className={styles.selectTitle}>{title}</p>}
+            {title && (
+                <p className={styles.selectTitle}>
+                    {title}
+                    {fieldRequired && <span>*</span>}
+                </p>
+            )}
 
             <div className={styles.selectWrapper}>
                 <SelectAnt
@@ -65,27 +73,39 @@ const Select = <T,>({
                     allowClear={
                         clear
                             ? {
-                                  clearIcon: <Close width="12" style={{color: "var(--black)"}} />,
+                                  clearIcon: (
+                                      <Close
+                                          width="12"
+                                          style={{ color: "var(--black)" }}
+                                      />
+                                  ),
                               }
                             : false
                     }
                     className={cn(styles.select, className)}
-                    suffixIcon={<ArrowBottom width="12" style={{color: "var(--black)"}} />}
-                    // notFoundContent={
-                    //     loading ? (
-                    //         <Preloader small wrapperClassName={styles.loader} />
-                    //     ) : error ? (
-                    //         <NotContent
-                    //             text={errorText}
-                    //             danger
-                    //             icon={<Close />}
-                    //             small
-                    //         />
-                    //     ) : (
-                    //         <NotContent text={notContentText} small />
-                    //     )
-                    // }
-                    removeIcon={<Close width="12" style={{color: "var(--black)"}} />}
+                    suffixIcon={
+                        <ArrowBottom
+                            width="12"
+                            style={{ color: "var(--black)" }}
+                        />
+                    }
+                    notFoundContent={
+                        loading ? (
+                            <Preloader small wrapperClassName={styles.loader} />
+                        ) : error ? (
+                            <NotContent
+                                text={errorText}
+                                danger
+                                icon={<Close />}
+                                small
+                            />
+                        ) : (
+                            <NotContent text={notContentText} small />
+                        )
+                    }
+                    removeIcon={
+                        <Close width="12" style={{ color: "var(--black)" }} />
+                    }
                     options={options}
                     {...props}
                 />

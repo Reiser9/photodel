@@ -166,15 +166,15 @@ const Recovery: React.FC<Props> = ({
                 <Button loading={authIsLoading}>Отправить</Button>
 
                 <div className={styles.authLinks}>
-                    <button className={styles.authLink} onClick={loginCallback}>
+                    <span className={styles.authLink} onClick={loginCallback}>
                         Я вспомнил пароль
-                    </button>
-                    <button
+                    </span>
+                    <span
                         className={styles.authLink}
                         onClick={registerCallback}
                     >
                         Зарегистрироваться
-                    </button>
+                    </span>
                 </div>
             </form>
         </Modal>

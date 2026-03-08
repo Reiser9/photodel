@@ -12,6 +12,7 @@ type Props = {
     auto?: boolean;
     setValue?: React.Dispatch<SetStateAction<boolean>>;
     onChangeHandler?: () => void;
+    wrapperClass?: string;
 };
 
 const Checkbox: React.FC<Props> = ({
@@ -21,11 +22,11 @@ const Checkbox: React.FC<Props> = ({
     auto = false,
     setValue,
     onChangeHandler,
-    ...props
+    wrapperClass,
 }) => {
     return (
         <div
-            className={cn(styles.checkboxInner, {
+            className={cn(styles.checkboxInner, wrapperClass, {
                 [styles.auto]: auto,
             })}
         >
@@ -39,7 +40,6 @@ const Checkbox: React.FC<Props> = ({
                         ? onChangeHandler
                         : (e) => setValue && setValue(e.target.checked)
                 }
-                {...props}
             />
 
             <label htmlFor={id} className={styles.checkboxLabel}>

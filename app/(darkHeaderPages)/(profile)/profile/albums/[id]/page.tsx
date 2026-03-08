@@ -47,7 +47,7 @@ const ProfileAlbumById = () => {
             </div>
 
             <div className={styles.albumByIdPhotos}>
-                <PhotosBlock
+                {/* <PhotosBlock
                     count="12"
                     photos={[
                         { id: 1, src: "/img/photo1.png" },
@@ -60,7 +60,7 @@ const ProfileAlbumById = () => {
                         { id: 8, src: "/img/photo1.png" },
                         { id: 9, src: "/img/photo2.png" },
                     ]}
-                />
+                /> */}
             </div>
         </div>
     );

@@ -15,7 +15,7 @@ type Props = {
     small?: boolean;
     levitation?: boolean;
     href?: string;
-    color?: "primary" | "danger";
+    color?: "primary" | "grey" | "danger";
     variant?: "fill" | "outline";
     wrapperStyle?: React.CSSProperties;
     wrapperClass?: string;

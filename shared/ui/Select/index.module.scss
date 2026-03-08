@@ -14,6 +14,13 @@
     color: var(--grey);
     margin-bottom: 0.3rem;
     padding-left: 1.9rem;
+	display: flex;
+	align-items: center;
+	gap: 2px;
+}
+
+.selectTitle span{
+	color: var(--red);
 }
 
 .selectWrapper{
@@ -35,6 +42,7 @@
 	width: 100%;
 	padding: 1rem 1.9rem;
 	color: var(--black);
+	background: var(--white);
 	border: 1px solid var(--lightGrey);
 	border-radius: 30px;
     font-size: 1.3rem;

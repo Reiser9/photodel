@@ -28,3 +28,9 @@
     color: var(--mainDark);
     padding: 0;
 }
+
+@media (any-hover: hover) {
+    .authLink{
+        cursor: pointer;
+    }
+}

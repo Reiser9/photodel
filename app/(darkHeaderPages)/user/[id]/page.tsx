@@ -3,6 +3,7 @@
 import React from "react";
 import Image from "next/image";
 import cn from "classnames";
+import parse from "html-react-parser";
 import { Dayjs } from "dayjs";
 import { YMaps, Map, Placemark } from "@iminside/react-yandex-maps";
 import { useQuery } from "@tanstack/react-query";
@@ -55,7 +56,7 @@ const ProfileUserPage = () => {
     const [needMakeup, setNeedMakeup] = React.useState(false);
     const [note, setNote] = React.useState("");
 
-    const { getShortInfo } = useUserInfo();
+    const { getUserProfileById, getShortInfo } = useUserInfo();
 
     const resetRequestForm = () => {
         setDate(null);
@@ -70,26 +71,46 @@ const ProfileUserPage = () => {
     };
 
     const { data } = useQuery({
-        queryKey: ["shortInfo"],
-        queryFn: () => getShortInfo(),
+        queryKey: ["userProfileInfo", id],
+        queryFn: () => getUserProfileById(String(id)),
         gcTime: 0,
         refetchOnMount: true,
+        enabled: !!id,
     });
 
+    const { data: myData } = useQuery({
+        queryKey: ["shortInfo"],
+        queryFn: () => getShortInfo(),
+    });
+
+    const { id: myId } = myData || {};
+
     const {
-        avatar,
-        firstName,
-        lastName,
-        createdAt,
-        isVerified,
         id: userId,
+        avatar,
+        createdAt,
+        firstName,
+        isPro,
+        lastName,
+        price,
+        about,
+        conditions,
+        equipment,
+        geography,
+        languages,
+        location,
+        proCategories,
+        socials,
+        specializations,
+        status,
+        temporaryLocation,
     } = data || {};
 
     React.useEffect(() => {
-        if (userId == id) {
+        if (myId == id) {
             redirect("/profile");
         }
-    }, [id, userId]);
+    }, [id, myId]);
 
     return (
         <>
@@ -109,10 +130,10 @@ const ProfileUserPage = () => {
                         <div className={styles.profileInfoBox}>
                             <div className={styles.profileInfoNameInner}>
                                 <p className={styles.profileInfoName}>
-                                    {lastName} {firstName}
+                                    {firstName} {lastName}
                                 </p>
 
-                                <Pro />
+                                {isPro && <Pro />}
                             </div>
 
                             <p className={styles.profileInfoOnline}>
@@ -125,17 +146,17 @@ const ProfileUserPage = () => {
                                     {formatDateToRussianMonthYear(createdAt)}
                                 </div>
 
-                                {isVerified && (
+                                {/* <div className={styles.profileInfoTag}>
+                                    <CheckShield />
+                                    Подтвержден
+                                </div> */}
+
+                                {status && (
                                     <div className={styles.profileInfoTag}>
-                                        <CheckShield />
-                                        Подтвержден
+                                        <CheckCircle />
+                                        {status}
                                     </div>
                                 )}
-
-                                <div className={styles.profileInfoTag}>
-                                    <CheckCircle />
-                                    Свободен
-                                </div>
                             </div>
                         </div>
                     </div>
@@ -143,36 +164,40 @@ const ProfileUserPage = () => {
                     <div className={styles.profileRating}>
                         <Rating rating="4.92" />
 
-                        <p className={styles.profileRatingTop}>
+                        {/* <p className={styles.profileRatingTop}>
                             <Trophy />
                             10-й в Москве
-                        </p>
+                        </p> */}
                     </div>
                 </div>
 
                 <div className={styles.profileLocationInner}>
-                    <button
-                        className={styles.profileLocationBlock}
-                        onClick={() => setCurrentLocationModal(true)}
-                    >
-                        <Pin2 />
+                    {location && (
+                        <button
+                            className={styles.profileLocationBlock}
+                            onClick={() => setCurrentLocationModal(true)}
+                        >
+                            <Pin2 />
 
-                        <span className={styles.profileLocationValue}>
-                            Москва, Хамовники
-                        </span>
+                            <span className={styles.profileLocationValue}>
+                                {location.country}
+                            </span>
 
-                        <span className={styles.profileLocationDistance}>
-                            7 км от Вас
-                        </span>
-                    </button>
+                            {/* <span className={styles.profileLocationDistance}>
+                                7 км от Вас
+                            </span> */}
+                        </button>
+                    )}
 
-                    <button
-                        className={styles.profileLocationCurrent}
-                        onClick={() => setTempLocationModal(true)}
-                    >
-                        <Location />
-                        Сейчас в Коломбо, Шри-Ланка
-                    </button>
+                    {temporaryLocation && (
+                        <button
+                            className={styles.profileLocationCurrent}
+                            onClick={() => setTempLocationModal(true)}
+                        >
+                            <Location />
+                            Сейчас в Коломбо, Шри-Ланка
+                        </button>
+                    )}
                 </div>
 
                 <div className={styles.profileButtons}>
@@ -203,80 +228,77 @@ const ProfileUserPage = () => {
                 <p className={styles.profileBlockTitle}>Общие данные</p>
 
                 <div className={styles.profileBlockData}>
-                    <div className={styles.profileBlockDataItem}>
-                        <p>Категория:</p>
+                    {!!proCategories?.length && (
+                        <div className={styles.profileBlockDataItem}>
+                            <p>Категория:</p>
 
-                        <p>Фотограф</p>
-                    </div>
+                            <p>
+                                {proCategories
+                                    .map((data) => data.name)
+                                    .join(", ")}
+                            </p>
+                        </div>
+                    )}
 
-                    <div className={styles.profileBlockDataItem}>
-                        <p>Специализация:</p>
+                    {!!specializations?.length && (
+                        <div className={styles.profileBlockDataItem}>
+                            <p>Специализация:</p>
 
-                        <p>Природа, Репортаж, Предметная</p>
-                    </div>
+                            <p>
+                                {specializations
+                                    .map((data) => data.name)
+                                    .join(", ")}
+                            </p>
+                        </div>
+                    )}
 
-                    <div className={styles.profileBlockDataItem}>
-                        <p>География съемок:</p>
+                    {!!geography?.length && (
+                        <div className={styles.profileBlockDataItem}>
+                            <p>География съемок:</p>
 
-                        <p>Россия, Колумбия, Словакия</p>
-                    </div>
+                            <p>{geography.join(", ")}</p>
+                        </div>
+                    )}
 
                     <div className={styles.profileBlockDataItem}>
                         <p>Стоимость услуг:</p>
 
-                        <p>от 5 000 руб./ час, 30 000 руб./ день</p>
+                        <p>{price || "Не указана"}</p>
                     </div>
 
                     <div className={styles.profileBlockDataItem}>
                         <p>Условия работы:</p>
 
-                        <p>По предоплате, TFP - нет</p>
+                        <p>{conditions || "Не указаны"}</p>
                     </div>
 
-                    <div className={styles.profileBlockDataItem}>
-                        <p>Фототехника:</p>
+                    {equipment && (
+                        <div className={styles.profileBlockDataItem}>
+                            <p>Фототехника:</p>
 
-                        <p>Canon EOS 5D Mark IV, Pentax Optio X</p>
-                    </div>
+                            <p>{equipment}</p>
+                        </div>
+                    )}
 
-                    <div className={styles.profileBlockDataItem}>
-                        <p>Владение языками:</p>
+                    {!!languages?.length && (
+                        <div className={styles.profileBlockDataItem}>
+                            <p>Владение языками:</p>
 
-                        <p>Русский, Английский</p>
-                    </div>
+                            <p>{languages.join(", ")}</p>
+                        </div>
+                    )}
                 </div>
             </div>
 
-            <div className={styles.profileBlock}>
-                <p className={styles.profileBlockTitle}>Обо мне</p>
+            {about && (
+                <div className={styles.profileBlock}>
+                    <p className={styles.profileBlockTitle}>Обо мне</p>
 
-                <div className={styles.profileBlockAbout}>
-                    <p>
-                        Здравствуйте! Меня зовут Иванов Александр - я
-                        профессиональный фотограф.
-                    </p>
-
-                    <p>
-                        Вхожу в 10-ку Лучших свадебных фотографов Москвы за
-                        2017-2018 год по версии свадебного портала
-                        &ldquo;Свадебный эксперт&ldquo;.
-                    </p>
-
-                    <p>
-                        Профессиональная фотосъемка любых торжеств: свадьбы,
-                        юбилеи, корпоративы, утренники, выпускные, портфолио,
-                        репортаж, студийная съемка и др. Выбирая меня, Вы
-                        инвестируете в потрясающие эмоции на долгие-долгие годы!
-                    </p>
-
-                    <p>
-                        Если вам понравились мои фотографии, и вы хотели бы
-                        видеть меня фотографом на вашей свадьбе, свяжитесь со
-                        мной любым удобным способом, мы обязательно встретимся и
-                        обсудим детали.
-                    </p>
+                    <div className={styles.profileBlockAbout}>
+                        {parse(about)}
+                    </div>
                 </div>
-            </div>
+            )}
 
             <div className={styles.profileBlock}>
                 <p className={styles.profileBlockTitle}>Контакты</p>
@@ -358,11 +380,11 @@ const ProfileUserPage = () => {
             >
                 <div className={styles.requestPeople}>
                     <UserInfoBlock
-                        id={1}
-                        image="/img/people2.png"
-                        name="Харитонова"
-                        surname="Елизавета"
-                        isPro
+                        id={String(id)}
+                        image={avatar}
+                        name={firstName || ""}
+                        surname={lastName || ""}
+                        isPro={isPro}
                         status="Был (а) в сети 10 минут назад"
                     />
                 </div>
@@ -502,11 +524,11 @@ const ProfileUserPage = () => {
             >
                 <div className={styles.messagePeople}>
                     <UserInfoBlock
-                        id={1}
-                        image="/img/people2.png"
-                        name="Харитонова"
-                        surname="Елизавета"
-                        isPro
+                        id={String(id)}
+                        image={avatar}
+                        name={firstName || ""}
+                        surname={lastName || ""}
+                        isPro={isPro}
                         status="Был (а) в сети 10 минут назад"
                     />
                 </div>
@@ -537,92 +559,94 @@ const ProfileUserPage = () => {
                 </div>
             </Modal>
 
-            <Modal
-                value={currentLocationModal}
-                setValue={setCurrentLocationModal}
-                title="Местонахождение"
-            >
-                <div className={styles.locationPeople}>
-                    <UserInfoBlock
-                        id={1}
-                        image="/img/people2.png"
-                        name="Харитонова"
-                        surname="Елизавета"
-                        isPro
-                        status="Был (а) в сети 10 минут назад"
-                    />
-                </div>
-
-                <div className={styles.locationMapInner}>
-                    <YMaps>
-                        <Map
-                            defaultState={{
-                                center: [55.751574, 37.573856],
-                                zoom: 5,
-                            }}
-                            width="100%"
-                            height="100%"
-                        >
-                            <Placemark geometry={[55.684751, 37.738521]} />
-                        </Map>
-                    </YMaps>
-                </div>
-            </Modal>
-
-            <Modal
-                value={tempLocationModal}
-                setValue={setTempLocationModal}
-                title="Временная геолокация"
-            >
-                <div className={styles.locationPeople}>
-                    <UserInfoBlock
-                        id={1}
-                        image="/img/people2.png"
-                        name="Харитонова"
-                        surname="Елизавета"
-                        isPro
-                        status="Был (а) в сети 10 минут назад"
-                    />
-                </div>
-
-                <div className={styles.locationMapInner}>
-                    <YMaps>
-                        <Map
-                            defaultState={{
-                                center: [55.751574, 37.573856],
-                                zoom: 5,
-                            }}
-                            width="100%"
-                            height="100%"
-                        >
-                            <Placemark geometry={[55.684751, 37.738521]} />
-                        </Map>
-                    </YMaps>
-                </div>
-
-                <div className={styles.locationInfo}>
-                    <div className={styles.locationInfoPoints}>
-                        <div className={styles.locationInfoPoint}>
-                            <p>Нахожусь сейчас:</p>
-
-                            <p>Коломбо, Шри-Ланка</p>
-                        </div>
-
-                        <div className={styles.locationInfoPoint}>
-                            <p>Дата пребывания:</p>
-
-                            <p>01.12.2020 - 30.12.2020</p>
-                        </div>
+            {location && (
+                <Modal
+                    value={currentLocationModal}
+                    setValue={setCurrentLocationModal}
+                    title="Местонахождение"
+                >
+                    <div className={styles.locationPeople}>
+                        <UserInfoBlock
+                            id={String(id)}
+                            image={avatar}
+                            name={firstName || ""}
+                            surname={lastName || ""}
+                            isPro={isPro}
+                            status="Был (а) в сети 10 минут назад"
+                        />
                     </div>
 
-                    <p className={styles.locationInfoText}>
-                        Всем привет! Практически весь декабрь провожу на
-                        Шри-Ланке. Готов поснимать на всем восточном побережье.
-                        Пишите в запросы и смотрите места для съемок. Недорого!
-                        Сделаю хорошую скидку!
-                    </p>
-                </div>
-            </Modal>
+                    <div className={styles.locationMapInner}>
+                        <Map
+                            defaultState={{
+                                center: [location.latitude, location.longitude],
+                                zoom: 9,
+                            }}
+                            width="100%"
+                            height="100%"
+                        >
+                            <Placemark
+                                geometry={[
+                                    location.latitude,
+                                    location.longitude,
+                                ]}
+                            />
+                        </Map>
+                    </div>
+                </Modal>
+            )}
+
+            {temporaryLocation && (
+                <Modal
+                    value={tempLocationModal}
+                    setValue={setTempLocationModal}
+                    title="Временная геолокация"
+                >
+                    <div className={styles.locationPeople}>
+                        <UserInfoBlock
+                            id={String(id)}
+                            image={avatar}
+                            name={firstName || ""}
+                            surname={lastName || ""}
+                            isPro={isPro}
+                            status="Был (а) в сети 10 минут назад"
+                        />
+                    </div>
+
+                    <div className={styles.locationMapInner}>
+                        <Map
+                            defaultState={{
+                                center: [55.751574, 37.573856],
+                                zoom: 5,
+                            }}
+                            width="100%"
+                            height="100%"
+                        >
+                            <Placemark geometry={[55.684751, 37.738521]} />
+                        </Map>
+                    </div>
+
+                    <div className={styles.locationInfo}>
+                        <div className={styles.locationInfoPoints}>
+                            <div className={styles.locationInfoPoint}>
+                                <p>Нахожусь сейчас:</p>
+
+                                <p>Коломбо, Шри-Ланка</p>
+                            </div>
+
+                            <div className={styles.locationInfoPoint}>
+                                <p>Дата пребывания:</p>
+
+                                <p>01.12.2020 - 30.12.2020</p>
+                            </div>
+                        </div>
+
+                        <p className={styles.locationInfoText}>
+                            {temporaryLocation.comment}
+                        </p>
+                    </div>
+                </Modal>
+            )}
         </>
     );
 };

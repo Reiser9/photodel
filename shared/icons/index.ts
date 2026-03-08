@@ -59,3 +59,6 @@ export { Warn } from "./Warn";
 export { Comment2 } from "./Comment2";
 export { Remove } from "./Remove";
 export { Edit2 } from "./Edit2";
+export { CirclePlus } from "./CirclePlus";
+export { Lock } from "./Lock";
+export { Unlock } from "./Unlock";

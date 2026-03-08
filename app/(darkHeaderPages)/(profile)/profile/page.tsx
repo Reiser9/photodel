@@ -10,17 +10,7 @@ import { useQuery } from "@tanstack/react-query";
 
 import styles from "./index.module.scss";
 
-import {
-    Bookmark2,
-    CheckCircle,
-    CheckShield,
-    Clock2,
-    Edit,
-    Location,
-    Mail,
-    Pin2,
-    Trophy,
-} from "@/shared/icons";
+import { CheckCircle, CheckShield, Clock2, Mail, Trophy } from "@/shared/icons";
 import { useUserInfo } from "@/features/user";
 import { Pro } from "@/shared/ui/Pro";
 import { Modal } from "@/shared/ui/Modal";
@@ -34,6 +24,7 @@ import { UserInfoBlock } from "@/shared/ui/UserInfoBlock";
 import { Rating } from "@/shared/ui/Rating";
 import { formatDateToRussianMonthYear } from "@/shared/utils/formatDateToMothYear";
 import { formatDate } from "@/shared/utils/formatDate";
+import { Chapter } from "@/shared/ui/Chapter";
 
 const ProfilePage = () => {
     const [requestModal, setRequestModal] = React.useState(false);
@@ -54,7 +45,7 @@ const ProfilePage = () => {
     const [needMakeup, setNeedMakeup] = React.useState(false);
     const [note, setNote] = React.useState("");
 
-    const { getShortInfo, getProfileInfo } = useUserInfo();
+    const { getProfileInfo } = useUserInfo();
 
     const resetRequestForm = () => {
         setDate(null);
@@ -68,13 +59,6 @@ const ProfilePage = () => {
         setNote("");
     };
 
-    const { data } = useQuery({
-        queryKey: ["shortInfo"],
-        queryFn: () => getShortInfo(),
-        gcTime: 0,
-        refetchOnMount: true,
-    });
-
     const { data: profileData } = useQuery({
         queryKey: ["profileInfo"],
         queryFn: () => getProfileInfo(),
@@ -82,8 +66,12 @@ const ProfilePage = () => {
         refetchOnMount: true,
     });
 
-    const { avatar, firstName, lastName, createdAt, isVerified } = data || {};
     const {
+        avatar,
+        createdAt,
+        isPro,
+        firstName,
+        lastName,
         price,
         conditions,
         equipment,
@@ -94,6 +82,8 @@ const ProfilePage = () => {
         temporaryLocations,
         socials,
         about,
+        location,
+        status,
     } = profileData || {};
 
     return (
@@ -117,7 +107,7 @@ const ProfilePage = () => {
                                     {lastName} {firstName}
                                 </p>
 
-                                <Pro />
+                                {isPro && <Pro />}
                             </div>
 
                             <div className={styles.profileInfoTags}>
@@ -126,17 +116,17 @@ const ProfilePage = () => {
                                     {formatDateToRussianMonthYear(createdAt)}
                                 </div>
 
-                                {isVerified && (
+                                {/* <div className={styles.profileInfoTag}>
+                                    <CheckShield />
+                                    Подтвержден
+                                </div> */}
+
+                                {status && (
                                     <div className={styles.profileInfoTag}>
-                                        <CheckShield />
-                                        Подтвержден
+                                        <CheckCircle />
+                                        {status}
                                     </div>
                                 )}
-
-                                <div className={styles.profileInfoTag}>
-                                    <CheckCircle />
-                                    Свободен
-                                </div>
                             </div>
 
                             <Button auto href="/profile/edit">
@@ -147,24 +137,21 @@ const ProfilePage = () => {
 
                     <div className={styles.profileRating}>
                         <Rating rating="4.92" />
-
-                        <p className={styles.profileRatingTop}>
-                            <Trophy />
-                            10-й в Москве
-                        </p>
                     </div>
                 </div>
             </div>
 
-            <div className={styles.profileBlock}>
-                <p className={styles.profileBlockTitle}>Общие данные</p>
-
+            <Chapter title="Общие данные">
                 <div className={styles.profileBlockData}>
                     {!!proCategories?.length && (
                         <div className={styles.profileBlockDataItem}>
                             <p>Категория:</p>
 
-                            <p>{proCategories.map((data) => data.name)}</p>
+                            <p>
+                                {proCategories
+                                    .map((data) => data.name)
+                                    .join(", ")}
+                            </p>
                         </div>
                     )}
 
@@ -172,7 +159,11 @@ const ProfilePage = () => {
                         <div className={styles.profileBlockDataItem}>
                             <p>Специализация:</p>
 
-                            <p>{specializations.map((data) => data.name)}</p>
+                            <p>
+                                {specializations
+                                    .map((data) => data.name)
+                                    .join(", ")}
+                            </p>
                         </div>
                     )}
 
@@ -184,21 +175,17 @@ const ProfilePage = () => {
                         </div>
                     )}
 
-                    {price && (
-                        <div className={styles.profileBlockDataItem}>
-                            <p>Стоимость услуг:</p>
+                    <div className={styles.profileBlockDataItem}>
+                        <p>Стоимость услуг:</p>
 
-                            <p>{price}</p>
-                        </div>
-                    )}
+                        <p>{price || "Не указана"}</p>
+                    </div>
 
-                    {conditions && (
-                        <div className={styles.profileBlockDataItem}>
-                            <p>Условия работы:</p>
+                    <div className={styles.profileBlockDataItem}>
+                        <p>Условия работы:</p>
 
-                            <p>{conditions}</p>
-                        </div>
-                    )}
+                        <p>{conditions || "Не указаны"}</p>
+                    </div>
 
                     {equipment && (
                         <div className={styles.profileBlockDataItem}>
@@ -216,67 +203,85 @@ const ProfilePage = () => {
                         </div>
                     )}
                 </div>
-            </div>
+            </Chapter>
 
             {about && (
-                <div className={styles.profileBlock}>
-                    <p className={styles.profileBlockTitle}>Обо мне</p>
-
+                <Chapter title="Обо мне">
                     <div className={styles.profileBlockAbout}>
                         {parse(about)}
                     </div>
-                </div>
+                </Chapter>
             )}
 
-            <div className={styles.profileBlock}>
-                <p className={styles.profileBlockTitle}>Контакты</p>
+            {!!socials?.length && (
+                <Chapter title="Контакты">
+                    <div className={styles.profileBlockPoints}>
+                        {socials.map((data) => {
+                            const { icon, name, value, id } = data || {};
 
-                <div className={styles.profileBlockPoints}>
-                    <div className={styles.profileBlockPoint}>
-                        <a href="#" className={styles.profileBlockLink}>
-                            <Mail />
-                            info@ivanov-alex.ru
-                        </a>
+                            if (!value) return false;
+
+                            return (
+                                <div
+                                    key={id}
+                                    className={styles.profileBlockPoint}
+                                >
+                                    <a
+                                        href={value}
+                                        target="_blank"
+                                        className={styles.profileBlockLink}
+                                    >
+                                        {icon && <Mail />}
+                                        {name}
+                                    </a>
+                                </div>
+                            );
+                        })}
                     </div>
-                </div>
-            </div>
+                </Chapter>
+            )}
 
             {!!temporaryLocations?.length && (
-                <div className={styles.profileBlock}>
-                    <p className={styles.profileBlockTitle}>
-                        Временная геолокация
-                    </p>
+                <Chapter title="Временная геолокация">
+                    {temporaryLocations.map((data) => {
+                        const { startDate, endDate, comment, location } =
+                            data || {};
+                        const { city, country } = location || {};
 
-                    {temporaryLocations.map((data) => (
-                        <div key={data.id} className={styles.profileBlockData}>
-                            <div className={styles.profileBlockDataItem}>
-                                <p>Нахожусь сейчас:</p>
+                        return (
+                            <div
+                                key={data.id}
+                                className={styles.profileBlockData}
+                            >
+                                <div className={styles.profileBlockDataItem}>
+                                    <p>Местонахождение:</p>
 
-                                <p></p>
+                                    <p>
+                                        {country}, {city}
+                                    </p>
+                                </div>
+
+                                <div className={styles.profileBlockDataItem}>
+                                    <p>Даты пребывания:</p>
+
+                                    <p>
+                                        {formatDate(startDate)} -{" "}
+                                        {formatDate(endDate)}
+                                    </p>
+                                </div>
+
+                                <div className={styles.profileBlockDataItem}>
+                                    <p>Сообщение:</p>
+
+                                    <p>{parse(comment)}</p>
+                                </div>
                             </div>
-
-                            <div className={styles.profileBlockDataItem}>
-                                <p>Даты пребывания:</p>
-
-                                <p>
-                                    {formatDate(data.startDate)} -{" "}
-                                    {formatDate(data.endDate)}
-                                </p>
-                            </div>
-
-                            <div className={styles.profileBlockDataItem}>
-                                <p>Сообщение:</p>
-
-                                <p>{parse(data.comment)}</p>
-                            </div>
-                        </div>
-                    ))}
-                </div>
+                        );
+                    })}
+                </Chapter>
             )}
 
-            <div className={styles.profileBlock}>
-                <p className={styles.profileBlockTitle}>Статистика</p>
-
+            <Chapter title="Статистика">
                 <div className={styles.profileBlockPoints}>
                     <div className={styles.profileBlockPoint}>
                         <p className={styles.profileBlockText}>
@@ -314,11 +319,9 @@ const ProfilePage = () => {
                         </p>
                     </div>
                 </div>
-            </div>
+            </Chapter>
 
-            <div className={styles.profileBlock}>
-                <p className={styles.profileBlockTitle}>Запросы</p>
-
+            <Chapter title="Запросы">
                 <div className={styles.profileBlockPoints}>
                     <div className={styles.profileBlockPoint}>
                         <p className={styles.profileBlockText}>
@@ -332,7 +335,7 @@ const ProfilePage = () => {
                         </p>
                     </div>
                 </div>
-            </div>
+            </Chapter>
 
             <Modal
                 value={requestModal}
@@ -537,18 +540,16 @@ const ProfilePage = () => {
                 </div>
 
                 <div className={styles.locationMapInner}>
-                    <YMaps>
-                        <Map
-                            defaultState={{
-                                center: [55.751574, 37.573856],
-                                zoom: 5,
-                            }}
-                            width="100%"
-                            height="100%"
-                        >
-                            <Placemark geometry={[55.684751, 37.738521]} />
-                        </Map>
-                    </YMaps>
+                    <Map
+                        defaultState={{
+                            center: [55.751574, 37.573856],
+                            zoom: 5,
+                        }}
+                        width="100%"
+                        height="100%"
+                    >
+                        <Placemark geometry={[55.684751, 37.738521]} />
+                    </Map>
                 </div>
             </Modal>
 
@@ -569,18 +570,16 @@ const ProfilePage = () => {
                 </div>
 
                 <div className={styles.locationMapInner}>
-                    <YMaps>
-                        <Map
-                            defaultState={{
-                                center: [55.751574, 37.573856],
-                                zoom: 5,
-                            }}
-                            width="100%"
-                            height="100%"
-                        >
-                            <Placemark geometry={[55.684751, 37.738521]} />
-                        </Map>
-                    </YMaps>
+                    <Map
+                        defaultState={{
+                            center: [55.751574, 37.573856],
+                            zoom: 5,
+                        }}
+                        width="100%"
+                        height="100%"
+                    >
+                        <Placemark geometry={[55.684751, 37.738521]} />
+                    </Map>
                 </div>
 
                 <div className={styles.locationInfo}>

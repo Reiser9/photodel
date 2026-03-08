@@ -41,6 +41,7 @@ body {
     font-size: 1.6rem;
     font-family: "Montserrat", sans-serif;
     touch-action: pan-y;
+    background: var(--white);
 }
 
 .scroll{
@@ -56,12 +57,12 @@ body.dark {
     --yellow: #F2CF74;
 
     --grey: #9CA3A1;
-    --lightGrey: #D2D9D8;
-    --lightWhite: #F4F6F6;
-    --black: #202424;
-    --white: #fff;
+    --lightGrey: #3d3f3f;
+    --lightWhite: #181818;
+    --black: #fff;
+    --white: #202424;
 
-    --input: #f5f7fa;
+    --input: #191919;
     --inputDarken: #eaedf0;
 }
 
@@ -119,12 +120,12 @@ input::placeholder {
 }
 
 /* Custom select antd */
-.ant-select, .ant-select-selector input, .ant-select-dropdown .ant-select-item {
+.ant-select, .ant-select-selector input, .ant-select-dropdown .ant-select-item, .ant-select-multiple {
     cursor: default !important;
 }
 
 @media (any-hover: hover) {
-    .ant-select, .ant-select-selector input, .ant-select-dropdown .ant-select-item {
+    .ant-select, .ant-select-selector input, .ant-select-dropdown .ant-select-item, .ant-select-multiple {
         cursor: pointer !important;
     }
 }
@@ -135,10 +136,6 @@ input::placeholder {
     font-size: 1.3rem !important;
     display: flex;
     align-items: center;
-}
-
-.ant-select-selection-item {
-    font-size: 1.4rem !important;
 }
 
 .ant-select-single .ant-select-selection-item {
@@ -201,6 +198,11 @@ input::placeholder {
     padding-right: 1rem!important;
 }
 
+.ant-select:hover .ant-select-clear{
+    background: var(--white)!important;
+    color: var(--black)!important;
+}
+
 .ant-select-item,
 .ant-select-dropdown {
     color: var(--black) !important;
@@ -215,17 +217,15 @@ input::placeholder {
 .ant-select-item-option-selected {
     background: var(--main) !important;
     font-weight: 600 !important;
-    color: var(--white)!important;
+    color: #fff!important;
 }
 
 .ant-select-multiple {
-    border-radius: 4px !important;
-    border: 1px solid transparent !important;
     transition: 0.2s linear;
 }
 
 .ant-select-multiple.ant-select-focused {
-    border: 1px solid var(--main) !important;
+    border: 1px solid var(--lightGrey) !important;
 }
 
 .ant-select-multiple .ant-select-selection-item {
@@ -295,6 +295,11 @@ input::placeholder {
     min-height: 44px!important;
 }
 
+.ant-select-selection-item{
+    font-size: 1.2rem!important;
+    font-weight: 500!important;
+}
+
 .ant-picker-focused {
     box-shadow: none !important;
     border: 1px solid var(--main) !important;
@@ -323,7 +328,21 @@ input::placeholder {
 }
 
 .ant-select-multiple .ant-select-selection-item {
-    background: var(--hover) !important;
+    background: var(--main) !important;
+    color: #fff!important;
+    padding: 0.4rem;
+}
+
+.ant-select-multiple input{
+    font-size: 1.2rem!important;
+}
+
+.ant-select-multiple{
+    padding: .7rem 1.9rem!important;
+}
+
+.ant-select-multiple .ant-select-selection-item svg{
+    color: #fff!important;
 }
 
 .ant-picker-panel-container {
@@ -351,6 +370,19 @@ input::placeholder {
 
 ymaps a{
     font-size: 1rem!important;
+}
+
+div[data-item-name="link"], button[data-item-name="convert-to"],
+button[data-item-name="convert-to"] + .ce-popover-item-separator, .ce-popover__search{
+    display: none!important;
+}
+
+.codex-editor path, .codex-editor line, .codex-editor rect, .codex-editor circle {
+    stroke: var(--main) !important;
+}
+
+.ce-paragraph{
+    color: var(--black);
 }
 
 @media (any-hover: hover) {

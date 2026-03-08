@@ -8,8 +8,8 @@ import styles from "./index.module.scss";
 import { Pro } from "../Pro";
 
 type Props = {
-    id: number | string;
-    image: string;
+    id?: number | string;
+    image?: string;
     name: string;
     surname: string;
     status?: string;
@@ -28,19 +28,17 @@ const UserInfoBlock: React.FC<Props> = ({
     size = "small",
     full = false,
 }) => {
-    return (
-        <div
-            className={cn(styles.userInfoBlock, styles[size], {
-                [styles.full]: full,
-            })}
-        >
-            <Link href={`/user/${id}`} className={styles.userInfoBlockInfo}>
+    const content = () => {
+        return (
+            <>
                 <span className={styles.userInfoBlockImg}>
-                    <Image
-                        src={image}
-                        alt={`Аватар пользователя ${name} ${surname}`}
-                        fill
-                    />
+                    {image && (
+                        <Image
+                            src={image}
+                            alt={`Аватар пользователя ${name} ${surname}`}
+                            fill
+                        />
+                    )}
                 </span>
 
                 <span className={styles.userInfoBlockName}>
@@ -48,7 +46,23 @@ const UserInfoBlock: React.FC<Props> = ({
                 </span>
 
                 {isPro && <Pro />}
-            </Link>
+            </>
+        );
+    };
+
+    return (
+        <div
+            className={cn(styles.userInfoBlock, styles[size], {
+                [styles.full]: full,
+            })}
+        >
+            {id ? (
+                <Link href={`/user/${id}`} className={styles.userInfoBlockInfo}>
+                    {content()}
+                </Link>
+            ) : (
+                <div className={styles.userInfoBlockInfo}>{content()}</div>
+            )}
 
             {status && <p className={styles.userInfoBlockStatus}>{status}</p>}
         </div>

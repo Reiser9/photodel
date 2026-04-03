@@ -24,6 +24,10 @@
     align-items: flex-start;
 }
 
+.sinlePageInfo{
+    width: calc(100% - 255px - 25px);
+}
+
 .sinlePageSidebar{
     max-width: 255px;
     flex-shrink: 0;
@@ -34,10 +38,18 @@
     .sinlePageSidebar{
         max-width: 210px;
     }
+    
+    .sinlePageInfo{
+        width: calc(100% - 210px - 15px);
+    }
 }
 @media (max-width: 768px) {
     .sinlePageSidebar{
         max-width: 100%;
+    }
+
+    .sinlePageInfo{
+        width: 100%;
     }
 }
 

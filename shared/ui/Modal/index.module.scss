@@ -21,6 +21,16 @@
     margin: 1.75rem auto;
 }
 
+.modalWrapper.big{
+    max-width: 900px;
+}
+
+@media (max-width: 998px) {
+    .modalWrapper.big{
+        max-width: 700px;
+    }
+}
+
 .modalWrapper.default{
     max-width: 600px;
 }

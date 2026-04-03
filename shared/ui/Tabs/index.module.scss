@@ -4,6 +4,7 @@
     display: flex;
     gap: 20px;
     align-items: center;
+    overflow-x: auto;
 }
 
 .tab{
@@ -26,7 +27,7 @@ a.tab:before{
     height: 2px;
     background: var(--main);
     position: absolute;
-    bottom: -1px;
+    bottom: 0px;
     left: 0;
     opacity: 0;
     transition: opacity .2s linear;;

@@ -1,0 +1,17 @@
+.favTabs:not(:first-child){
+    margin-top: 1.5rem;
+}
+
+.photoProfileItems{
+    width: 100%;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 30px 20px;
+}
+
+.placeProfileItems{
+    width: 100%;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+}

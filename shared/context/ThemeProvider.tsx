@@ -2,12 +2,15 @@
 
 import React from "react";
 
+import { ChangeThemeAnimate } from "../ui/ChangeThemeAnimate";
+
 export type ThemeType = "light" | "dark";
 
 type ThemeContextProps = {
     theme: ThemeType;
     toggleTheme: () => void;
     chooseTheme: (theme: ThemeType) => void;
+    readyAnimation: boolean;
 };
 
 const ThemeContext = React.createContext<ThemeContextProps | null>(null);
@@ -24,6 +27,7 @@ export const useThemeContext = () => {
 
 const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
     const [theme, setTheme] = React.useState<ThemeType>("light");
+    const [readyAnimation, setReadyAnimation] = React.useState(false);
 
     const changeThemeBody = (theme: ThemeType) => {
         document.body.classList.remove("light", "dark");
@@ -31,9 +35,15 @@ const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
     };
 
     const toggleTheme = () => {
+        setReadyAnimation(true);
         const newTheme = theme === "light" ? "dark" : "light";
 
-        chooseTheme(newTheme);
+        setTheme(newTheme);
+        localStorage.setItem("theme", newTheme);
+
+        setTimeout(() => {
+            changeThemeBody(newTheme);
+        }, 1000);
     };
 
     const chooseTheme = (theme: ThemeType = "light") => {
@@ -57,7 +67,10 @@ const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
     }, []);
 
     return (
-        <ThemeContext.Provider value={{ theme, toggleTheme, chooseTheme }}>
+        <ThemeContext.Provider
+            value={{ theme, toggleTheme, chooseTheme, readyAnimation }}
+        >
+            <ChangeThemeAnimate />
             {children}
         </ThemeContext.Provider>
     );

@@ -1,4 +1,4 @@
-export const formatDateToRussianMonthYear = (isoDate?: Date) => {
+export const formatDateToRussianMonthYear = (isoDate?: string) => {
     if (!isoDate) return;
 
     const date = new Date(isoDate);

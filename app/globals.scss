@@ -354,6 +354,10 @@ input::placeholder {
     color: var(--black) !important;
 }
 
+.ant-picker-now-btn{
+    color: var(--main);
+}
+
 .ant-picker-time-panel-cell-inner:hover, .ant-picker-time-panel-cell-selected .ant-picker-time-panel-cell-inner,
 .ant-picker-dropdown .ant-picker-cell-disabled::before {
     background: var(--lightGrey) !important;

@@ -6,32 +6,17 @@
     gap: 20px;
 }
 
-.createTop{
-    width: 100%;
-    border-bottom: 1px solid var(--lightGrey);
-}
-
-.createBackLink{
-    display: flex;
-    align-items: center;
-    gap: 5px;
-    color: var(--mainDark);
-    font-size: 1.3rem;
-    font-weight: 500;
-    padding: 1rem 0;
-}
-
-.createBackLink svg{
-    width: 12px;
-    flex-shrink: 0;
-    color: var(--main);
-}
-
 .addPhoto{
     width: 100%;
     display: flex;
     align-items: flex-start;
     gap: 30px;
+}
+
+@media (max-width: 768px) {
+    .addPhoto{
+        flex-direction: column-reverse;
+    }
 }
 
 .addPhotoContent{
@@ -71,9 +56,20 @@
     flex-direction: column;
     align-items: flex-start;
     gap: 12px;
-    padding: 1.5rem 3.8rem;
+    padding: 1.5rem 2rem;
     background: var(--lightWhite);
     border-radius: 8px;
+}
+
+@media (max-width: 998px) {
+    .addPhotoSidebar{
+        max-width: 220px;
+    }
+}
+@media (max-width: 768px) {
+    .addPhotoSidebar{
+        max-width: 100%;
+    }
 }
 
 .addPhotoButton{
@@ -105,6 +101,12 @@
     position: relative;
     overflow: hidden;
     color: var(--black);
+}
+
+@media (max-width: 768px) {
+    .addPhotoLabel{
+        height: 200px;
+    }
 }
 
 .addPhotoLabel img{

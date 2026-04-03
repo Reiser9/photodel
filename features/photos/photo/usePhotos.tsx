@@ -5,20 +5,34 @@ import type {
     PhotoDTO,
     PhotosPagination,
 } from "@/entities/photos/photo";
+import useAlert from "@/shared/hooks/useAlert";
 import useRequest from "@/shared/hooks/useRequest";
 import { buildQueryString } from "@/shared/utils/buildQueryString";
 
 const usePhotos = () => {
     const { request, catchRequestError, errorController } = useRequest();
+    const { alertNotify } = useAlert();
 
-    const getMyPhotos = async (page = 1, limit = 12) => {
+    const getMyPhotos = async ({
+        page = 1,
+        limit = 12,
+        album_id,
+        excluded_album_id,
+    }: {
+        page?: number;
+        limit?: number;
+        album_id?: number | string;
+        excluded_album_id?: number | string;
+    }) => {
         const queryString = buildQueryString({
             page,
             limit,
+            album_id,
+            excluded_album_id,
         });
 
         const response = await request<PhotosPagination>({
-            url: `/photos/my?${queryString}`,
+            url: `/photos?${queryString}`,
             isAuth: true,
         });
 
@@ -70,6 +84,7 @@ const usePhotos = () => {
         }
 
         successCallback();
+        alertNotify("Успешно", "Фото обновлено");
 
         if ("data" in response) {
             return response.data.photo;
@@ -113,9 +128,34 @@ const usePhotos = () => {
         }
 
         successCallback();
+        alertNotify("Успешно", "Фотография удалена");
 
         if ("data" in response) {
             return response.data.photo;
+        }
+    };
+
+    const deleteBulkPhotos = async (
+        data: { ids: number[] },
+        successCallback = () => {},
+    ) => {
+        const response = await request({
+            url: "/photos/bulk-delete",
+            isAuth: true,
+            method: "POST",
+            data,
+        });
+
+        if (catchRequestError(response)) {
+            errorController(response);
+            return "";
+        }
+
+        successCallback();
+        alertNotify("Успешно", "Фото удалены");
+
+        if ("data" in response) {
+            return response.data;
         }
     };
 
@@ -125,6 +165,7 @@ const usePhotos = () => {
         updatePhoto,
         getPhotoById,
         deletePhoto,
+        deleteBulkPhotos,
     };
 };
 

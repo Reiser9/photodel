@@ -1,1 +1,1 @@
-export { default as PhotosBlock } from "./PhotosBlock";
+export { default as ProfileActionsBlock } from "./ProfileActionsBlock";

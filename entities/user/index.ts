@@ -21,4 +21,9 @@ export type {
     ProfileInfoDTO,
     LocationDTO,
     SocialUser,
+    TempLocationDTO,
+    Favorite,
+    Like,
+    UserByIdShortInfo,
+    UsersPagination,
 } from "./user/model";

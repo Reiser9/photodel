@@ -12,6 +12,7 @@ type Props = {
     setValue: React.Dispatch<React.SetStateAction<boolean>>;
     title?: string;
     callback: () => void;
+    rejectCallback?: () => void;
 };
 
 const ConfirmModal: React.FC<Props> = ({
@@ -19,9 +20,15 @@ const ConfirmModal: React.FC<Props> = ({
     setValue,
     title,
     callback = () => {},
+    rejectCallback = () => {},
 }) => {
     return (
-        <Modal value={value} setValue={setValue} title={title}>
+        <Modal
+            value={value}
+            setValue={setValue}
+            title={title}
+            onClose={rejectCallback}
+        >
             <div className={styles.confirmModalButtons}>
                 <Button
                     onClick={() => {
@@ -33,7 +40,14 @@ const ConfirmModal: React.FC<Props> = ({
                     Да
                 </Button>
 
-                <Button onClick={() => setValue(false)}>Нет</Button>
+                <Button
+                    onClick={() => {
+                        setValue(false);
+                        rejectCallback();
+                    }}
+                >
+                    Нет
+                </Button>
             </div>
         </Modal>
     );

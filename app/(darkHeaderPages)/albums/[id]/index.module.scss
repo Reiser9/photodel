@@ -1,0 +1,54 @@
+.albumById{
+    width: 100%;
+    padding: 2rem 0;
+}
+
+.albumByIdInner, .albumByIdInfo{
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 20px;
+}
+
+.albumByIdInfo{
+    gap: 10px;
+}
+
+.albumByIdInfoTitle{
+    font-weight: 600;
+    color: var(--black);
+}
+
+.albumByIdInfoText{
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 6px;
+    font-size: 1.4rem;
+    color: var(--black);
+}
+
+.albumByIdContent{
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+}
+
+.albumByIdContentCount{
+    font-size: 1.3rem;
+}
+
+.albumByIdContentCount span{
+    font-weight: 600;
+}
+
+.albumByIdItems{
+    width: 100%;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 30px 20px;
+}

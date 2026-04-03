@@ -1,0 +1,201 @@
+.addPhotoWrapper{
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 20px;
+}
+
+.addPhoto{
+    width: 100%;
+    display: flex;
+    align-items: flex-start;
+    gap: 30px;
+}
+
+@media (max-width: 768px) {
+    .addPhoto{
+        flex-direction: column-reverse;
+    }
+}
+
+.addPhotoContent{
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 20px;
+}
+
+.addPhotoBlock{
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+}
+
+.addPhotoBlockTitle{
+    font-weight: 600;
+    color: var(--black);
+}
+
+.addPhotoButtons{
+    width: 100%;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    justify-content: flex-end;
+}
+
+.addPhotoSidebar{
+    width: 100%;
+    max-width: 255px;
+    flex-shrink: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 1.5rem 2rem;
+    background: var(--lightWhite);
+    border-radius: 8px;
+}
+
+@media (max-width: 998px) {
+    .addPhotoSidebar{
+        max-width: 220px;
+    }
+}
+@media (max-width: 768px) {
+    .addPhotoSidebar{
+        max-width: 100%;
+    }
+}
+
+.addPhotoButton{
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 1.3rem;
+    color: var(--mainDark);
+    font-weight: 500;
+}
+
+.addPhotoButton svg{
+    width: 24px;
+    flex-shrink: 0;
+    color: var(--main);
+}
+
+.addPhotoLabel{
+    width: 100%;
+    height: 280px;
+    border-radius: 12px;
+    border: 1px dashed var(--main);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    font-size: 1.3rem;
+    font-weight: 500;
+    position: relative;
+    overflow: hidden;
+    color: var(--black);
+}
+
+@media (max-width: 768px) {
+    .addPhotoLabel{
+        height: 200px;
+    }
+}
+
+.addPhotoLabel img{
+    object-fit: cover;
+}
+
+@media (any-hover: hover) {
+    .addPhotoLabel{
+        cursor: pointer;
+    }
+}
+
+.addPhotoLabel svg{
+    width: 24px;
+    height: 24px;
+    flex-shrink: 0;
+    color: var(--main);
+}
+
+.addPhotoTabs{
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+.addPhotoTab{
+    font-size: 1.4rem;
+    color: var(--main);
+    border: 1px solid var(--main);
+    padding: 0.4rem 1.4rem;
+    border-radius: 8px;
+    font-weight: 500;
+}
+
+.addPhotoTab.active{
+    background: var(--main);
+    color: #fff;
+}
+
+.albumPhotoContent, .albumPhotoAddContent{
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+.albumPhotoAddContent{
+    margin-top: 2rem;
+}
+
+.albumPhotoTop{
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.albumPhotoItems{
+    width: 100%;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 30px 20px;
+    margin-top: 2rem;
+}
+
+.albumPhotoAdd{
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 1.3rem;
+    font-weight: 500;
+    color: var(--mainDark);
+}
+
+.albumPhotoAdd svg{
+    color: var(--main);
+    width: 24px;
+    height: 24px;
+    flex-shrink: 0;
+}
+
+.photosAddModalButton{
+    margin: 2rem auto 0 auto;
+}
+
+.photosAddModalButton button{
+    min-width: 180px;
+}

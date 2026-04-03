@@ -5,6 +5,12 @@
     gap: 20px;
 }
 
+@media (max-width: 430px) {
+    .profileEditInfo{
+        flex-direction: column;
+    }
+}
+
 .profileEditImg{
     width: 100px;
     height: 100px;
@@ -57,6 +63,12 @@
     max-width: 200px;
 }
 
+@media (max-width: 768px) {
+    .profileEditInfoStatus{
+        max-width: 100%;
+    }
+}
+
 .profileEditNameWrapper{
     width: 100%;
     display: flex;
@@ -89,6 +101,7 @@
     display: flex;
     align-items: flex-end;
     gap: 10px;
+    flex-wrap: wrap;
 }
 
 .profileEditProBuy{
@@ -123,4 +136,126 @@
 
 .profileEditDataItem{
     width: calc(100% / 2 - 30px / 2);
+}
+
+@media (max-width: 768px) {
+    .profileEditDataItem{
+        width: 100%;
+    }
+}
+
+.tempLocationItems, .tempLocationItem{
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 20px;
+}
+
+.tempLocationItem{
+    gap: 10px;
+    padding: 1.2rem;
+    border-radius: 8px;
+    border: 1px solid var(--main);
+}
+
+.tempLocationItemTop{
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.tempLocationItemNumber{
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    color: #fff;
+    background: var(--main);
+    border-radius: 50%;
+    font-weight: 600;
+    flex-shrink: 0;
+}
+
+.tempLocationItemRemove{
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    background: var(--red);
+}
+
+.tempLocationItemRemove svg{
+    width: 20px;
+    height: 20px;
+    flex-shrink: 0;
+}
+
+@media (any-hover: hover) {
+    .tempLocationItemRemove:hover{
+        opacity: 0.7;
+    }
+}
+
+.tempLocationItemDates{
+    width: 100%;
+}
+
+.tempLocationItemBlock, .tempLocationItemComment{
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+}
+
+.tempLocationItemBlockFull{
+    width: 100%;
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+}
+
+.tempLocationItemBlockTitle{
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: var(--grey);
+}
+
+.tempLocationItemComment{
+    gap: 8px;
+    font-size: 1.4rem;
+}
+
+.tempLocationItemLocation{
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+}
+
+.tempLocationItemMap{
+    width: 100%;
+    height: 250px;
+}
+
+.tempLocationAdd{
+    width: 100%;
+    display: flex;
+    justify-content: center;
+}
+
+@media (max-width: 768px) {
+    .profileEditInfoInput{
+        width: 100%;
+    }
 }

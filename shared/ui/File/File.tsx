@@ -7,9 +7,10 @@ import styles from "./index.module.scss";
 type Props = {
     id: string;
     accept?: string;
-    setFile?: (value: File) => void;
+    setFile?: (value: FileList) => void;
     setImgPreview?: (value: string | ArrayBuffer | null) => void;
-    onChange?: (file: File) => void;
+    onChange?: (file: FileList) => void;
+    multiple?: boolean;
 };
 
 const File: React.FC<Props> = ({
@@ -18,18 +19,19 @@ const File: React.FC<Props> = ({
     setFile,
     setImgPreview,
     onChange,
+    multiple = false,
 }) => {
     const onInputChange = (e: ChangeEvent<HTMLInputElement>) => {
-        if (!e.target.files || !e.target.files[0]) {
+        if (!e.target.files || !e.target.files.length) {
             return;
         }
 
-        const file = e.target.files[0];
+        const file = e.target.files;
         setFile && setFile(file);
         onChange && onChange(file);
 
         const fileReader = new FileReader();
-        fileReader.readAsDataURL(file);
+        fileReader.readAsDataURL(file[0]);
 
         fileReader.onloadend = () => {
             setImgPreview && setImgPreview(fileReader.result);
@@ -48,6 +50,7 @@ const File: React.FC<Props> = ({
             className={styles.file}
             accept={accept || "image/png, image/jpeg, image/svg+xml"}
             onChange={onInputChange}
+            multiple={multiple}
         />
     );
 };

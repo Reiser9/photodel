@@ -1,14 +1,17 @@
+import type { Pagination } from "@/entities/pagination";
+
 export type UserInfo = {
     user: {
         id: number;
         email: string;
         firstName: string;
         lastName: string;
-        avatar: string;
+        avatarUrl: string;
+        avatarKey: string;
         isAdult: boolean;
         isProfessional: boolean;
         isVerified: boolean;
-        createdAt: Date;
+        createdAt: string;
         roles: Roles;
         isPro: boolean;
     };
@@ -31,21 +34,22 @@ export type SocialUser = Social & {
     value: string;
 };
 
-export type TempLocation = {
-    id: number;
-    startDate: Date;
-    endDate: Date;
+export type TempLocationDTO = {
+    startDate: string;
+    endDate: string;
     comment: string;
+    location: LocationDTO;
+};
+
+export type TempLocation = TempLocationDTO & {
+    id: number;
     location: Location;
 };
 
 export type LocationDTO = {
     latitude: number;
     longitude: number;
-    country: string;
-    city: string;
-    street: string;
-    houseNumber: string;
+    address: string;
 };
 
 export type Location = LocationDTO & {
@@ -60,7 +64,7 @@ export type ProfileInfo = {
         avatar: string;
         isProfessional: boolean;
         isPro: boolean;
-        createdAt: Date;
+        createdAt: string;
         price: string;
         status: string;
         conditions: string;
@@ -72,8 +76,9 @@ export type ProfileInfo = {
         specializations: Specialization[];
         socials: SocialUser[];
         location: Location;
-        temporaryLocation: TempLocation;
+        activeTemporaryLocation: TempLocation;
         temporaryLocations: TempLocation[];
+        favorites: Favorite;
     };
 };
 
@@ -89,7 +94,37 @@ export type ProfileInfoDTO = {
     proCategoryIds: number[];
     specializationIds: number[];
     socials: SocialUser[];
-    temporaryLocations: TempLocation[] | null;
+    temporaryLocations: TempLocationDTO[] | null;
 };
 
 export type Roles = ("ADMIN" | "MODERATOR")[];
+
+export type Favorite = {
+    count: number;
+    favoriteId: number | null;
+    isFavorite: boolean;
+};
+
+export type Like = {
+    count: number;
+    likeId: number | null;
+    isLiked: boolean;
+};
+
+export type UserByIdShortInfo = {
+    id: number;
+    firstName: string;
+    lastName: string;
+    avatarUrl: string | null;
+    avatarKey: string | null;
+    isPro: boolean;
+    distance: string | null;
+    favorites: Favorite;
+    location: Location | null;
+    proCategories: Category[];
+    specializations: Specialization[];
+};
+
+export type UsersPagination = Pagination & {
+    data: UserByIdShortInfo[];
+};

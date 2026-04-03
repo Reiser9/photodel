@@ -2,12 +2,15 @@
 
 import React from "react";
 import Image from "next/image";
+import dayjs from "dayjs";
+import parse from "html-react-parser";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
+import { DatePicker } from "antd";
 
 import styles from "./index.module.scss";
 
-import { Edit2, Photo } from "@/shared/icons";
+import { CirclePlus, Edit2, Photo, Remove } from "@/shared/icons";
 import { useUserInfo } from "@/features/user";
 import { Button } from "@/shared/ui/Button";
 import { Chapter } from "@/shared/ui/Chapter";
@@ -20,11 +23,16 @@ import {
     getHtmlInEditor,
 } from "@/shared/utils/getHtmlInEditor";
 import { Preloader } from "@/shared/ui/Preloader";
-import { SocialUser } from "@/entities/user";
+import { SocialUser, TempLocationDTO } from "@/entities/user";
 import { File } from "@/shared/ui/File";
 import { useFile } from "@/features/file";
 import useAlert from "@/shared/hooks/useAlert";
 import { GetLocation } from "@/shared/ui/GetLocation";
+import { NotContent } from "@/shared/ui/NotContent";
+import { formatDate } from "@/shared/utils/formatDate";
+import { Map, Placemark } from "@iminside/react-yandex-maps";
+
+const { RangePicker } = DatePicker;
 
 const ProfileEditPage = () => {
     // Профиль информация
@@ -56,6 +64,20 @@ const ProfileEditPage = () => {
     const aboutRef = React.useRef<EditorCore | null>(null);
     const [aboutEditorIsReady, setAboutEditorIsReady] = React.useState(false);
 
+    // Временная геолокация
+    const [startDate, setStartDate] = React.useState("");
+    const [endDate, setEndDate] = React.useState("");
+    const [tempAddress, setTempAddress] = React.useState("");
+    const [tempCoords, setTempCoords] = React.useState<[number, number] | null>(
+        null,
+    );
+
+    const [tempLocations, setTempLocations] = React.useState<TempLocationDTO[]>(
+        [],
+    );
+
+    const tempLocationRef = React.useRef<EditorCore | null>(null);
+
     const {
         getCategories,
         getSpecializations,
@@ -70,7 +92,11 @@ const ProfileEditPage = () => {
     const router = useRouter();
     const queryClient = useQueryClient();
 
-    const { data, isLoading: profileIsLoading } = useQuery({
+    const {
+        data,
+        isLoading: profileIsLoading,
+        isError,
+    } = useQuery({
         queryKey: ["profileInfo"],
         queryFn: () => getProfileInfo(),
         gcTime: 0,
@@ -81,7 +107,7 @@ const ProfileEditPage = () => {
 
     const {
         data: categories,
-        isFetching: categoriesIsFetching,
+        isLoading: categoriesIsLoading,
         isError: categoriesIsError,
     } = useQuery({
         queryKey: ["categories"],
@@ -90,7 +116,7 @@ const ProfileEditPage = () => {
 
     const {
         data: specializations,
-        isFetching: specializationsIsFetching,
+        isLoading: specializationsIsLoading,
         isError: specializationsIsError,
     } = useQuery({
         queryKey: ["specializations", category],
@@ -118,6 +144,33 @@ const ProfileEditPage = () => {
             }
         }
 
+        let tempLocationContent;
+        if (tempLocationRef.current) {
+            const tempLocationData = await tempLocationRef.current.save();
+
+            if (tempLocationData) {
+                tempLocationContent =
+                    getHtmlInEditor(tempLocationData.blocks) || "";
+            }
+        }
+
+        const tempLocationsArr =
+            startDate && endDate && tempAddress && tempCoords
+                ? [
+                      ...tempLocations,
+                      {
+                          comment: tempLocationContent || "",
+                          startDate,
+                          endDate,
+                          location: {
+                              address: tempAddress,
+                              latitude: tempCoords[0],
+                              longitude: tempCoords[1],
+                          },
+                      },
+                  ]
+                : tempLocations;
+
         updateProfile(
             {
                 conditions,
@@ -130,23 +183,22 @@ const ProfileEditPage = () => {
                 specializationIds: specialization ? [specialization] : [],
                 status,
                 socials: socialBlocks.filter((data) => !!data.value),
-                temporaryLocations: [],
+                temporaryLocations: tempLocationsArr,
                 location: coords && {
-                    country: address,
+                    address,
                     latitude: coords[0],
                     longitude: coords[1],
-                    city: "",
-                    houseNumber: "",
-                    street: "",
                 },
             },
             () => router.back(),
         );
     };
 
-    const changeUserAvatar = async (avatar: File) => {
+    const changeUserAvatar = async (avatar: FileList) => {
         const formData = new FormData();
-        formData.append("files", avatar);
+        for(let i = 0; i < avatar.length; i++){
+            formData.append("files", avatar[i]);
+        }
 
         const files = await uploadFile(formData);
 
@@ -154,6 +206,7 @@ const ProfileEditPage = () => {
             return alertNotify(
                 "Ошибка",
                 "Изображение не загружено, попробуйте позже",
+                "warn"
             );
 
         updateUserAvatar(files[0].key, revalidatePreofileInfo);
@@ -170,6 +223,48 @@ const ProfileEditPage = () => {
         setSocialBlocks((prev) =>
             prev.map((item) => (item.id === index ? { ...item, value } : item)),
         );
+    };
+
+    const addTempLocation = async () => {
+        let tempLocationContent = "";
+        if (tempLocationRef.current) {
+            const tempLocationData = await tempLocationRef.current.save();
+
+            if (tempLocationData) {
+                tempLocationContent =
+                    getHtmlInEditor(tempLocationData.blocks) || "";
+            }
+        }
+
+        if (!tempAddress || !tempCoords || !startDate || !endDate)
+            return alertNotify(
+                "Внимание",
+                "Адрес и даты должны быть заполнены",
+                "warn",
+            );
+
+        setTempLocations((prev) => [
+            ...prev,
+            {
+                comment: tempLocationContent || "",
+                startDate,
+                endDate,
+                location: {
+                    address: tempAddress,
+                    latitude: tempCoords[0],
+                    longitude: tempCoords[1],
+                },
+            },
+        ]);
+        setTempAddress("");
+        setTempCoords(null);
+        setStartDate("");
+        setEndDate("");
+        tempLocationRef.current?.clear();
+    };
+
+    const removeTempLocation = (index: number) => {
+        setTempLocations((prev) => prev.filter((_, id) => id !== index));
     };
 
     React.useEffect(() => {
@@ -195,7 +290,8 @@ const ProfileEditPage = () => {
                 firstName,
                 lastName,
                 status,
-                location
+                location,
+                temporaryLocations,
             } = data || {};
 
             setAvatar(avatar);
@@ -211,8 +307,25 @@ const ProfileEditPage = () => {
             setSpecialization(
                 !!specializations.length ? specializations[0].id : null,
             );
-            setAddress(location.country);
+            setAddress(location.address);
             setCoords([location.latitude, location.longitude]);
+
+            const tempLocations = temporaryLocations.map((data) => {
+                const { startDate, comment, location, endDate } = data || {};
+                const { address, latitude, longitude } = location || {};
+
+                return {
+                    startDate,
+                    endDate,
+                    comment,
+                    location: {
+                        latitude,
+                        longitude,
+                        address,
+                    },
+                };
+            });
+            setTempLocations(tempLocations);
         }
     }, [data]);
 
@@ -239,6 +352,10 @@ const ProfileEditPage = () => {
 
     if (profileIsLoading) {
         return <Preloader page />;
+    }
+
+    if (isError) {
+        return <NotContent text="Ошибка при загрузке данных" danger />;
     }
 
     return (
@@ -292,6 +409,7 @@ const ProfileEditPage = () => {
                                     placeholder="Введите имя"
                                     fieldRequired
                                     title="Имя"
+                                    wrapperClass={styles.profileEditInfoInput}
                                 />
 
                                 <Input
@@ -300,6 +418,7 @@ const ProfileEditPage = () => {
                                     placeholder="Введите фамилию"
                                     fieldRequired
                                     title="Фамилия"
+                                    wrapperClass={styles.profileEditInfoInput}
                                 />
 
                                 <Button
@@ -340,7 +459,7 @@ const ProfileEditPage = () => {
                                 value: data.id,
                             }))}
                             error={categoriesIsError}
-                            loading={categoriesIsFetching}
+                            loading={categoriesIsLoading}
                             value={category}
                             setValue={setCategory}
                             allowClear
@@ -365,7 +484,7 @@ const ProfileEditPage = () => {
                                 : []
                         }
                         error={specializationsIsError}
-                        loading={specializationsIsFetching}
+                        loading={specializationsIsLoading}
                         value={specialization}
                         setValue={setSpecialization}
                         allowClear
@@ -463,7 +582,178 @@ const ProfileEditPage = () => {
             </Chapter>
 
             <Chapter title="Временная геолокация">
-                <div></div>
+                <div className={styles.tempLocationItems}>
+                    {tempLocations.map((data, id) => {
+                        const { startDate, endDate, comment, location } =
+                            data || {};
+                        const { address, longitude, latitude } = location || {};
+
+                        return (
+                            <div key={id} className={styles.tempLocationItem}>
+                                <div className={styles.tempLocationItemTop}>
+                                    <p
+                                        className={
+                                            styles.tempLocationItemNumber
+                                        }
+                                    >
+                                        {id + 1}
+                                    </p>
+
+                                    <button
+                                        className={
+                                            styles.tempLocationItemRemove
+                                        }
+                                        onClick={() => removeTempLocation(id)}
+                                    >
+                                        <Remove />
+                                    </button>
+                                </div>
+
+                                <div
+                                    className={styles.tempLocationItemBlockFull}
+                                >
+                                    <div
+                                        className={styles.tempLocationItemBlock}
+                                    >
+                                        <p
+                                            className={
+                                                styles.tempLocationItemBlockTitle
+                                            }
+                                        >
+                                            Дата начала пребывания
+                                        </p>
+                                        <div
+                                            className={
+                                                styles.tempLocationItemComment
+                                            }
+                                        >
+                                            {formatDate(
+                                                startDate,
+                                                "DD.MM.YYYY",
+                                            )}
+                                        </div>
+                                    </div>
+
+                                    <div
+                                        className={styles.tempLocationItemBlock}
+                                    >
+                                        <p
+                                            className={
+                                                styles.tempLocationItemBlockTitle
+                                            }
+                                        >
+                                            Дата окончания пребывания
+                                        </p>
+                                        <div
+                                            className={
+                                                styles.tempLocationItemComment
+                                            }
+                                        >
+                                            {formatDate(endDate, "DD.MM.YYYY")}
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div
+                                    className={styles.tempLocationItemLocation}
+                                >
+                                    <div
+                                        className={styles.tempLocationItemBlock}
+                                    >
+                                        <p
+                                            className={
+                                                styles.tempLocationItemBlockTitle
+                                            }
+                                        >
+                                            Местонахоождения
+                                        </p>
+                                        <div
+                                            className={
+                                                styles.tempLocationItemComment
+                                            }
+                                        >
+                                            {address}
+                                        </div>
+                                    </div>
+
+                                    <Map
+                                        defaultState={{
+                                            center: [55.751574, 37.573856],
+                                            zoom: 5,
+                                            controls: [],
+                                        }}
+                                        width="100%"
+                                        height="100%"
+                                        className={styles.tempLocationItemMap}
+                                    >
+                                        <Placemark
+                                            geometry={[latitude, longitude]}
+                                            options={{ iconColor: "#50A398" }}
+                                        />
+                                    </Map>
+                                </div>
+
+                                <div className={styles.tempLocationItemBlock}>
+                                    <p
+                                        className={
+                                            styles.tempLocationItemBlockTitle
+                                        }
+                                    >
+                                        Комментарий
+                                    </p>
+                                    <div
+                                        className={
+                                            styles.tempLocationItemComment
+                                        }
+                                    >
+                                        {parse(comment)}
+                                    </div>
+                                </div>
+                            </div>
+                        );
+                    })}
+
+                    <div className={styles.tempLocationItem}>
+                        <RangePicker
+                            className={styles.tempLocationItemDates}
+                            value={[
+                                startDate ? dayjs(startDate) : null,
+                                endDate ? dayjs(endDate) : null,
+                            ]}
+                            onChange={(dates) => {
+                                if (!dates || !dates[0] || !dates[1]) {
+                                    setStartDate("");
+                                    setEndDate("");
+                                    return;
+                                }
+
+                                setStartDate(dates[0].format("YYYY-MM-DD"));
+                                setEndDate(dates[1].format("YYYY-MM-DD"));
+                            }}
+                            format="DD.MM.YYYY"
+                        />
+
+                        <GetLocation
+                            address={tempAddress}
+                            setAddress={setTempAddress}
+                            coords={tempCoords}
+                            setCoords={setTempCoords}
+                        />
+
+                        <Editor
+                            title="Комментарий"
+                            editorRef={tempLocationRef}
+                            id="tempLocationEditor"
+                        />
+                    </div>
+
+                    <div className={styles.tempLocationAdd}>
+                        <Button auto onClick={() => addTempLocation()}>
+                            <CirclePlus />
+                            Добавить
+                        </Button>
+                    </div>
+                </div>
             </Chapter>
 
             <div className={styles.profileEditButtons}>

@@ -1,7 +1,9 @@
 "use client";
 
+import React from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 import styles from "./index.module.scss";
 import base from "@/shared/styles/base.module.scss";
@@ -15,9 +17,20 @@ import { LastComments } from "./ui/LastComments";
 
 import { Button } from "@/shared/ui/Button";
 import { useAppSelector } from "@/shared/hooks/useRedux";
+import { useAuthContext } from "@/shared/context/AuthProvider";
 
 const MainPage = () => {
     const isAuth = useAppSelector((state) => state.user.isAuth);
+
+    const [search, setSearch] = React.useState("");
+    const { setRegisterModal } = useAuthContext();
+
+    const router = useRouter();
+
+    const searchProfi = (e: React.SubmitEvent<HTMLFormElement>) => {
+        e.preventDefault();
+        router.replace(`/profies?search=${search}`);
+    };
 
     return (
         <>
@@ -36,14 +49,19 @@ const MainPage = () => {
                             Найдите фотографа, модель или студию для съемок
                         </p>
 
-                        <div className={styles.mainSearchInner}>
+                        <form
+                            onSubmit={searchProfi}
+                            className={styles.mainSearchInner}
+                        >
                             <input
                                 className={styles.mainSearch}
                                 placeholder="Начать поиск"
+                                value={search}
+                                onChange={(e) => setSearch(e.target.value)}
                             />
 
                             <Search />
-                        </div>
+                        </form>
                     </div>
                 </div>
 
@@ -86,7 +104,11 @@ const MainPage = () => {
                         </p>
 
                         {!isAuth && (
-                            <Button auto className={styles.bannerButton}>
+                            <Button
+                                auto
+                                className={styles.bannerButton}
+                                onClick={() => setRegisterModal(true)}
+                            >
                                 Зарегистрироваться
                             </Button>
                         )}

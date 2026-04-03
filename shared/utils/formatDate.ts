@@ -1,14 +1,34 @@
-export const formatDate = (date: Date, format: string = "DD.MM.YYYY") => {
-    if (!(date instanceof Date) || isNaN(date.getTime())) {
+export const formatDate = (
+    date: string = "",
+    format: string = "DD.MM.YYYY",
+) => {
+    const newDate = new Date(date);
+
+    if (!(newDate instanceof Date) || isNaN(newDate.getTime())) {
         throw new Error("Некорректный объект Date");
     }
 
-    const day = date.getDate();
-    const month = date.getMonth() + 1; // getMonth() возвращает 0-11
-    const year = date.getFullYear();
-    const hours = date.getHours();
-    const minutes = date.getMinutes();
-    const seconds = date.getSeconds();
+    const day = newDate.getDate();
+    const month = newDate.getMonth() + 1; // getMonth() возвращает 0-11
+    const year = newDate.getFullYear();
+    const hours = newDate.getHours();
+    const minutes = newDate.getMinutes();
+    const seconds = newDate.getSeconds();
+
+    const nameMonths = [
+        "янв",
+        "фер",
+        "мар",
+        "апр",
+        "май",
+        "июн",
+        "июл",
+        "авг",
+        "сен",
+        "окт",
+        "ноя",
+        "дек",
+    ];
 
     // Вспомогательная функция для добавления ведущего нуля
     const padZero = (num: number): string => num.toString().padStart(2, "0");
@@ -19,6 +39,7 @@ export const formatDate = (date: Date, format: string = "DD.MM.YYYY") => {
         D: day.toString(),
         MM: padZero(month),
         M: month.toString(),
+        MMMM: nameMonths[month - 1],
         YYYY: year.toString(),
         YY: year.toString().slice(-2),
         HH: padZero(hours),

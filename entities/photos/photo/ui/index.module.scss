@@ -1,0 +1,79 @@
+.photoItem{
+    width: calc(100% / 3 - 60px / 3);
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+@media (max-width: 768px) {
+    .photoItem{
+        width: calc(100% / 2 - 30px / 2);
+    }
+}
+@media (max-width: 430px) {
+    .photoItem{
+        width: 100%;
+    }
+}
+
+.photoItemImage{
+    width: 100%;
+    position: relative;
+    aspect-ratio: 1.67 / 1;
+    border-radius: 8px 8px 0 0;
+    overflow: hidden;
+    background: var(--lightGrey);
+}
+
+@media (any-hover: hover) {
+    .photoItemImage{
+        cursor: pointer;
+    }
+}
+
+.photoItemImage img{
+    object-fit: cover;
+}
+
+.photoItemCheckbox{
+    position: absolute;
+    top: 8px;
+    right: 10px;
+    width: auto;
+    width: 16px;
+    height: 16px;
+    pointer-events: none;
+}
+
+.photoItemInfo{
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 20px;
+    padding: 1.5rem 1rem;
+    background: var(--white);
+    border: 1px solid var(--lightGrey);
+    border-radius: 0 0 8px 8px;
+}
+
+.photoItemNameInner{
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    color: var(--mainDark);
+    font-size: 1.4rem;
+    font-weight: 600;
+}
+
+.photoItemNameInner svg{
+    width: 18px;
+    flex-shrink: 0;
+    color: var(--main);
+}
+
+span.photoItemStats{
+    margin: 0;
+}

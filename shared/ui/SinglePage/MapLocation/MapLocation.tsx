@@ -1,5 +1,5 @@
 import React from "react";
-import { Map, Placemark, YMaps } from "@iminside/react-yandex-maps";
+import { Map, Placemark } from "@iminside/react-yandex-maps";
 
 import styles from "./index.module.scss";
 
@@ -7,10 +7,11 @@ import { Pin2 } from "@/shared/icons";
 
 type Props = {
     location: string;
-    distance: string;
+    distance?: string;
+    coords?: [number, number];
 };
 
-const MapLocation: React.FC<Props> = ({ location, distance }) => {
+const MapLocation: React.FC<Props> = ({ location, distance, coords }) => {
     return (
         <>
             <div className={styles.mapLocationBlock}>
@@ -18,21 +19,25 @@ const MapLocation: React.FC<Props> = ({ location, distance }) => {
 
                 <p className={styles.mapLocation}>{location}</p>
 
-                <p className={styles.mapLocationDistance}>{distance}</p>
+                {distance && (
+                    <p className={styles.mapLocationDistance}>{distance}</p>
+                )}
             </div>
 
-            <div className={styles.mapLocationMap}>
-                <Map
-                    defaultState={{
-                        center: [55.751574, 37.573856],
-                        zoom: 5,
-                    }}
-                    width="100%"
-                    height="100%"
-                >
-                    <Placemark geometry={[55.684751, 37.738521]} />
-                </Map>
-            </div>
+            {coords && (
+                <div className={styles.mapLocationMap}>
+                    <Map
+                        defaultState={{
+                            center: coords,
+                            zoom: 9,
+                        }}
+                        width="100%"
+                        height="100%"
+                    >
+                        <Placemark geometry={coords} options={{ iconColor: "#50A398" }} />
+                    </Map>
+                </div>
+            )}
         </>
     );
 };

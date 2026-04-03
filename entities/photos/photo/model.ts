@@ -1,5 +1,12 @@
 import type { Pagination } from "@/entities/pagination";
-import type { Location, LocationDTO, Specialization } from "@/entities/user";
+import type {
+    Favorite,
+    Like,
+    Location,
+    LocationDTO,
+    Specialization,
+} from "@/entities/user";
+import type { Album } from "../album";
 
 export type PhotoDTO = {
     image: string;
@@ -11,20 +18,37 @@ export type PhotoDTO = {
     focalLength: string;
     isForSale: boolean;
     isPublished: boolean;
-    iso: number;
+    iso: number | null;
     location: LocationDTO | null;
     shutterSpeed: string;
     albumIds: number[];
     specializationIds: number[];
 };
 
-export type Photo = Omit<PhotoDTO, "specializationIds" | "albumIds"> & {
+export type Photo = Omit<
+    PhotoDTO,
+    "specializationIds" | "albumIds" | "image"
+> & {
     id: number;
-    createdAt: Date;
-    updatedAt: Date;
+    createdAt: string;
+    updatedAt: string;
     specializations: Specialization[];
-    albums: [];
+    albums: Album[];
     location: Location | null;
+    imageKey: string;
+    imageUrl: string;
+    user: UserInfoShort;
+    favorites: Favorite;
+    likes: Like;
+};
+
+export type UserInfoShort = {
+    id: number;
+    firstName: string;
+    lastName: string;
+    avatarKey: string;
+    avatarUrl: string;
+    isPro: boolean;
 };
 
 export type PhotosPagination = Pagination & {

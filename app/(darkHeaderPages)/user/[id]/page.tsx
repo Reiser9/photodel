@@ -5,8 +5,8 @@ import Image from "next/image";
 import cn from "classnames";
 import parse from "html-react-parser";
 import { Dayjs } from "dayjs";
-import { YMaps, Map, Placemark } from "@iminside/react-yandex-maps";
-import { useQuery } from "@tanstack/react-query";
+import { Map, Placemark } from "@iminside/react-yandex-maps";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { redirect, useParams } from "next/navigation";
 
 import styles from "./index.module.scss";
@@ -34,6 +34,10 @@ import { Button } from "@/shared/ui/Button";
 import { UserInfoBlock } from "@/shared/ui/UserInfoBlock";
 import { Rating } from "@/shared/ui/Rating";
 import { formatDateToRussianMonthYear } from "@/shared/utils/formatDateToMothYear";
+import { formatDate } from "@/shared/utils/formatDate";
+import { Preloader } from "@/shared/ui/Preloader";
+import { NotContent } from "@/shared/ui/NotContent";
+import { useFavorite } from "@/features/favorite";
 
 const ProfileUserPage = () => {
     const { id } = useParams();
@@ -57,6 +61,9 @@ const ProfileUserPage = () => {
     const [note, setNote] = React.useState("");
 
     const { getUserProfileById, getShortInfo } = useUserInfo();
+    const { addFavorite, removeFavorite } = useFavorite();
+
+    const queryClient = useQueryClient();
 
     const resetRequestForm = () => {
         setDate(null);
@@ -70,7 +77,7 @@ const ProfileUserPage = () => {
         setNote("");
     };
 
-    const { data } = useQuery({
+    const { data, isLoading, isError } = useQuery({
         queryKey: ["userProfileInfo", id],
         queryFn: () => getUserProfileById(String(id)),
         gcTime: 0,
@@ -103,14 +110,65 @@ const ProfileUserPage = () => {
         socials,
         specializations,
         status,
-        temporaryLocation,
+        activeTemporaryLocation,
+        favorites,
     } = data || {};
+
+    const { isFavorite, favoriteId } = favorites || {};
+
+    const {
+        startDate,
+        endDate,
+        comment,
+        location: tempLocation,
+    } = activeTemporaryLocation || {};
+
+    const { address, latitude, longitude } = tempLocation || {};
+    const {
+        address: currentAddress,
+        latitude: currentLatitude,
+        longitude: currentLongitude,
+    } = location || {};
+
+    const invalidateUserProfile = () => {
+        queryClient.invalidateQueries({ queryKey: ["userProfileInfo", id] });
+    };
+
+    const addFavoriteHandler = () => {
+        if (!userId) return;
+
+        addFavorite(
+            {
+                entityType: "user",
+                entityId: userId,
+            },
+            invalidateUserProfile,
+        );
+    };
+
+    const removeFavoriteHandler = () => {
+        if (!favoriteId) return;
+
+        removeFavorite(favoriteId, invalidateUserProfile);
+    };
 
     React.useEffect(() => {
         if (myId == id) {
             redirect("/profile");
         }
     }, [id, myId]);
+
+    if (isLoading) {
+        return <Preloader page />;
+    }
+
+    if (isError) {
+        return <NotContent text="Произошла ошибка при загрузе данных" danger />;
+    }
+
+    if (!data) {
+        return <NotContent text="Пользователь не найден" danger />;
+    }
 
     return (
         <>
@@ -180,7 +238,7 @@ const ProfileUserPage = () => {
                             <Pin2 />
 
                             <span className={styles.profileLocationValue}>
-                                {location.country}
+                                {location.address}
                             </span>
 
                             {/* <span className={styles.profileLocationDistance}>
@@ -189,13 +247,13 @@ const ProfileUserPage = () => {
                         </button>
                     )}
 
-                    {temporaryLocation && (
+                    {activeTemporaryLocation && (
                         <button
                             className={styles.profileLocationCurrent}
                             onClick={() => setTempLocationModal(true)}
                         >
                             <Location />
-                            Сейчас в Коломбо, Шри-Ланка
+                            Сейчас в {tempLocation?.address}
                         </button>
                     )}
                 </div>
@@ -217,10 +275,23 @@ const ProfileUserPage = () => {
                         Запрос на съемку
                     </button>
 
-                    <button className={styles.profileButton}>
-                        <Bookmark2 />
-                        Добавить в избранное
-                    </button>
+                    {isFavorite ? (
+                        <button
+                            className={styles.profileButton}
+                            onClick={removeFavoriteHandler}
+                        >
+                            <Bookmark2 />
+                            Удалить из избранного
+                        </button>
+                    ) : (
+                        <button
+                            className={styles.profileButton}
+                            onClick={addFavoriteHandler}
+                        >
+                            <Bookmark2 />
+                            Добавить в избранное
+                        </button>
+                    )}
                 </div>
             </div>
 
@@ -300,18 +371,28 @@ const ProfileUserPage = () => {
                 </div>
             )}
 
-            <div className={styles.profileBlock}>
-                <p className={styles.profileBlockTitle}>Контакты</p>
+            {!!socials?.length && (
+                <div className={styles.profileBlock}>
+                    <p className={styles.profileBlockTitle}>Контакты</p>
 
-                <div className={styles.profileBlockPoints}>
-                    <div className={styles.profileBlockPoint}>
-                        <a href="#" className={styles.profileBlockLink}>
-                            <Mail />
-                            info@ivanov-alex.ru
-                        </a>
+                    <div className={styles.profileBlockPoints}>
+                        {socials.map((data) => (
+                            <div
+                                key={data.id}
+                                className={styles.profileBlockPoint}
+                            >
+                                <a
+                                    href={data.value}
+                                    className={styles.profileBlockLink}
+                                >
+                                    <Mail />
+                                    {data.name}
+                                </a>
+                            </div>
+                        ))}
                     </div>
                 </div>
-            </div>
+            )}
 
             <div className={styles.profileBlock}>
                 <p className={styles.profileBlockTitle}>Статистика</p>
@@ -579,24 +660,35 @@ const ProfileUserPage = () => {
                     <div className={styles.locationMapInner}>
                         <Map
                             defaultState={{
-                                center: [location.latitude, location.longitude],
+                                center: [
+                                    currentLatitude || 0,
+                                    currentLongitude || 0,
+                                ],
                                 zoom: 9,
                             }}
                             width="100%"
                             height="100%"
                         >
                             <Placemark
-                                geometry={[
-                                    location.latitude,
-                                    location.longitude,
-                                ]}
+                                geometry={[currentLatitude, currentLongitude]}
+                                options={{ iconColor: "#50a398" }}
                             />
                         </Map>
+                    </div>
+
+                    <div className={styles.locationInfo}>
+                        <div className={styles.locationInfoPoints}>
+                            <div className={styles.locationInfoPoint}>
+                                <p>Местонахождения:</p>
+
+                                <p>{currentAddress}</p>
+                            </div>
+                        </div>
                     </div>
                 </Modal>
             )}
 
-            {temporaryLocation && (
+            {activeTemporaryLocation && (
                 <Modal
                     value={tempLocationModal}
                     setValue={setTempLocationModal}
@@ -616,13 +708,16 @@ const ProfileUserPage = () => {
                     <div className={styles.locationMapInner}>
                         <Map
                             defaultState={{
-                                center: [55.751574, 37.573856],
-                                zoom: 5,
+                                center: [latitude || 0, longitude || 0],
+                                zoom: 9,
                             }}
                             width="100%"
                             height="100%"
                         >
-                            <Placemark geometry={[55.684751, 37.738521]} />
+                            <Placemark
+                                geometry={[latitude, longitude]}
+                                options={{ iconColor: "#50a398" }}
+                            />
                         </Map>
                     </div>
 
@@ -631,19 +726,22 @@ const ProfileUserPage = () => {
                             <div className={styles.locationInfoPoint}>
                                 <p>Нахожусь сейчас:</p>
 
-                                <p>Коломбо, Шри-Ланка</p>
+                                <p>{address}</p>
                             </div>
 
                             <div className={styles.locationInfoPoint}>
                                 <p>Дата пребывания:</p>
 
-                                <p>01.12.2020 - 30.12.2020</p>
+                                <p>
+                                    {formatDate(startDate)} -{" "}
+                                    {formatDate(endDate)}
+                                </p>
                             </div>
                         </div>
 
-                        <p className={styles.locationInfoText}>
-                            {temporaryLocation.comment}
-                        </p>
+                        <div className={styles.locationInfoText}>
+                            {parse(comment || "")}
+                        </div>
                     </div>
                 </Modal>
             )}

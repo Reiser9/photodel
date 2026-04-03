@@ -1,7 +1,6 @@
 "use client";
 
 import React from "react";
-import Link from "next/link";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useQuery } from "@tanstack/react-query";
@@ -9,7 +8,7 @@ import { useQuery } from "@tanstack/react-query";
 import styles from "./index.module.scss";
 
 import { Button } from "@/shared/ui/Button";
-import { ArrowLeft, CirclePlus, Lock, Remove, Unlock } from "@/shared/icons";
+import { CirclePlus, Lock, Unlock } from "@/shared/icons";
 import { Input } from "@/shared/ui/Input";
 import { Editor } from "@/shared/ui/Editor";
 import { EditorCore } from "@/shared/ui/Editor/Editor";
@@ -20,8 +19,9 @@ import { Checkbox } from "@/shared/ui/Checkbox";
 import { File } from "@/shared/ui/File";
 import { useFile } from "@/features/file";
 import useAlert from "@/shared/hooks/useAlert";
-import { usePhotos } from "@/features/photos";
+import { useAlbums, usePhotos } from "@/features/photos";
 import { getHtmlInEditor } from "@/shared/utils/getHtmlInEditor";
+import { BackLink } from "@/shared/ui/BackLink";
 
 const ProfileAddPhotoPage = () => {
     const [image, setImage] = React.useState("");
@@ -52,19 +52,31 @@ const ProfileAddPhotoPage = () => {
     const { uploadFile } = useFile();
     const { alertNotify } = useAlert();
     const { createPhoto } = usePhotos();
+    const { getMyAlbums } = useAlbums();
 
     const {
         data: categories,
-        isFetching: categoriesIsFetching,
+        isLoading: categoriesIsLoading,
         isError: categoriesIsError,
     } = useQuery({
         queryKey: ["categories"],
         queryFn: () => getCategories(),
     });
 
-    const uploadImage = async (image: File) => {
+    const {
+        data: usersAlbums,
+        isLoading: albumsIsLoading,
+        isError: albumsIsError,
+    } = useQuery({
+        queryKey: ["myAlbums"],
+        queryFn: () => getMyAlbums(),
+    });
+
+    const uploadImage = async (images: FileList) => {
         const formData = new FormData();
-        formData.append("files", image);
+        for (let i = 0; i < images.length; i++) {
+            formData.append("files", images[i]);
+        }
 
         const files = await uploadFile(formData);
 
@@ -72,6 +84,7 @@ const ProfileAddPhotoPage = () => {
             return alertNotify(
                 "Ошибка",
                 "Изображение не загружено, попробуйте позже",
+                "warn",
             );
 
         setImageUrl(files[0].url);
@@ -79,6 +92,22 @@ const ProfileAddPhotoPage = () => {
     };
 
     const createPhotoHandler = async () => {
+        if (!image || !imageUrl) {
+            return alertNotify(
+                "Ошибка",
+                "Изображение обязательно должно быть заполнено",
+                "warn",
+            );
+        }
+
+        if (!name) {
+            return alertNotify(
+                "Ошибка",
+                "Название обязательно должно быть заполнено",
+                "warn",
+            );
+        }
+
         let descriptionContent;
         if (descriptionRef.current) {
             const aboutData = await descriptionRef.current.save();
@@ -96,20 +125,17 @@ const ProfileAddPhotoPage = () => {
                 aperture,
                 focalLength,
                 shutterSpeed,
-                iso: +iso,
+                iso: iso ? +iso : null,
                 flash: flash || "",
-                albumIds: [],
+                albumIds: albums,
                 isForSale,
                 isPublished,
                 specializationIds: category,
                 description: descriptionContent || "",
                 location: coords && {
-                    country: address,
+                    address,
                     latitude: coords[0],
                     longitude: coords[1],
-                    houseNumber: "",
-                    city: "",
-                    street: "",
                 },
             },
             () => router.back(),
@@ -118,12 +144,7 @@ const ProfileAddPhotoPage = () => {
 
     return (
         <div className={styles.addPhotoWrapper}>
-            <div className={styles.createTop}>
-                <Link href="/profile/photos" className={styles.createBackLink}>
-                    <ArrowLeft />
-                    Все фотографии
-                </Link>
-            </div>
+            <BackLink text="Все фотографии" link="/profile/photos" />
 
             <div className={styles.addPhoto}>
                 <div className={styles.addPhotoContent}>
@@ -263,7 +284,7 @@ const ProfileAddPhotoPage = () => {
                                     value: data.id,
                                 }))}
                                 error={categoriesIsError}
-                                loading={categoriesIsFetching}
+                                loading={categoriesIsLoading}
                                 value={category}
                                 setValue={setCategory}
                                 allowClear
@@ -276,6 +297,24 @@ const ProfileAddPhotoPage = () => {
                         <p className={styles.addPhotoBlockTitle}>
                             Фото в альбомах
                         </p>
+
+                        {usersAlbums && (
+                            <Select
+                                title="Альбомы"
+                                placeholder="Выберите альбомы"
+                                full
+                                options={usersAlbums.data?.map((data) => ({
+                                    label: data.title,
+                                    value: data.id,
+                                }))}
+                                error={albumsIsError}
+                                loading={albumsIsLoading}
+                                value={albums}
+                                setValue={setAlbums}
+                                allowClear
+                                mode="multiple"
+                            />
+                        )}
                     </div>
 
                     <div className={styles.addPhotoButtons}>
@@ -313,11 +352,6 @@ const ProfileAddPhotoPage = () => {
                         value={isForSale}
                         setValue={setIsForSale}
                     />
-
-                    <button className={styles.addPhotoButton}>
-                        <Remove />
-                        Удалить фото
-                    </button>
                 </div>
             </div>
         </div>

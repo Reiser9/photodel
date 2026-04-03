@@ -1,0 +1,21 @@
+.placeById{
+    width: 100%;
+    padding: 2rem 0;
+}
+
+.placeByIdInner{
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 20px;
+}
+
+.placeByIdTop{
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 15px;
+    flex-wrap: wrap;
+}

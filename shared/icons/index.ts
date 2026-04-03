@@ -62,3 +62,8 @@ export { Edit2 } from "./Edit2";
 export { CirclePlus } from "./CirclePlus";
 export { Lock } from "./Lock";
 export { Unlock } from "./Unlock";
+export { Flash } from "./Flash";
+export { MapIcon } from "./MapIcon";
+export { Money2 } from "./Money2";
+export { Message } from "./Message";
+export { Settings } from "./Settings";

@@ -38,14 +38,14 @@
 }
 
 .danger .emptyImgInner{
-    background: var(--errorB);
-    color: var(--error);
+    color: #D86369;
 }
 
 .emptyContentText{
     text-align: center;
     font-size: 1.3rem;
     font-weight: 600;
+    color: var(--black);
 }
 
 @media (max-width: 480px) {

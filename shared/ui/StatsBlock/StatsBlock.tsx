@@ -33,16 +33,14 @@ const StatsBlock: React.FC<Props> = ({
                 </span>
             )}
 
-            {likes && (
-                <span
-                    className={cn(styles.action, styles.like, {
-                        [styles.active]: isLiked,
-                    })}
-                >
-                    <Heart />
-                    {likes}
-                </span>
-            )}
+            <span
+                className={cn(styles.action, styles.like, {
+                    [styles.active]: isLiked,
+                })}
+            >
+                <Heart />
+                {likes || 0}
+            </span>
 
             {comments && (
                 <span className={cn(styles.action, styles.comment)}>
@@ -51,16 +49,14 @@ const StatsBlock: React.FC<Props> = ({
                 </span>
             )}
 
-            {favorites && (
-                <span
-                    className={cn(styles.action, {
-                        [styles.active]: isFavorites,
-                    })}
-                >
-                    <Bookmark2 />
-                    {favorites}
-                </span>
-            )}
+            <span
+                className={cn(styles.action, {
+                    [styles.active]: isFavorites,
+                })}
+            >
+                <Bookmark2 />
+                {favorites || 0}
+            </span>
         </span>
     );
 };

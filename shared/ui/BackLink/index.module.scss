@@ -1,0 +1,20 @@
+.backLinkInner{
+    width: 100%;
+    border-bottom: 1px solid var(--lightGrey);
+}
+
+.backLink{
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    color: var(--mainDark);
+    font-size: 1.3rem;
+    font-weight: 500;
+    padding: 1rem 0;
+}
+
+.backLink svg{
+    width: 12px;
+    flex-shrink: 0;
+    color: var(--main);
+}

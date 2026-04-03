@@ -12,3 +12,14 @@
     border-radius: 8px;
     overflow: hidden;
 }
+
+@media (max-width: 650px) {
+    .locationMap{
+        height: 300px;
+    }
+}
+@media (max-width: 430px) {
+    .locationMap{
+        height: 250px;
+    }
+}

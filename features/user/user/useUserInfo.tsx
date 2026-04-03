@@ -1,15 +1,20 @@
 "use client";
 
+import type { AlbumsPagination } from "@/entities/photos/album";
+import type { PhotosPagination } from "@/entities/photos/photo";
+import type { PlacesPagination } from "@/entities/places";
 import type {
     Category,
     ProfileInfo,
     ProfileInfoDTO,
     Social,
     UserInfo,
+    UsersPagination,
 } from "@/entities/user";
 import useAlert from "@/shared/hooks/useAlert";
 import { useAppDispatch } from "@/shared/hooks/useRedux";
 import useRequest from "@/shared/hooks/useRequest";
+import { buildQueryString } from "@/shared/utils/buildQueryString";
 import { setAuthIsLoading } from "@/store/slices/app";
 import { setIsAuth, setIsVerified } from "@/store/slices/user";
 
@@ -91,7 +96,7 @@ const useUserInfo = () => {
         }
     };
 
-    const getSpecializations = async (category_ids: number[]) => {
+    const getSpecializations = async (category_ids: number[] = []) => {
         const response = await request<{ specializations: Category[] }>({
             url: `/specializations?category_ids=${category_ids}`,
         });
@@ -180,7 +185,7 @@ const useUserInfo = () => {
             method: "PATCH",
             data: {
                 firstName,
-                lastName
+                lastName,
             },
         });
 
@@ -196,6 +201,134 @@ const useUserInfo = () => {
         }
     };
 
+    const getUsersPhotosById = async (
+        id: number | string,
+        page = 1,
+        limit = 12,
+        album_id?: number | string,
+    ) => {
+        const queryString = buildQueryString({
+            page,
+            limit,
+            album_id,
+        });
+
+        const response = await request<PhotosPagination>({
+            url: `/users/${id}/photos?${queryString}`,
+            isAuth: true,
+        });
+
+        if (catchRequestError(response)) {
+            errorController(response);
+            return "";
+        }
+
+        if ("data" in response) {
+            return response.data;
+        }
+    };
+
+    const getUsersAlbumsById = async (
+        id: number | string,
+        page = 1,
+        limit = 12,
+    ) => {
+        const queryString = buildQueryString({
+            page,
+            limit,
+        });
+
+        const response = await request<AlbumsPagination>({
+            url: `/users/${id}/albums?${queryString}`,
+            isAuth: true,
+        });
+
+        if (catchRequestError(response)) {
+            errorController(response);
+            return "";
+        }
+
+        if ("data" in response) {
+            return response.data;
+        }
+    };
+
+    const getUsersPlacesById = async (
+        id: number | string,
+        page = 1,
+        limit = 12,
+    ) => {
+        const queryString = buildQueryString({
+            page,
+            limit,
+        });
+
+        const response = await request<PlacesPagination>({
+            url: `/users/${id}/filming-locations?${queryString}`,
+            isAuth: true,
+        });
+
+        if (catchRequestError(response)) {
+            errorController(response);
+            return "";
+        }
+
+        if ("data" in response) {
+            return response.data;
+        }
+    };
+
+    const getUsers = async ({
+        page = 1,
+        limit = 12,
+        latitude,
+        longitude,
+        order = "popularity",
+        place_id,
+        pro_category_id,
+        radius,
+        search = "",
+        specialization_id,
+    }: {
+        page?: number;
+        limit?: number;
+        latitude?: number;
+        longitude?: number;
+        order?: "popularity" | "distance";
+        radius?: number;
+        place_id?: number;
+        search?: string;
+        pro_category_id?: number;
+        specialization_id?: number;
+    }) => {
+        const queryString = buildQueryString({
+            page,
+            limit,
+            latitude,
+            longitude,
+            order,
+            radius,
+            place_id,
+            search,
+            pro_category_id,
+            specialization_id,
+        });
+
+        const response = await request<UsersPagination>({
+            url: `/users?${queryString}`,
+            isAuth: true,
+        });
+
+        if (catchRequestError(response)) {
+            errorController(response);
+            return "";
+        }
+
+        if ("data" in response) {
+            return response.data;
+        }
+    };
+
     return {
         getShortInfo,
         getProfileInfo,
@@ -205,7 +338,11 @@ const useUserInfo = () => {
         getSocials,
         updateProfile,
         updateUserAvatar,
-        updateUserName
+        updateUserName,
+        getUsersPhotosById,
+        getUsersAlbumsById,
+        getUsersPlacesById,
+        getUsers,
     };
 };
 

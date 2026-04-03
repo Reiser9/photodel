@@ -20,60 +20,55 @@ import {
     Text,
 } from "@/shared/icons";
 
-const sidebarLinks = [
-    {
-        path: "/user",
-        name: "Профиль",
-        icon: <Profile />,
-        exact: true,
-    },
-    {
-        path: "/user/photos",
-        name: "Фотографии",
-        icon: <Photo />,
-    },
-    {
-        path: "/user/places",
-        name: "Места для съемок",
-        icon: <Pin2 />,
-    },
-    {
-        path: "/user/photosessions",
-        name: "Фотосессии",
-        icon: <Book />,
-    },
-    {
-        path: "/user/trainings",
-        name: "Обучение",
-        icon: <Text />,
-    },
-    {
-        path: "/user/team",
-        name: "Команда",
-        icon: <Team />,
-    },
-    {
-        path: "/user/reviews",
-        name: "Отзывы",
-        icon: <Reviews />,
-    },
-    {
-        path: "/user/requests",
-        name: "Запросы",
-        icon: <Edit />,
-    },
-    {
-        path: "/user/favorites",
-        name: "Избранное",
-        icon: <Bookmark2 />,
-    },
-];
-
 const ProfileUserLayout: React.FC<{ children: React.ReactNode }> = ({
     children,
 }) => {
     const pathname = usePathname();
     const { id } = useParams();
+
+    const sidebarLinks = [
+        {
+            path: `/user/${id}`,
+            name: "Профиль",
+            icon: <Profile />,
+            exact: true,
+        },
+        {
+            path: `/user/${id}/photos`,
+            name: "Фотографии",
+            icon: <Photo />,
+        },
+        {
+            path: `/user/${id}/places`,
+            name: "Места для съемок",
+            icon: <Pin2 />,
+        },
+        {
+            path: `/user/${id}/photosessions`,
+            name: "Фотосессии",
+            icon: <Book />,
+        },
+        {
+            path: `/user/${id}/trainings`,
+            name: "Обучение",
+            icon: <Text />,
+        },
+        {
+            path: `/user/${id}/team`,
+            name: "Команда",
+            icon: <Team />,
+        },
+        {
+            path: `/user/${id}/reviews`,
+            name: "Отзывы",
+            icon: <Reviews />,
+        },
+        {
+            path: `/user/${id}/requests`,
+            name: "Запросы",
+            icon: <Edit />,
+        },
+    ];
 
     return (
         <div className={styles.profile}>

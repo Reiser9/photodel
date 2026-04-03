@@ -1,4 +1,5 @@
 import type { Pagination } from "@/entities/pagination";
+import type { Favorite } from "@/entities/user";
 
 export type AlbumDTO = {
     title: string;
@@ -7,11 +8,18 @@ export type AlbumDTO = {
     isPublished: boolean;
 };
 
-export type Album = AlbumDTO & {
+export type CreateAlbumDTO = AlbumDTO & {
+    photoIds: number[];
+};
+
+export type Album = Omit<AlbumDTO, "photoIds" | "image"> & {
     id: number;
-    userId: number;
-    createdAt: Date;
-    updatedAt: Date;
+    createdAt: string;
+    updatedAt: string;
+    photosCount: number;
+    imageKey: string;
+    imageUrl: string;
+    favorites: Favorite;
 };
 
 export type AlbumsPagination = Pagination & {

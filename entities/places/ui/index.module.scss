@@ -1,0 +1,82 @@
+.placesItem{
+    width: calc(100% / 3 - 24px / 3);
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    border-radius: 8px;
+    border: 1px solid var(--lightGrey);
+    overflow: hidden;
+}
+
+@media (max-width: 768px) {
+    .placesItem{
+        width: calc(100% / 2 - 12px / 2);
+    }
+}
+@media (max-width: 440px) {
+    .placesItem{
+        width: 100%;
+    }
+}
+
+.placesItemImage{
+    position: relative;
+    width: 100%;
+    aspect-ratio: 1.68 / 1;
+    overflow: hidden;
+}
+
+@media (any-hover: hover) {
+    .placesItemImage{
+        cursor: pointer;
+    }
+}
+
+.placesItemInfo{
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 5px;
+    padding: 1.2rem 1rem;
+}
+
+.placesItemLocation{
+    width: 100%;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+
+.placesItemLocation span{
+    font-size: 1.2rem;
+    color: var(--grey);
+}
+
+.placesItemTitle{
+    font-size: 1.4rem;
+    font-weight: 600;
+    color: var(--mainDark);
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 5px;
+    flex-wrap: wrap;
+}
+
+.placesItemTitle svg{
+    width: 20px;
+    flex-shrink: 0;
+    color: var(--main);
+}
+
+.placeItemCheckbox{
+    position: absolute;
+    top: 8px;
+    right: 10px;
+    width: auto;
+    width: 16px;
+    height: 16px;
+    pointer-events: none;
+}

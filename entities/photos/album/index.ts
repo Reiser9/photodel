@@ -1,1 +1,6 @@
-export type { Album, AlbumDTO, AlbumsPagination } from "./model";
+export type {
+    Album,
+    AlbumDTO,
+    AlbumsPagination,
+    CreateAlbumDTO,
+} from "./model";

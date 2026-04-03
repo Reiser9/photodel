@@ -2,6 +2,7 @@
 
 import React from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
+import { useQueryClient } from "@tanstack/react-query";
 
 import styles from "./index.module.scss";
 
@@ -34,8 +35,13 @@ const Login: React.FC<Props> = ({
         formState: { errors },
     } = useForm<LoginData>();
 
+    const queryClient = useQueryClient();
+
     const onSubmit: SubmitHandler<LoginData> = (data) => {
-        login(data, () => setValue(false));
+        login(data, () => {
+            setValue(false);
+            queryClient.invalidateQueries({ queryKey: ["shortInfo"] });
+        });
     };
 
     return (

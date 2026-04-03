@@ -1,0 +1,86 @@
+.albumItem{
+    width: calc(100% / 3 - 60px / 3);
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    border: 1px solid var(--lightGrey);
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.albumItemCheckbox{
+    position: absolute;
+    top: 8px;
+    right: 10px;
+    width: auto;
+    width: 16px;
+    height: 16px;
+    pointer-events: none;
+}
+
+@media (max-width: 768px) {
+    .albumItem{
+        width: calc(100% / 2 - 12px / 2);
+    }
+}
+@media (max-width: 400px) {
+    .albumItem{
+        width: 100%;
+    }
+}
+
+.albumItemImage{
+    width: 100%;
+    aspect-ratio: 1.67 / 1;
+    position: relative;
+    overflow: hidden;
+    background: var(--lightGrey);
+}
+
+@media (any-hover: hover) {
+    .albumItemImage{
+        cursor: pointer;
+    }
+}
+
+.albumItemImage img{
+    object-fit: cover;
+}
+
+.albumItemInfo{
+    width: 100%;
+    padding: 1.2rem 1rem;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+}
+
+.albumItemNameInner{
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    color: var(--mainDark);
+    font-size: 1.4rem;
+    font-weight: 600;
+}
+
+.albumItemNameInner svg{
+    width: 18px;
+    flex-shrink: 0;
+    color: var(--main);
+}
+
+.albumItemInfoCount{
+    font-size: 1.4rem;
+    color: var(--black);
+    font-weight: 500;
+}
+
+@media (max-width: 440px) {
+    .albumItemInfoCount{
+        font-size: 1.3rem;
+    }
+}

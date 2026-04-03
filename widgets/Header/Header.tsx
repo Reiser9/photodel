@@ -28,6 +28,7 @@ import { useAuth, useUserInfo } from "@/features/user";
 import { HoverMenu, MenuLink } from "@/shared/ui/HoverMenu";
 import { Pro } from "@/shared/ui/Pro";
 import { ConfirmModal } from "@/shared/ui/Modal";
+import { useAuthContext } from "@/shared/context/AuthProvider";
 
 type Props = {
     light?: boolean;
@@ -40,8 +41,9 @@ const Header: React.FC<Props> = ({ light = false }) => {
     const [profileMenu, setProfileMenu] = React.useState(false);
     const [profileAuthMenu, setProfileAuthMenu] = React.useState(false);
 
-    const [authModal, setAuthModal] = React.useState(false);
-    const [registerModal, setRegisterModal] = React.useState(false);
+    const { loginModal, setLoginModal, registerModal, setRegisterModal } =
+        useAuthContext();
+
     const [recoveryModal, setRecoveryModal] = React.useState(false);
 
     const { theme, toggleTheme, chooseTheme } = useThemeContext();
@@ -61,7 +63,7 @@ const Header: React.FC<Props> = ({ light = false }) => {
         refetchOnMount: true,
     });
 
-    const { avatar, firstName, lastName } = data || {};
+    const { avatarUrl, firstName, lastName } = data || {};
 
     return (
         <>
@@ -147,9 +149,9 @@ const Header: React.FC<Props> = ({ light = false }) => {
                                             <Notify />
                                         </button>
 
-                                        <p className={styles.profileCounter}>
+                                        {/* <p className={styles.profileCounter}>
                                             2
-                                        </p>
+                                        </p> */}
                                     </div>
 
                                     <div
@@ -166,9 +168,9 @@ const Header: React.FC<Props> = ({ light = false }) => {
                                                         styles.profileAvatar
                                                     }
                                                 >
-                                                    {avatar && (
+                                                    {avatarUrl && (
                                                         <Image
-                                                            src={avatar}
+                                                            src={avatarUrl}
                                                             alt={`Аватар пользователя ${firstName} ${lastName}`}
                                                             fill
                                                         />
@@ -192,9 +194,9 @@ const Header: React.FC<Props> = ({ light = false }) => {
                                                         styles.profileMenuUserImg
                                                     }
                                                 >
-                                                    {avatar && (
+                                                    {avatarUrl && (
                                                         <Image
-                                                            src={avatar}
+                                                            src={avatarUrl}
                                                             alt={`Аватар пользователя ${firstName} ${lastName}`}
                                                             fill
                                                         />
@@ -227,6 +229,11 @@ const Header: React.FC<Props> = ({ light = false }) => {
                                                     href="/profile"
                                                     className={
                                                         styles.profileMenuNavLink
+                                                    }
+                                                    onClick={() =>
+                                                        setProfileAuthMenu(
+                                                            false,
+                                                        )
                                                     }
                                                 >
                                                     Мой профиль
@@ -299,9 +306,9 @@ const Header: React.FC<Props> = ({ light = false }) => {
                                             </div>
                                         </HoverMenu>
 
-                                        <p className={styles.profileCounter}>
+                                        {/* <p className={styles.profileCounter}>
                                             3
-                                        </p>
+                                        </p> */}
                                     </div>
                                 </div>
                             ) : (
@@ -319,7 +326,7 @@ const Header: React.FC<Props> = ({ light = false }) => {
                                     >
                                         <MenuLink
                                             onClick={() => {
-                                                setAuthModal(true);
+                                                setLoginModal(true);
                                                 setProfileMenu(false);
                                             }}
                                         >
@@ -493,14 +500,14 @@ const Header: React.FC<Props> = ({ light = false }) => {
             {!isAuth && (
                 <>
                     <Login
-                        value={authModal}
-                        setValue={setAuthModal}
+                        value={loginModal}
+                        setValue={setLoginModal}
                         recoveryCallback={() => {
-                            setAuthModal(false);
+                            setLoginModal(false);
                             setRecoveryModal(true);
                         }}
                         registerCallback={() => {
-                            setAuthModal(false);
+                            setLoginModal(false);
                             setRegisterModal(true);
                         }}
                     />
@@ -510,7 +517,7 @@ const Header: React.FC<Props> = ({ light = false }) => {
                         setValue={setRegisterModal}
                         loginCallback={() => {
                             setRegisterModal(false);
-                            setAuthModal(true);
+                            setLoginModal(true);
                         }}
                     />
 
@@ -519,7 +526,7 @@ const Header: React.FC<Props> = ({ light = false }) => {
                         setValue={setRecoveryModal}
                         loginCallback={() => {
                             setRecoveryModal(false);
-                            setAuthModal(true);
+                            setLoginModal(true);
                         }}
                         registerCallback={() => {
                             setRecoveryModal(false);

@@ -1,0 +1,32 @@
+export const Settings = ({ ...props }) => {
+    return (
+        <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+            {...props}
+        >
+            <g clipPath="url(#clip0_6319_15580)">
+                <path
+                    d="M9.75 1.5V4.5L8.25 5.25L6 3L3 6L5.25 8.25L4.5 9.75H1.5V14.25H4.5L5.25 15.75L3 18L6 21L8.25 18.75L9.75 19.5V22.5H14.25V19.5L15.75 18.75L18 21L21 18L18.75 15.75L19.5 14.25H22.5V9.75H19.5L18.75 8.25L21 6L18 3L15.75 5.25L14.25 4.5V1.5H9.75Z"
+                    stroke="currentColor"
+                    strokeWidth="1.8"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                />
+                <path
+                    d="M12 15C13.6569 15 15 13.6569 15 12C15 10.3431 13.6569 9 12 9C10.3431 9 9 10.3431 9 12C9 13.6569 10.3431 15 12 15Z"
+                    stroke="currentColor"
+                    strokeWidth="1.8"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                />
+            </g>
+            <defs>
+                <clipPath id="clip0_6319_15580">
+                    <rect width="24" height="24" fill="white" />
+                </clipPath>
+            </defs>
+        </svg>
+    );
+};

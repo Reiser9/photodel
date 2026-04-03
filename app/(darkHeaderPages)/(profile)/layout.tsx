@@ -12,10 +12,13 @@ import {
     Book,
     Bookmark2,
     Edit,
+    Message,
+    Money2,
     Photo,
     Pin2,
     Profile,
     Reviews,
+    Settings,
     Team,
     Text,
 } from "@/shared/icons";
@@ -23,50 +26,65 @@ import { AuthWrapper } from "@/shared/wrappers/AuthWrapper";
 
 const sidebarLinks = [
     {
-        path: "/profile",
+        paths: ["/profile", "/profile/edit"],
         name: "Мой профиль",
         icon: <Profile />,
         exact: true,
     },
     {
-        path: "/profile/photos",
-        name: "Фотографии",
-        icon: <Photo />,
-    },
-    {
-        path: "/profile/places",
-        name: "Места для съемок",
-        icon: <Pin2 />,
-    },
-    {
-        path: "/profile/photosessions",
-        name: "Фотосессии",
-        icon: <Book />,
-    },
-    {
-        path: "/profile/trainings",
-        name: "Обучение",
-        icon: <Text />,
-    },
-    {
-        path: "/profile/team",
-        name: "Команда",
-        icon: <Team />,
-    },
-    {
-        path: "/profile/reviews",
-        name: "Отзывы",
-        icon: <Reviews />,
-    },
-    {
-        path: "/profile/requests",
+        paths: ["/profile/requests"],
         name: "Запросы",
         icon: <Edit />,
     },
     {
-        path: "/profile/favorites",
+        paths: ["/profile/messanger"],
+        name: "Сообщения",
+        icon: <Message />,
+    },
+    {
+        paths: ["/profile/photos"],
+        name: "Фотографии",
+        icon: <Photo />,
+    },
+    {
+        paths: ["/profile/places"],
+        name: "Места для съемок",
+        icon: <Pin2 />,
+    },
+    {
+        paths: ["/profile/photosessions"],
+        name: "Фотосессии",
+        icon: <Book />,
+    },
+    {
+        paths: ["/profile/trainings"],
+        name: "Обучение",
+        icon: <Text />,
+    },
+    {
+        paths: ["/profile/team"],
+        name: "Команда",
+        icon: <Team />,
+    },
+    {
+        paths: ["/profile/reviews"],
+        name: "Отзывы",
+        icon: <Reviews />,
+    },
+    {
+        paths: ["/profile/favorites"],
         name: "Избранное",
         icon: <Bookmark2 />,
+    },
+    {
+        paths: ["/profile/finance"],
+        name: "Финансы",
+        icon: <Money2 />,
+    },
+    {
+        paths: ["/profile/settings"],
+        name: "Настройки",
+        icon: <Settings />,
     },
 ];
 
@@ -74,6 +92,18 @@ const ProfileLayout: React.FC<{ children: React.ReactNode }> = ({
     children,
 }) => {
     const pathname = usePathname();
+
+    const checkPathExact = (pathname: string, paths: string[]) => {
+        let pathIsActive = false;
+
+        paths.forEach((path) => {
+            if (path === pathname) {
+                pathIsActive = true;
+            }
+        });
+
+        return pathIsActive;
+    };
 
     return (
         <AuthWrapper>
@@ -84,11 +114,14 @@ const ProfileLayout: React.FC<{ children: React.ReactNode }> = ({
                             {sidebarLinks.map((data, id) => (
                                 <Link
                                     key={id}
-                                    href={data.path}
+                                    href={data.paths[0]}
                                     className={cn(styles.profileSidebarLink, {
                                         [styles.active]: data.exact
-                                            ? pathname === data.path
-                                            : pathname.startsWith(data.path),
+                                            ? checkPathExact(
+                                                  pathname,
+                                                  data.paths,
+                                              )
+                                            : pathname.includes(data.paths[0]),
                                     })}
                                 >
                                     {data.icon}

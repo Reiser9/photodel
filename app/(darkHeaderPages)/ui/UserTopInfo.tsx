@@ -23,7 +23,15 @@ const UserTopInfo = () => {
         enabled: !!id,
     });
 
-    const { avatar, firstName, lastName, isPro, id: userId } = data || {};
+    const {
+        avatar,
+        firstName,
+        lastName,
+        isPro,
+        id: userId,
+        reviews,
+    } = data || {};
+    const { rating } = reviews || {};
 
     return (
         <>
@@ -43,7 +51,7 @@ const UserTopInfo = () => {
                         size="medium"
                     />
 
-                    <Rating rating="4.92" />
+                    <Rating rating={rating || 0} />
                 </div>
             )}
         </>

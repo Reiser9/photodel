@@ -23,7 +23,6 @@ type Props<T> = {
     loading?: boolean;
     error?: boolean;
     errorMessage?: string;
-    showSearch?: boolean;
     clear?: boolean;
     notContentText?: string;
     errorText?: string;

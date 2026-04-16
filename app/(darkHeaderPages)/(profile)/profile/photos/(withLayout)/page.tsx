@@ -20,15 +20,16 @@ const ProfilePhotoPage = () => {
 
     const [confirmDeleteModal, setConfirmDeleteModal] = React.useState(false);
 
-    const { getMyPhotos, deleteBulkPhotos } = usePhotos();
+    const { getPhotos, deleteBulkPhotos } = usePhotos();
 
     const queryClient = useQueryClient();
 
     const { data, isLoading, isError } = useQuery({
         queryKey: ["myPhotos", page],
         queryFn: () =>
-            getMyPhotos({
+            getPhotos({
                 page,
+                my: true
             }),
     });
 

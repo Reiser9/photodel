@@ -31,7 +31,7 @@ const useUserInfo = () => {
             return "";
         }
 
-        const response = await request<UserInfo>({
+        const response = await request<{ user: UserInfo }>({
             url: "/users/me",
             isAuth: true,
         }).finally(() => dispatch(setAuthIsLoading(false)));
@@ -50,7 +50,7 @@ const useUserInfo = () => {
     };
 
     const getProfileInfo = async () => {
-        const response = await request<ProfileInfo>({
+        const response = await request<{ profile: ProfileInfo }>({
             url: "/users/profile",
             isAuth: true,
         });
@@ -66,7 +66,7 @@ const useUserInfo = () => {
     };
 
     const getUserProfileById = async (userId: number | string) => {
-        const response = await request<ProfileInfo>({
+        const response = await request<{ profile: ProfileInfo }>({
             url: `/users/${userId}/profile`,
             isAuth: true,
         });
@@ -130,7 +130,7 @@ const useUserInfo = () => {
         data: ProfileInfoDTO,
         successCallback = () => {},
     ) => {
-        const response = await request<ProfileInfo>({
+        const response = await request<{ profile: ProfileInfo }>({
             url: "/users/profile",
             method: "PATCH",
             isAuth: true,
@@ -153,7 +153,7 @@ const useUserInfo = () => {
         avatar: string,
         successCallback = () => {},
     ) => {
-        const response = await request<UserInfo>({
+        const response = await request<{ user: UserInfo }>({
             url: "/users/avatar",
             isAuth: true,
             method: "PATCH",
@@ -179,7 +179,7 @@ const useUserInfo = () => {
         lastName: string,
         successCallback = () => {},
     ) => {
-        const response = await request<UserInfo>({
+        const response = await request<{ user: UserInfo }>({
             url: "/users/name",
             isAuth: true,
             method: "PATCH",
@@ -198,33 +198,6 @@ const useUserInfo = () => {
 
         if ("data" in response) {
             return response.data.user;
-        }
-    };
-
-    const getUsersPhotosById = async (
-        id: number | string,
-        page = 1,
-        limit = 12,
-        album_id?: number | string,
-    ) => {
-        const queryString = buildQueryString({
-            page,
-            limit,
-            album_id,
-        });
-
-        const response = await request<PhotosPagination>({
-            url: `/users/${id}/photos?${queryString}`,
-            isAuth: true,
-        });
-
-        if (catchRequestError(response)) {
-            errorController(response);
-            return "";
-        }
-
-        if ("data" in response) {
-            return response.data;
         }
     };
 
@@ -253,37 +226,12 @@ const useUserInfo = () => {
         }
     };
 
-    const getUsersPlacesById = async (
-        id: number | string,
-        page = 1,
-        limit = 12,
-    ) => {
-        const queryString = buildQueryString({
-            page,
-            limit,
-        });
-
-        const response = await request<PlacesPagination>({
-            url: `/users/${id}/filming-locations?${queryString}`,
-            isAuth: true,
-        });
-
-        if (catchRequestError(response)) {
-            errorController(response);
-            return "";
-        }
-
-        if ("data" in response) {
-            return response.data;
-        }
-    };
-
     const getUsers = async ({
         page = 1,
         limit = 12,
         latitude,
         longitude,
-        order = "popularity",
+        sort = "popularity",
         place_id,
         pro_category_id,
         radius,
@@ -294,7 +242,7 @@ const useUserInfo = () => {
         limit?: number;
         latitude?: number;
         longitude?: number;
-        order?: "popularity" | "distance";
+        sort?: "newest" | "popularity" | "distance";
         radius?: number;
         place_id?: number;
         search?: string;
@@ -306,7 +254,7 @@ const useUserInfo = () => {
             limit,
             latitude,
             longitude,
-            order,
+            sort,
             radius,
             place_id,
             search,
@@ -339,9 +287,7 @@ const useUserInfo = () => {
         updateProfile,
         updateUserAvatar,
         updateUserName,
-        getUsersPhotosById,
         getUsersAlbumsById,
-        getUsersPlacesById,
         getUsers,
     };
 };

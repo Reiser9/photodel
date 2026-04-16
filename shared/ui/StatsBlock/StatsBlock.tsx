@@ -6,22 +6,28 @@ import styles from "./index.module.scss";
 import { Bookmark2, Comment, Heart, Star } from "@/shared/icons";
 
 type Props = {
-    likes?: number | string;
+    isComment?: boolean;
     comments?: number | string;
     favorites?: number | string;
-    rate?: number | string;
-    isLiked?: boolean;
     isFavorites?: boolean;
+    showFavorites?: boolean;
+    rate?: number | string;
+    likes?: number | string;
+    isLiked?: boolean;
+    showLikes?: boolean;
     className?: string;
 };
 
 const StatsBlock: React.FC<Props> = ({
     comments,
+    isComment = false,
     favorites,
-    likes,
-    rate,
-    isLiked = false,
     isFavorites = false,
+    showFavorites = false,
+    rate,
+    likes,
+    isLiked = false,
+    showLikes = false,
     className = "",
 }) => {
     return (
@@ -33,30 +39,34 @@ const StatsBlock: React.FC<Props> = ({
                 </span>
             )}
 
-            <span
-                className={cn(styles.action, styles.like, {
-                    [styles.active]: isLiked,
-                })}
-            >
-                <Heart />
-                {likes || 0}
-            </span>
-
-            {comments && (
-                <span className={cn(styles.action, styles.comment)}>
-                    <Comment />
-                    {comments}
+            {showLikes && (
+                <span
+                    className={cn(styles.action, styles.like, {
+                        [styles.active]: isLiked,
+                    })}
+                >
+                    <Heart />
+                    {likes || 0}
                 </span>
             )}
 
-            <span
-                className={cn(styles.action, {
-                    [styles.active]: isFavorites,
-                })}
-            >
-                <Bookmark2 />
-                {favorites || 0}
-            </span>
+            {isComment && (
+                <span className={cn(styles.action, styles.comment)}>
+                    <Comment />
+                    {comments || 0}
+                </span>
+            )}
+
+            {showFavorites && (
+                <span
+                    className={cn(styles.action, {
+                        [styles.active]: isFavorites,
+                    })}
+                >
+                    <Bookmark2 />
+                    {favorites || 0}
+                </span>
+            )}
         </span>
     );
 };

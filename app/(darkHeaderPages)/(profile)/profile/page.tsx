@@ -42,7 +42,9 @@ const ProfilePage = () => {
         socials,
         about,
         status,
+        reviews,
     } = profileData || {};
+    const { rating } = reviews || {};
 
     return (
         <>
@@ -94,7 +96,7 @@ const ProfilePage = () => {
                     </div>
 
                     <div className={styles.profileRating}>
-                        <Rating rating="4.92" />
+                        <Rating rating={rating || 0} />
                     </div>
                 </div>
             </div>

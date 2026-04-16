@@ -64,7 +64,7 @@ const ProfileAlbumEdit = () => {
         deletePhotosInAlbum,
         addPhotosToAlbum,
     } = useAlbums();
-    const { getMyPhotos } = usePhotos();
+    const { getPhotos } = usePhotos();
     const router = useRouter();
     const queryClient = useQueryClient();
 
@@ -79,11 +79,12 @@ const ProfileAlbumEdit = () => {
         isLoading: photosIsLoading,
         isError: photosIsError,
     } = useQuery({
-        queryKey: ["myPhotos", page, String(id)],
+        queryKey: ["photos", page, String(id)],
         queryFn: () =>
-            getMyPhotos({
+            getPhotos({
                 page,
                 album_id: String(id),
+                my: true
             }),
         enabled: !!id,
     });
@@ -93,12 +94,13 @@ const ProfileAlbumEdit = () => {
         isLoading: myPhotosIsLoading,
         isError: myPhotosIsError,
     } = useQuery({
-        queryKey: ["myPhotos", page, 6],
+        queryKey: ["photos", page, 6],
         queryFn: () =>
-            getMyPhotos({
+            getPhotos({
                 page,
                 limit: 6,
                 excluded_album_id: String(id),
+                my: true
             }),
         enabled: !!photosAddModal,
     });
@@ -136,7 +138,7 @@ const ProfileAlbumEdit = () => {
                 setAction(null);
                 setSelectedIds([]);
                 queryClient.invalidateQueries({
-                    queryKey: ["myPhotos"],
+                    queryKey: ["photos"],
                 });
                 alertNotify("Успешно", "Фотографии удалены из альбома");
             },
@@ -147,7 +149,7 @@ const ProfileAlbumEdit = () => {
         addPhotosToAlbum(String(id), { ids: selectedAddIds }, () => {
             setSelectedAddIds([]);
             queryClient.invalidateQueries({
-                queryKey: ["myPhotos"],
+                queryKey: ["photos"],
             });
             alertNotify("Успешно", "Фотографии добавлены");
             setPhotosAddModal(false);

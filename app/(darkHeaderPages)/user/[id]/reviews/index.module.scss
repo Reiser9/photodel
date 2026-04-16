@@ -1,0 +1,247 @@
+.reviews{
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+.reviewsContent{
+    width: 100%;
+    margin-top: 3rem;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+.reviewsTitleInner{
+    width: 100%;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    justify-content: space-between;
+}
+
+.reviewsTop{
+    display: flex;
+    align-items: center;
+    gap: 40px;
+}
+
+.reviewsCount{
+    font-size: 1.3rem;
+    color: var(--black);
+}
+
+.reviewsCount span{
+    font-weight: 600;
+}
+
+.reviewsItems{
+    width: 100%;
+    margin-top: 3rem;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 20px;
+}
+
+.reviewsItemTo{
+    width: 100%;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 1.5rem 0 2.5rem 0;
+    flex-wrap: wrap;
+}
+
+.reviewsItemTo:first-child{
+    margin-top: 0;
+}
+
+.reviewsItemToTitle{
+    text-transform: uppercase;
+    font-size: 1.3rem;
+    font-weight: 600;
+    color: var(--black);
+}
+
+.reviewsItemStatus{
+    width: 100%;
+    padding: 1.1rem 1.8rem;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 7px;
+    background: rgba(242, 207, 116, .3);
+    margin-top: 1.5rem;
+}
+
+.reviewsItemStatus.error{
+    background: rgba(216, 99, 105, .3);
+}
+
+.reviewsItemStatus:first-child{
+    margin-top: 0;
+}
+
+.reviewsItemStatusTitle{
+    font-size: 1.3rem;
+    font-weight: 500;
+}
+
+.reviewsItemStatusText{
+    font-size: 1.3rem;
+}
+
+.createReviewTop{
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    margin-top: 2rem;
+}
+
+.thanksModal, .reviewModal{
+    width: 100%;
+    margin-top: 2rem;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 20px;
+}
+
+.thanksModalText{
+    font-size: 1.3rem;
+    color: var(--black);
+}
+
+.reviewModalButtons{
+    width: 100%;
+    display: flex;
+    justify-content: flex-end;
+}
+
+.reviewsItemButtons{
+    margin-top: 2rem;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    justify-content: flex-end;
+    flex-wrap: wrap;
+}
+
+.reviewsItemButton{
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 1.2rem;
+    color: var(--black);
+    font-weight: 500;
+}
+
+.reviewsItemButton svg{
+    width: 18px;
+    height: 18px;
+    flex-shrink: 0;
+    color: var(--main);
+}
+
+.reviewsItemButton.danger svg{
+    color: var(--red);
+}
+
+@media (any-hover: hover) {
+    .reviewsItemButton:hover{
+        opacity: 0.7;
+    }
+}
+
+.reviewModalPhotos{
+    width: 100%;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.reviewModalPhoto{
+    width: calc(100% / 3 - 20px / 3);
+    border-radius: 12px;
+    position: relative;
+    overflow: hidden;
+    background: var(--lightGrey);
+    height: 130px;
+}
+
+.reviewAddPhotoItemUpload{
+    width: calc(100% / 3 - 20px / 3);
+}
+
+@media (max-width: 600px) {
+    .reviewModalPhoto, .reviewAddPhotoItemUpload{
+        width: calc(100% / 2 - 10px / 2);
+    }
+}
+@media (max-width: 375px) {
+    .reviewModalPhoto, .reviewAddPhotoItemUpload{
+        width: 100%;
+        height: 150px;
+    }
+}
+
+.reviewModalPhoto img{
+    object-fit: cover;
+}
+
+.addReviewLabel{
+    width: 100%;
+    height: 100%;
+    min-height: 130px;
+    border-radius: 12px;
+    border: 1px dashed var(--main);
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    justify-content: center;
+    gap: 6px;
+    font-size: 1.3rem;
+    font-weight: 500;
+    position: relative;
+    overflow: hidden;
+    color: var(--black);
+    text-align: center;
+}
+
+@media (any-hover: hover) {
+    .addReviewLabel{
+        cursor: pointer;
+    }
+}
+
+.addReviewLabel svg{
+    width: 24px;
+    height: 24px;
+    flex-shrink: 0;
+    color: var(--main);
+}
+
+.reviewAddPhotoItemRemove{
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    z-index: 5;
+    width: 36px;
+    height: 36px;
+    color: var(--red);
+    border-radius: 50%;
+    background: var(--white);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.reviewAddPhotoItemRemove svg{
+    width: 24px;
+    flex-shrink: 0;
+}

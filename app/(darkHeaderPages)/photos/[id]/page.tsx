@@ -39,6 +39,8 @@ import { formatDate } from "@/shared/utils/formatDate";
 import { useUserInfo } from "@/features/user";
 import { useFavorite } from "@/features/favorite";
 import { useLike } from "@/features/like";
+import useAlert from "@/shared/hooks/useAlert";
+import { useReviews } from "@/features/reviews";
 
 const PhotoByIdPage = () => {
     const { id } = useParams();
@@ -46,8 +48,12 @@ const PhotoByIdPage = () => {
     const { getShortInfo } = useUserInfo();
     const { addFavorite, removeFavorite } = useFavorite();
     const { addLike, removeLike } = useLike();
+    const { alertNotify } = useAlert();
+    const { getReviews, createReview } = useReviews();
 
     const queryClient = useQueryClient();
+
+    const [comment, setComment] = React.useState("");
 
     const [buyPhotoModal, setBuyPhotoModal] = React.useState(false);
 
@@ -62,6 +68,19 @@ const PhotoByIdPage = () => {
     });
 
     const { id: currentUserId } = shortInfo || {};
+
+    const {
+        data: reviewsData,
+        isLoading: reviewsIsLoading,
+        isError: reviewsIsError,
+    } = useQuery({
+        queryKey: ["photoCommentsById", String(id)],
+        queryFn: () =>
+            getReviews({ type: "photo", entity_id: +(id || 0), limit: 100 }),
+        enabled: !!String(id),
+    });
+
+    const { data: reviews } = reviewsData || {};
 
     const {
         id: photoId,
@@ -82,12 +101,14 @@ const PhotoByIdPage = () => {
         user,
         favorites,
         likes,
+        reviews: reviewsPhoto,
     } = data || {};
 
     const { avatarUrl, firstName, isPro, lastName, id: userId } = user || {};
     const { address, latitude, longitude } = location || {};
     const { favoriteId, isFavorite, count: favoriteCount } = favorites || {};
     const { count: likesCount, isLiked, likeId } = likes || {};
+    const { count: commentsCount } = reviewsPhoto || {};
 
     const invalidatePhotoData = () => {
         queryClient.invalidateQueries({ queryKey: ["photoById", id] });
@@ -127,6 +148,33 @@ const PhotoByIdPage = () => {
                 invalidatePhotoData,
             );
         }
+    };
+
+    const leaveCommentHandler = () => {
+        if (!comment.trim()) {
+            return alertNotify(
+                "Внимание",
+                "Поле комментария должно быть заполнено",
+                "warn",
+            );
+        }
+
+        createReview(
+            {
+                content: comment,
+                entityId: +String(id),
+                entityType: "photo",
+                photoIds: [],
+            },
+            () => {
+                setComment("");
+                alertNotify("Успешно", "Комментарий оставлен!");
+                queryClient.invalidateQueries({
+                    queryKey: ["photoCommentsById", String(id)],
+                });
+                invalidatePhotoData();
+            },
+        );
     };
 
     if (isLoading) {
@@ -176,31 +224,27 @@ const PhotoByIdPage = () => {
                         ) : (
                             <SinglePageWrapper
                                 content={
-                                    <>
-                                        <Comments
-                                            comments={[
-                                                {
-                                                    comment: "Тест",
-                                                    id: 1,
-                                                    image: "/img/people2.png",
-                                                    name: "Сара",
-                                                    surname: "Балтимор",
-                                                    status: "Сегодня 20:10",
-                                                    isPro: true,
-                                                },
-                                            ]}
-                                        >
-                                            <Input
-                                                placeholder="Ваш комментарий"
-                                                component="textarea"
-                                                full
-                                            />
+                                    <Comments
+                                        commentsIsLoading={reviewsIsLoading}
+                                        commentsIsError={reviewsIsError}
+                                        comments={reviews || []}
+                                    >
+                                        <Input
+                                            placeholder="Ваш комментарий"
+                                            component="textarea"
+                                            full
+                                            value={comment}
+                                            setValue={setComment}
+                                        />
 
-                                            <Button auto disabled>
-                                                Комментарировать
-                                            </Button>
-                                        </Comments>
-                                    </>
+                                        <Button
+                                            auto
+                                            disabled={!comment}
+                                            onClick={leaveCommentHandler}
+                                        >
+                                            Комментарировать
+                                        </Button>
+                                    </Comments>
                                 }
                                 sidebar={
                                     <>
@@ -374,7 +418,7 @@ const PhotoByIdPage = () => {
                                                   )
                                                 : ""
                                         }
-                                        comments={23}
+                                        comments={commentsCount || 0}
                                         favorites={favoriteCount || 0}
                                         isFavorite={isFavorite}
                                         favoriteCallback={favoriteHandler}

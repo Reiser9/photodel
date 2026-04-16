@@ -59,7 +59,8 @@
 }
 
 .profiesMap{
-    width: 100%;
+    width: 50%;
+    flex-shrink: 0;
     height: 100dvh;
     min-height: 500px;
     position: relative;
@@ -67,6 +68,7 @@
 
 @media (max-width: 998px) {
     .profiesMap{
+        width: 100%;
         min-height: unset;
         height: 350px;
     }

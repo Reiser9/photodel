@@ -1,0 +1,126 @@
+.reviewsItem{
+    width: 100%;
+    padding-bottom: 2rem;
+    border-bottom: 1px solid var(--lightGrey);
+}
+
+.reviewsItemTop{
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.reviewsItemText{
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 6px;
+    margin-top: 1.8rem;
+    color: var(--black);
+    font-size: 1.4rem;
+}
+
+.reviewsItemText p{
+    color: var(--black);
+    font-size: 1.4rem;
+}
+
+@media (max-width: 440px) {
+    .reviewsItemText p{
+        font-size: 1.3rem;
+    }
+}
+
+.reviewsPhotos{
+    width: 100%;
+    margin-top: 1.5rem;
+    display: flex;
+    gap: 15px;
+}
+
+@media (max-width: 768px) {
+    .reviewsPhotos{
+        overflow-x: auto;
+    }
+}
+
+.reviewsPhotoMore{
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    background: rgba(0, 0, 0, .65);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--white);
+    font-size: 1.4rem;
+    font-weight: 600;
+    text-align: center;
+    border-radius: 8px;
+}
+
+.reviewsPhoto{
+    width: calc(100% / 5 - 60px / 5);
+    overflow: hidden;
+    border-radius: 8px;
+    position: relative;
+    aspect-ratio: 4 / 3;
+    flex-shrink: 0;
+}
+
+@media (max-width: 768px) {
+    .reviewsPhoto{
+        width: calc(100% / 2.8 - 30px / 3);
+    }
+}
+@media (max-width: 440px) {
+    .reviewsPhoto{
+        width: calc(100% / 2.1 - 30px / 3);
+    }
+}
+
+.reviewsPhoto img{
+    object-fit: cover;
+}
+
+.reviewsItemButtons{
+    margin-top: 2rem;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    justify-content: flex-end;
+    flex-wrap: wrap;
+}
+
+.reviewsItemButton{
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 1.2rem;
+    color: var(--black);
+    font-weight: 500;
+}
+
+.reviewsItemButton svg{
+    width: 18px;
+    height: 18px;
+    flex-shrink: 0;
+    color: var(--main);
+}
+
+.reviewsItemButton.danger svg{
+    color: var(--red);
+}
+
+@media (any-hover: hover) {
+    .reviewsItemButton:hover{
+        opacity: 0.7;
+    }
+}

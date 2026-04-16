@@ -1,6 +1,7 @@
 import React from "react";
 import Link from "next/link";
 import Image from "next/image";
+import cn from "classnames";
 
 import styles from "./index.module.scss";
 
@@ -14,6 +15,8 @@ type Props = {
     clickOnPhoto?: () => void;
     checkboxValue?: boolean;
     mode?: "default" | "edit" | "select";
+    showUser?: boolean;
+    className?: string;
 };
 
 const PhotoItem: React.FC<Props> = ({
@@ -21,9 +24,14 @@ const PhotoItem: React.FC<Props> = ({
     clickOnPhoto,
     checkboxValue,
     mode = "default",
+    showUser = false,
+    className,
 }) => {
-    const { imageUrl, name, id, favorites } = data || {};
-    const { count, isFavorite } = favorites || {};
+    const { imageUrl, name, id, favorites, likes, reviews, user } = data || {};
+    const { count: favoritesCount, isFavorite } = favorites || {};
+    const { count: likesCount, isLiked } = likes || {};
+    const { count: commentsCount } = reviews || {};
+    const { avatarUrl, firstName, lastName, id: userId } = user || {};
 
     const content = () => {
         return (
@@ -44,7 +52,7 @@ const PhotoItem: React.FC<Props> = ({
     };
 
     return (
-        <div className={styles.photoItem}>
+        <div className={cn(styles.photoItem, className)}>
             {mode === "edit" || mode === "select" ? (
                 <div
                     className={styles.photoItemImage}
@@ -81,12 +89,34 @@ const PhotoItem: React.FC<Props> = ({
                     </Link>
                 )}
 
+                {showUser && (
+                    <Link
+                        href={`/user/${userId}`}
+                        className={styles.placesItemUser}
+                    >
+                        <span className={styles.placesItemUserImage}>
+                            <Image
+                                src={avatarUrl}
+                                alt={`${firstName} ${lastName} аватар`}
+                                fill
+                            />
+                        </span>
+
+                        <span className={styles.placesItemUserName}>
+                            {lastName} {firstName}
+                        </span>
+                    </Link>
+                )}
+
                 <StatsBlock
-                    likes={675}
-                    isLiked
-                    favorites={count || 0}
+                    likes={likesCount || 0}
+                    isLiked={isLiked}
+                    showLikes
+                    favorites={favoritesCount || 0}
                     isFavorites={isFavorite}
-                    comments={346}
+                    showFavorites
+                    comments={commentsCount || 0}
+                    isComment
                     className={styles.photoItemStats}
                 />
             </div>

@@ -76,7 +76,7 @@ const ProfiesPage = () => {
             getUsers({
                 page,
                 search: userSearchDebounce,
-                order: sort,
+                sort,
                 ...(radius !== "unlimit" && { radius: +radius }),
                 ...(category && { pro_category_id: category }),
             }),

@@ -77,3 +77,29 @@
 span.photoItemStats{
     margin: 0;
 }
+
+.placesItemUser{
+    width: 100%;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.placesItemUserImage{
+    width: 24px;
+    height: 24px;
+    flex-shrink: 0;
+    overflow: hidden;
+    border-radius: 4px;
+    position: relative;
+}
+
+.placesItemUserImage img{
+    object-fit: cover;
+}
+
+.placesItemUserName{
+    color: var(--black);
+    font-size: 1.2rem;
+    font-weight: 500;
+}

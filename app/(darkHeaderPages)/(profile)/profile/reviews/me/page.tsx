@@ -1,92 +1,159 @@
+"use client";
+
 import React from "react";
 import cn from "classnames";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 
 import styles from "../index.module.scss";
 
 import { UserInfoBlock } from "@/shared/ui/UserInfoBlock";
-import { RatingReview } from "@/shared/ui/Rating";
 import { Edit2, Remove } from "@/shared/icons";
+import { useReviews } from "@/features/reviews";
+import { Pagination } from "@/shared/ui/Pagination";
+import { NotContent } from "@/shared/ui/NotContent";
+import { ReviewItem } from "@/entities/review/ui";
+import { Preloader } from "@/shared/ui/Preloader";
+import { ConfirmModal } from "@/shared/ui/Modal";
 
 const ReviewsMePage = () => {
+    const [page, setPage] = React.useState(1);
+    const [deleteModal, setDeleteModal] = React.useState(false);
+
+    const [reviewId, setReviewId] = React.useState(0);
+
+    const { getReviews, deleteReview } = useReviews();
+
+    const queryClient = useQueryClient();
+
+    const { data, isLoading, isError } = useQuery({
+        queryKey: ["usersReviewsById"],
+        queryFn: () => getReviews({ type: "user", my: true }),
+    });
+
+    const { data: reviews, total, totalPages } = data || {};
+
+    const deleteReviewHandler = () => {
+        deleteReview(reviewId, () => {
+            setDeleteModal(false);
+            setReviewId(0);
+            queryClient.invalidateQueries({ queryKey: ["usersReviewsById"] });
+        });
+    };
+
     return (
         <>
             <p className={styles.reviewsCount}>
-                Всего: <span>2</span>
+                Всего: <span>{total}</span>
             </p>
 
-            <div className={styles.reviewsItems}>
-                <div className={styles.reviewsItem}>
-                    <div className={styles.reviewsItemStatus}>
-                        <p className={styles.reviewsItemStatusTitle}>На модерации</p>
-                    </div>
+            {isLoading ? (
+                <Preloader page small />
+            ) : isError ? (
+                <NotContent
+                    text="Произошла ошибка при загрузке данных"
+                    danger
+                />
+            ) : !!reviews?.length ? (
+                <div className={styles.reviewsItems}>
+                    {reviews.map((data) => {
+                        const { entity, id } = data || {};
+                        const {
+                            avatarUrl,
+                            firstName,
+                            lastName,
+                            isPro,
+                            id: entityId,
+                        } = entity || {};
 
-                    <div className={cn(styles.reviewsItemStatus, styles.error)}>
-                        <p className={styles.reviewsItemStatusTitle}>Отклонен</p>
+                        return (
+                            <ReviewItem
+                                key={id}
+                                data={data}
+                                actions={
+                                    <div className={styles.reviewsItemButtons}>
+                                        <button
+                                            className={styles.reviewsItemButton}
+                                        >
+                                            <Edit2 />
+                                            Редактировать
+                                        </button>
 
-                        <p className={styles.reviewsItemStatusText}>
-                            В отзыве недостаточно информации о вашем опыте обращения в магазин. Пожалуйста, расскажите подробнее: как вы выбирали товар, как заказывали, обращались ли вы в магазин с вопросами после покупки товара — и насколько его сотрудники были готовы вам помочь. Тогда мы сможем опубликовать ваш отзыв.
-                        </p>
-                    </div>
+                                        <button
+                                            className={cn(
+                                                styles.reviewsItemButton,
+                                                styles.danger,
+                                            )}
+                                            onClick={() => {
+                                                setDeleteModal(true);
+                                                setReviewId(id);
+                                            }}
+                                        >
+                                            <Remove />
+                                            Удалить
+                                        </button>
+                                    </div>
+                                }
+                                topBlock={
+                                    <div className={styles.reviewsItemTo}>
+                                        <p
+                                            className={
+                                                styles.reviewsItemToTitle
+                                            }
+                                        >
+                                            Отзыв пользователю
+                                        </p>
 
-                    <div className={styles.reviewsItemTo}>
-                        <p className={styles.reviewsItemToTitle}>
-                            Отзыв пользователю
-                        </p>
-
-                        <UserInfoBlock
-                            name="Марианна"
-                            surname="Родионова"
-                            image="/img/people1.png"
-                            isPro
-                            id="1"
-                        />
-                    </div>
-
-                    <div className={styles.reviewsItemTop}>
-                        <UserInfoBlock
-                            name="Марианна"
-                            surname="Родионова"
-                            image="/img/people1.png"
-                            isPro
-                            status="Сегодня 20:20"
-                            id="1"
-                        />
-
-                        <RatingReview rating={3} />
-                    </div>
-
-                    <div className={styles.reviewsItemText}>
-                        <p>
-                            Если вы в поисках фотографа на свадьбу, то вам к
-                            Алексу!! Алекс, спасибо огромное за невероятно
-                            красивые, яркие фотографии, которые останутся с нами
-                            до конца жизни! Спасибо за память об этом важном
-                            дне! Мы, пока смотрели, всё время улыбались и
-                            восхищались качеством, яркостью и красотой
-                            фотографий! Кирилл тоже очень доволен! Мы счастливы!
-                            С тобой было нереально комфортно, легко и приятно на
-                            протяжении этих 5 часов!
-                        </p>
-                    </div>
-
-                    <div className={styles.reviewsItemButtons}>
-                        <button className={styles.reviewsItemButton}>
-                            <Edit2 />
-                            Редактировать
-                        </button>
-
-                        <button
-                            className={cn(
-                                styles.reviewsItemButton,
-                                styles.danger,
-                            )}
-                        >
-                            <Remove />
-                            Удалить
-                        </button>
-                    </div>
+                                        <UserInfoBlock
+                                            name={firstName || ""}
+                                            surname={lastName || ""}
+                                            image={avatarUrl}
+                                            isPro={isPro}
+                                            id={entityId}
+                                        />
+                                    </div>
+                                }
+                            />
+                        );
+                    })}
                 </div>
+            ) : (
+                <NotContent text="У пользователя еще нет отзывов" />
+            )}
+
+            <Pagination
+                page={page}
+                setPage={setPage}
+                totalPages={totalPages || 0}
+                isLoading={isLoading}
+            />
+
+            {/* <div className={styles.reviewsItemStatus}>
+                <p className={styles.reviewsItemStatusTitle}>
+                    На модерации
+                </p>
             </div>
+
+            <div className={cn(styles.reviewsItemStatus, styles.error)}>
+                <p className={styles.reviewsItemStatusTitle}>
+                    Отклонен
+                </p>
+
+                <p className={styles.reviewsItemStatusText}>
+                    В отзыве недостаточно информации о вашем опыте
+                    обращения в магазин. Пожалуйста, расскажите
+                    подробнее: как вы выбирали товар, как заказывали,
+                    обращались ли вы в магазин с вопросами после покупки
+                    товара — и насколько его сотрудники были готовы вам
+                    помочь. Тогда мы сможем опубликовать ваш отзыв.
+                </p>
+            </div> */}
+
+            <ConfirmModal
+                value={deleteModal}
+                setValue={setDeleteModal}
+                title="Вы действительно хотите удалить отзыв?"
+                callback={deleteReviewHandler}
+            />
         </>
     );
 };

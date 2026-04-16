@@ -1,0 +1,135 @@
+.teamAdd{
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 20px;
+}
+
+.teamAddFilters{
+    width: 100%;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px 30px;
+}
+
+.teamAddFilterButtons{
+    width: 100%;
+    display: flex;
+    justify-content: flex-end;
+    gap: 15px;
+    align-items: center;
+}
+
+button.teamAddFilterButton{
+    min-width: 180px;
+}
+
+.teamAddFilterItem{
+    width: calc(100% / 3 - 60px / 3);
+}
+
+.teamAddFilterItem.full{
+    width: 100%;
+}
+
+.teamAddContent{
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+}
+
+.teamAddCount{
+    font-size: 1.3rem;
+    color: var(--black);
+}
+
+.teamAddCount span{
+    font-weight: 600;
+}
+
+.teamAddItems{
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 20px;
+}
+
+.teamAddItem{
+    width: 100%;
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+}
+
+.teamAddItemImage{
+    width: 100px;
+    height: 100px;
+    flex-shrink: 0;
+    border-radius: 8px;
+    position: relative;
+    overflow: hidden;
+    background: var(--lightGrey);
+}
+
+.teamAddItemImage img{
+    object-fit: cover;
+}
+
+.teamAddItemInfo{
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+}
+
+.teamAddItemNameInner{
+    width: 100%;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-wrap: wrap;
+}
+
+.teamAddItemName{
+    font-size: 1.4rem;
+    font-weight: 600;
+    padding-left: 1.2rem;
+    color: var(--grey);
+    position: relative;
+}
+
+.teamAddItemName:before{
+    content: "";
+    display: block;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    position: absolute;
+    top: 50%;
+    left: 0;
+    transform: translateY(-50%);
+    background: var(--grey);
+}
+
+.teamAddItemCategoryInner{
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 6px;
+    display: flex;
+}
+
+.teamAddItemCategory{
+    font-size: 1.3rem;
+    font-weight: 500;
+    color: var(--black);
+}
+
+.teamAddItemCity{
+    color: var(--grey);
+    font-size: 1.2rem;
+}

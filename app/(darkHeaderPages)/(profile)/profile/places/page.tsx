@@ -1,17 +1,10 @@
 "use client";
 
 import React from "react";
-import cn from "classnames";
-import Image from "next/image";
-import Link from "next/link";
 
 import styles from "./index.module.scss";
 
-import { Bookmark2, Comment, Heart } from "@/shared/icons";
-import { UserInfoBlock } from "@/shared/ui/UserInfoBlock";
-import { Rating } from "@/shared/ui/Rating";
 import { Tabs } from "@/shared/ui/Tabs";
-import { StatsBlock } from "@/shared/ui/StatsBlock";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { usePlaces } from "@/features/places";
 import { Pagination } from "@/shared/ui/Pagination";
@@ -28,15 +21,16 @@ const ProfilePlacesPage = () => {
 
     const [confirmDeleteModal, setConfirmDeleteModal] = React.useState(false);
 
-    const { getMyPlaces, deleteBulkPlaces } = usePlaces();
+    const { getPlaces, deleteBulkPlaces } = usePlaces();
 
     const queryClient = useQueryClient();
 
     const { data, isLoading, isError } = useQuery({
-        queryKey: ["myPlaces", page],
+        queryKey: ["places", page],
         queryFn: () =>
-            getMyPlaces({
+            getPlaces({
                 page,
+                my: true
             }),
     });
 
@@ -52,7 +46,7 @@ const ProfilePlacesPage = () => {
 
     const deleteCheckedPlaces = () => {
         deleteBulkPlaces({ ids: selectedIds }, () => {
-            queryClient.invalidateQueries({ queryKey: ["myPlaces"] });
+            queryClient.invalidateQueries({ queryKey: ["places"] });
             setSelectedIds([]);
             setAction(null);
         });
@@ -139,7 +133,7 @@ const ProfilePlacesPage = () => {
             <ConfirmModal
                 value={confirmDeleteModal}
                 setValue={setConfirmDeleteModal}
-                title={`Вы действительно хотите удалить ${selectedIds.length} фото?`}
+                title={`Вы действительно хотите удалить ${selectedIds.length} мест для съемок?`}
                 callback={deleteCheckedPlaces}
                 rejectCallback={() => setAction(null)}
             />

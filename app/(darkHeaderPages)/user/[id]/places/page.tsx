@@ -1,36 +1,33 @@
 "use client";
 
 import React from "react";
-import cn from "classnames";
-import Image from "next/image";
-import Link from "next/link";
 import { useParams } from "next/navigation";
 import { useQuery } from "@tanstack/react-query";
 
 import styles from "./index.module.scss";
 
-import { Bookmark2, Comment, Heart } from "@/shared/icons";
-import { UserInfoBlock } from "@/shared/ui/UserInfoBlock";
-import { Rating } from "@/shared/ui/Rating";
 import { Tabs } from "@/shared/ui/Tabs";
-import { StatsBlock } from "@/shared/ui/StatsBlock";
 import UserTopInfo from "@/app/(darkHeaderPages)/ui/UserTopInfo";
-import { useUserInfo } from "@/features/user";
 import { Pagination } from "@/shared/ui/Pagination";
 import { NotContent } from "@/shared/ui/NotContent";
 import { Preloader } from "@/shared/ui/Preloader";
 import { PlaceItem } from "@/entities/places/ui";
+import { usePlaces } from "@/features/places";
 
 const ProfilePlacesPage = () => {
     const { id } = useParams();
 
     const [page, setPage] = React.useState(1);
 
-    const { getUsersPlacesById } = useUserInfo();
+    const { getPlaces } = usePlaces();
 
     const { data, isLoading, isError } = useQuery({
-        queryKey: ["usersPhotoById", id, page],
-        queryFn: () => getUsersPlacesById(String(id), page),
+        queryKey: ["places", id, page],
+        queryFn: () =>
+            getPlaces({
+                page,
+                user_id: String(id),
+            }),
         enabled: !!id,
     });
 

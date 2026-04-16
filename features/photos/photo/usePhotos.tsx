@@ -13,22 +13,37 @@ const usePhotos = () => {
     const { request, catchRequestError, errorController } = useRequest();
     const { alertNotify } = useAlert();
 
-    const getMyPhotos = async ({
+    const getPhotos = async ({
         page = 1,
         limit = 12,
         album_id,
         excluded_album_id,
+        user_id,
+        my,
+        sort = "newest",
+        search,
+        category
     }: {
         page?: number;
         limit?: number;
         album_id?: number | string;
         excluded_album_id?: number | string;
+        user_id?: string | number;
+        my?: boolean;
+        sort?: "newest" | "popularity" | "distance";
+        search?: string;
+        category?: string | number;
     }) => {
         const queryString = buildQueryString({
             page,
             limit,
             album_id,
             excluded_album_id,
+            user_id,
+            my,
+            sort,
+            search,
+            specialization_id: category,
         });
 
         const response = await request<PhotosPagination>({
@@ -159,13 +174,30 @@ const usePhotos = () => {
         }
     };
 
+    const getTopPhoto = async () => {
+        const response = await request<{ photo: Photo }>({
+            url: "/photos/top",
+            isAuth: true
+        });
+
+        if (catchRequestError(response)) {
+            errorController(response);
+            return "";
+        }
+
+        if ("data" in response) {
+            return response.data.photo;
+        }
+    }
+
     return {
-        getMyPhotos,
+        getPhotos,
         createPhoto,
         updatePhoto,
         getPhotoById,
         deletePhoto,
         deleteBulkPhotos,
+        getTopPhoto
     };
 };
 

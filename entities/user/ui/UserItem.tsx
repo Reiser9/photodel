@@ -38,8 +38,9 @@ const UserItem: React.FC<Props> = ({
         specializations,
     } = data || {};
 
-    const { address } = location || {};
+    const { place } = location || {};
     const { count, isFavorite } = favorites || {};
+    const { city } = place || {};
 
     const content = () => {
         return (
@@ -95,6 +96,7 @@ const UserItem: React.FC<Props> = ({
                     rate={4.92}
                     favorites={count}
                     isFavorites={isFavorite}
+                    showFavorites
                 />
 
                 {!!proCategories?.length && (
@@ -113,9 +115,9 @@ const UserItem: React.FC<Props> = ({
                     </div>
                 )}
 
-                {address && (
+                {city && (
                     <p className={styles.userItemAddress}>
-                        {address} {distance && `| ${distance} км`}
+                        {city} {distance && `| ${distance} км`}
                     </p>
                 )}
             </div>

@@ -26,4 +26,5 @@ export type {
     Like,
     UserByIdShortInfo,
     UsersPagination,
+    Review
 } from "./user/model";

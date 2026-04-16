@@ -42,7 +42,7 @@ const ProfilePhotosessionById = () => {
             <SinglePageWrapper
                 content={
                     <>
-                        <Comments
+                        {/* <Comments
                             comments={[
                                 {
                                     comment: "Тест",
@@ -64,7 +64,7 @@ const ProfilePhotosessionById = () => {
                             <Button auto disabled>
                                 Комментарировать
                             </Button>
-                        </Comments>
+                        </Comments> */}
                     </>
                 }
                 sidebar={

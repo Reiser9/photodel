@@ -34,23 +34,24 @@ const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
         document.body.classList.add(theme);
     };
 
-    const toggleTheme = () => {
+    const themeChanger = (theme: ThemeType = "light") => {
         setReadyAnimation(true);
-        const newTheme = theme === "light" ? "dark" : "light";
-
-        setTheme(newTheme);
-        localStorage.setItem("theme", newTheme);
-
-        setTimeout(() => {
-            changeThemeBody(newTheme);
-        }, 1000);
-    };
-
-    const chooseTheme = (theme: ThemeType = "light") => {
         setTheme(theme);
         localStorage.setItem("theme", theme);
 
-        changeThemeBody(theme);
+        setTimeout(() => {
+            changeThemeBody(theme);
+        }, 1000);
+    };
+
+    const toggleTheme = () => {
+        const newTheme = theme === "light" ? "dark" : "light";
+
+        themeChanger(newTheme);
+    };
+
+    const chooseTheme = (theme: ThemeType = "light") => {
+        themeChanger(theme);
     };
 
     React.useEffect(() => {

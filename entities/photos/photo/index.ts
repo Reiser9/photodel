@@ -1,1 +1,7 @@
-export type { PhotosPagination, Photo, PhotoDTO } from "./model";
+export type {
+    PhotosPagination,
+    Photo,
+    PhotoDTO,
+    PhotoShort,
+    UserInfoShort,
+} from "./model";

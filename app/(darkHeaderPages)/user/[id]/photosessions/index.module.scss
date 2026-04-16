@@ -1,0 +1,11 @@
+.photosessionsCount{
+    font-size: 1.3rem;
+    color: var(--black);
+}
+
+.photosessionsItems{
+    width: 100%;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+}

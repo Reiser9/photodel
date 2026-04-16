@@ -44,7 +44,7 @@ const ProfileAlbumAdd = () => {
     const { uploadFile } = useFile();
     const { alertNotify } = useAlert();
     const { createAlbum } = useAlbums();
-    const { getMyPhotos } = usePhotos();
+    const { getPhotos } = usePhotos();
     const router = useRouter();
 
     const {
@@ -52,11 +52,12 @@ const ProfileAlbumAdd = () => {
         isLoading: photosIsLoading,
         isError: photosIsError,
     } = useQuery({
-        queryKey: ["myPhotos", page],
+        queryKey: ["photos", page],
         queryFn: () =>
-            getMyPhotos({
+            getPhotos({
                 page,
                 limit: 6,
+                my: true
             }),
     });
 

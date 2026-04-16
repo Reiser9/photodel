@@ -4,7 +4,7 @@ import React from "react";
 import Image from "next/image";
 import cn from "classnames";
 import parse from "html-react-parser";
-import { Dayjs } from "dayjs";
+import dayjs, { Dayjs } from "dayjs";
 import { Map, Placemark } from "@iminside/react-yandex-maps";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { redirect, useParams } from "next/navigation";
@@ -38,6 +38,10 @@ import { formatDate } from "@/shared/utils/formatDate";
 import { Preloader } from "@/shared/ui/Preloader";
 import { NotContent } from "@/shared/ui/NotContent";
 import { useFavorite } from "@/features/favorite";
+import { usePlaces } from "@/features/places";
+import useAlert from "@/shared/hooks/useAlert";
+import { GetLocation } from "@/shared/ui/GetLocation";
+import { getISOWithOffset } from "@/shared/utils/getISOWithOffset";
 
 const ProfileUserPage = () => {
     const { id } = useParams();
@@ -53,15 +57,20 @@ const ProfileUserPage = () => {
     const [date, setDate] = React.useState<Dayjs | Dayjs[] | null>(null);
     const [time, setTime] = React.useState<Dayjs | null>(null);
     const [duration, setDuration] = React.useState("");
-    const [place, setPlace] = React.useState<string | null>(null);
     const [type, setType] = React.useState<string | null>(null);
     const [peoples, setPeoples] = React.useState("");
     const [budget, setBudget] = React.useState("");
     const [needMakeup, setNeedMakeup] = React.useState(false);
     const [note, setNote] = React.useState("");
+    const [placeAddress, setPlaceAddress] = React.useState("");
+    const [placeCoords, setPlaceCoords] = React.useState<
+        [number, number] | null
+    >(null);
 
     const { getUserProfileById, getShortInfo } = useUserInfo();
     const { addFavorite, removeFavorite } = useFavorite();
+    const { createPlacesRequest } = usePlaces();
+    const { alertNotify } = useAlert();
 
     const queryClient = useQueryClient();
 
@@ -69,12 +78,13 @@ const ProfileUserPage = () => {
         setDate(null);
         setTime(null);
         setDuration("");
-        setPlace(null);
         setType(null);
         setPeoples("");
         setBudget("");
         setNeedMakeup(false);
         setNote("");
+        setPlaceCoords(null);
+        setPlaceAddress("");
     };
 
     const { data, isLoading, isError } = useQuery({
@@ -112,9 +122,11 @@ const ProfileUserPage = () => {
         status,
         activeTemporaryLocation,
         favorites,
+        reviews,
     } = data || {};
 
     const { isFavorite, favoriteId } = favorites || {};
+    const { rating } = reviews || {};
 
     const {
         startDate,
@@ -150,6 +162,75 @@ const ProfileUserPage = () => {
         if (!favoriteId) return;
 
         removeFavorite(favoriteId, invalidateUserProfile);
+    };
+
+    const createPlacesRequestHandler = () => {
+        if (!userId) return;
+
+        if (!date || !time) {
+            return alertNotify(
+                "Внимание",
+                "Дата и время должны быть заполнены",
+                "warn",
+            );
+        }
+        if (!duration) {
+            return alertNotify(
+                "Внимание",
+                "Длительность должно быть заполнено",
+                "warn",
+            );
+        }
+        if (!placeAddress) {
+            return alertNotify(
+                "Внимание",
+                "Место проведения должно быть заполнено",
+                "warn",
+            );
+        }
+        if (!type) {
+            return alertNotify(
+                "Внимание",
+                "Тип съемки должен быть заполнен",
+                "warn",
+            );
+        }
+        if (!peoples) {
+            return alertNotify(
+                "Внимание",
+                "Количество человек должно быть заполнено",
+                "warn",
+            );
+        }
+        if (!budget) {
+            return alertNotify(
+                "Внимание",
+                "Бюджет должен быть заполнен",
+                "warn",
+            );
+        }
+
+        createPlacesRequest(
+            {
+                userId,
+                date: getISOWithOffset(date, time) || "",
+                budget,
+                comment: note,
+                durationHours: +duration,
+                needsMakeupArtist: needMakeup,
+                peoplesCount: +peoples,
+                type,
+                location: placeCoords && {
+                    address: placeAddress,
+                    latitude: placeCoords[0],
+                    longitude: placeCoords[1],
+                },
+            },
+            () => {
+                alertNotify("Успешно", "Запрос на съемку отправлен");
+                setRequestModal(false);
+            },
+        );
     };
 
     React.useEffect(() => {
@@ -220,7 +301,7 @@ const ProfileUserPage = () => {
                     </div>
 
                     <div className={styles.profileRating}>
-                        <Rating rating="4.92" />
+                        {rating && <Rating rating={rating} />}
 
                         {/* <p className={styles.profileRatingTop}>
                             <Trophy />
@@ -497,20 +578,8 @@ const ProfileUserPage = () => {
                             setValue={setDuration}
                             placeholder="Введите длительность"
                             full
-                        />
-                    </div>
-
-                    <div className={styles.requestFormItem}>
-                        <Select
-                            value={place}
-                            setValue={setPlace}
-                            title="Место проведения"
-                            options={[
-                                { value: "0", label: "Москва" },
-                                { value: "1", label: "Тюмень" },
-                            ]}
-                            placeholder="Выберите место"
-                            full
+                            type="number"
+                            inputMode="decimal"
                         />
                     </div>
 
@@ -520,8 +589,23 @@ const ProfileUserPage = () => {
                             setValue={setType}
                             title="Тип съемки"
                             options={[
-                                { value: "0", label: "Макро" },
-                                { value: "1", label: "Телефонная" },
+                                { value: "Архитектура", label: "Архитектура" },
+                                { value: "Город", label: "Город" },
+                                { value: "Горы", label: "Горы" },
+                                { value: "Детский мир", label: "Детский мир" },
+                                { value: "Интерьер", label: "Интерьер" },
+                                { value: "Лес", label: "Лес" },
+                                { value: "Море", label: "Море" },
+                                { value: "Общепит", label: "Общепит" },
+                                { value: "Парк", label: "Парк" },
+                                { value: "Пейзаж", label: "Пейзаж" },
+                                { value: "Природа", label: "Природа" },
+                                { value: "Путешествия", label: "Путешествия" },
+                                { value: "Город", label: "Город" },
+                                { value: "Спорт", label: "Спорт" },
+                                { value: "Улицы", label: "Улицы" },
+                                { value: "Фотостудия", label: "Фотостудия" },
+                                { value: "Церковь", label: "Церковь" },
                             ]}
                             placeholder="Выберите тип"
                             full
@@ -535,6 +619,8 @@ const ProfileUserPage = () => {
                             setValue={setPeoples}
                             placeholder="Введите количество"
                             full
+                            type="number"
+                            inputMode="decimal"
                         />
                     </div>
 
@@ -547,6 +633,14 @@ const ProfileUserPage = () => {
                             full
                         />
                     </div>
+
+                    <GetLocation
+                        address={placeAddress}
+                        setAddress={setPlaceAddress}
+                        coords={placeCoords}
+                        setCoords={setPlaceCoords}
+                        title="Место проведения"
+                    />
 
                     <div className={cn(styles.requestFormItem, styles.full)}>
                         <Checkbox
@@ -578,7 +672,7 @@ const ProfileUserPage = () => {
                                 date ||
                                 time ||
                                 duration ||
-                                place ||
+                                placeAddress ||
                                 type ||
                                 peoples ||
                                 budget ||
@@ -592,7 +686,11 @@ const ProfileUserPage = () => {
                         Сбросить
                     </Button>
 
-                    <Button auto wrapperClass={styles.requestFormButton}>
+                    <Button
+                        auto
+                        wrapperClass={styles.requestFormButton}
+                        onClick={createPlacesRequestHandler}
+                    >
                         Отправить
                     </Button>
                 </div>

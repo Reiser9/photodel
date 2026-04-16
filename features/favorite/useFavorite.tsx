@@ -4,6 +4,7 @@ import type { UsersPagination } from "@/entities/user";
 import type { PlacesPagination } from "@/entities/places";
 import { buildQueryString } from "@/shared/utils/buildQueryString";
 import useRequest from "@/shared/hooks/useRequest";
+import { PhotosessionsPagination } from "@/entities/photosessions";
 
 const useFavorite = () => {
     const { request, catchRequestError, errorController } = useRequest();
@@ -21,7 +22,10 @@ const useFavorite = () => {
         });
 
         const response = await request<
-            PlacesPagination | PhotosPagination | UsersPagination
+            | PlacesPagination
+            | PhotosPagination
+            | UsersPagination
+            | PhotosessionsPagination
         >({
             url: `/favorites?${queryString}`,
             isAuth: true,

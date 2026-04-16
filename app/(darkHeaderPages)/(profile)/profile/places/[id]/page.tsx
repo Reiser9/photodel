@@ -43,7 +43,7 @@ const ProfilePlaceById = () => {
             <SinglePageWrapper
                 content={
                     <>
-                        <Comments
+                        {/* <Comments
                             comments={[
                                 {
                                     comment: "Тест",
@@ -65,7 +65,7 @@ const ProfilePlaceById = () => {
                             <Button auto disabled>
                                 Комментарировать
                             </Button>
-                        </Comments>
+                        </Comments> */}
                     </>
                 }
                 sidebar={

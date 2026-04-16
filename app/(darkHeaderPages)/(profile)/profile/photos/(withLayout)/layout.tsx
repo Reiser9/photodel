@@ -22,7 +22,7 @@ const ProfilePhotoLayout: React.FC<{ children: React.ReactNode }> = ({
         refetchOnMount: true,
     });
 
-    const { avatar, firstName, isPro, lastName } = data || {};
+    const { avatarUrl, firstName, isPro, lastName } = data || {};
 
     return (
         <div className={styles.photos}>

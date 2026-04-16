@@ -14,7 +14,7 @@
     gap: 15px;
 }
 
-.placesTabs{
+.placesTabs:not(:first-child){
     margin-top: 1.5rem;
 }
 

@@ -42,9 +42,10 @@ const sidebarLinks = [
         icon: <Message />,
     },
     {
-        paths: ["/profile/photos"],
+        paths: ["/profile/photos", "/profile/photos/albums", "/profile/photos/add", "/profile/albums/add"],
         name: "Фотографии",
         icon: <Photo />,
+        exact: true,
     },
     {
         paths: ["/profile/places"],

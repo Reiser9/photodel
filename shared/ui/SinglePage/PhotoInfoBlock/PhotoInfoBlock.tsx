@@ -17,11 +17,12 @@ import {
 } from "@/shared/icons";
 import { useAppSelector } from "@/shared/hooks/useRedux";
 import { useAuthContext } from "@/shared/context/AuthProvider";
+import type { PhotoShort } from "@/entities/photos/photo";
 
 type Props = {
     image?: string;
     isCarousel?: boolean;
-    slides?: { id: number; key: string; url: string }[];
+    slides?: PhotoShort[];
     views: string | number;
     isLike?: boolean;
     likes: string | number;

@@ -29,6 +29,8 @@ import { useUserInfo } from "@/features/user";
 import { useFavorite } from "@/features/favorite";
 import { useLike } from "@/features/like";
 import { usePlaces } from "@/features/places";
+import useAlert from "@/shared/hooks/useAlert";
+import { useReviews } from "@/features/reviews";
 
 const PlacePageById = () => {
     const { id } = useParams();
@@ -36,8 +38,12 @@ const PlacePageById = () => {
     const { getShortInfo } = useUserInfo();
     const { addFavorite, removeFavorite } = useFavorite();
     const { addLike, removeLike } = useLike();
+    const { alertNotify } = useAlert();
+    const { getReviews, createReview } = useReviews();
 
     const queryClient = useQueryClient();
+
+    const [comment, setComment] = React.useState("");
 
     const { data, isLoading, isError } = useQuery({
         queryKey: ["placeById", String(id)],
@@ -50,6 +56,19 @@ const PlacePageById = () => {
     });
 
     const { id: currentUserId } = shortInfo || {};
+
+    const {
+        data: reviewsData,
+        isLoading: reviewsIsLoading,
+        isError: reviewsIsError,
+    } = useQuery({
+        queryKey: ["placeCommentsById", String(id)],
+        queryFn: () =>
+            getReviews({ type: "place", entity_id: +(id || 0), limit: 100 }),
+        enabled: !!String(id),
+    });
+
+    const { data: reviews } = reviewsData || {};
 
     const {
         id: placeId,
@@ -65,14 +84,16 @@ const PlacePageById = () => {
         conditions,
         price,
         photos,
+        reviews: reviewsPhoto,
     } = data || {};
 
     const { avatarUrl, firstName, isPro, lastName, id: userId } = user || {};
     const { address, latitude, longitude } = location || {};
     const { favoriteId, isFavorite, count: favoriteCount } = favorites || {};
     const { count: likesCount, isLiked, likeId } = likes || {};
+    const { count: commentsCount } = reviewsPhoto || {};
 
-    const invalidatePhotoData = () => {
+    const invalidatePlaceData = () => {
         queryClient.invalidateQueries({ queryKey: ["placeById", id] });
     };
 
@@ -82,14 +103,14 @@ const PlacePageById = () => {
         if (isFavorite) {
             if (!favoriteId) return;
 
-            removeFavorite(favoriteId, invalidatePhotoData);
+            removeFavorite(favoriteId, invalidatePlaceData);
         } else {
             addFavorite(
                 {
                     entityType: "place",
                     entityId: placeId,
                 },
-                invalidatePhotoData,
+                invalidatePlaceData,
             );
         }
     };
@@ -100,16 +121,43 @@ const PlacePageById = () => {
         if (isLiked) {
             if (!likeId) return;
 
-            removeLike(likeId, invalidatePhotoData);
+            removeLike(likeId, invalidatePlaceData);
         } else {
             addLike(
                 {
                     entityType: "place",
                     entityId: placeId,
                 },
-                invalidatePhotoData,
+                invalidatePlaceData,
             );
         }
+    };
+
+    const leaveCommentHandler = () => {
+        if (!comment.trim()) {
+            return alertNotify(
+                "Внимание",
+                "Поле комментария должно быть заполнено",
+                "warn",
+            );
+        }
+
+        createReview(
+            {
+                content: comment,
+                entityId: +String(id),
+                entityType: "place",
+                photoIds: [],
+            },
+            () => {
+                setComment("");
+                alertNotify("Успешно", "Комментарий оставлен!");
+                queryClient.invalidateQueries({
+                    queryKey: ["placeCommentsById", String(id)],
+                });
+                invalidatePlaceData();
+            },
+        );
     };
 
     if (isLoading) {
@@ -158,31 +206,27 @@ const PlacePageById = () => {
                     ) : (
                         <SinglePageWrapper
                             content={
-                                <>
-                                    <Comments
-                                        comments={[
-                                            {
-                                                comment: "Тест",
-                                                id: 1,
-                                                image: "/img/people2.png",
-                                                name: "Сара",
-                                                surname: "Балтимор",
-                                                status: "Сегодня 20:10",
-                                                isPro: true,
-                                            },
-                                        ]}
-                                    >
-                                        <Input
-                                            placeholder="Ваш комментарий"
-                                            component="textarea"
-                                            full
-                                        />
+                                <Comments
+                                    commentsIsLoading={reviewsIsLoading}
+                                    commentsIsError={reviewsIsError}
+                                    comments={reviews || []}
+                                >
+                                    <Input
+                                        placeholder="Ваш комментарий"
+                                        component="textarea"
+                                        full
+                                        value={comment}
+                                        setValue={setComment}
+                                    />
 
-                                        <Button auto disabled>
-                                            Комментарировать
-                                        </Button>
-                                    </Comments>
-                                </>
+                                    <Button
+                                        auto
+                                        disabled={!comment}
+                                        onClick={leaveCommentHandler}
+                                    >
+                                        Комментарировать
+                                    </Button>
+                                </Comments>
                             }
                             sidebar={
                                 <>
@@ -247,7 +291,7 @@ const PlacePageById = () => {
                                               )
                                             : ""
                                     }
-                                    comments={23}
+                                    comments={commentsCount || 0}
                                     favorites={favoriteCount || 0}
                                     isFavorite={isFavorite}
                                     favoriteCallback={favoriteHandler}

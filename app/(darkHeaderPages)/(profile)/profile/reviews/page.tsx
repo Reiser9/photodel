@@ -1,95 +1,110 @@
+"use client";
+
 import React from "react";
 import cn from "classnames";
+import { useQuery } from "@tanstack/react-query";
 
 import styles from "./index.module.scss";
+
 import { Checkbox } from "@/shared/ui/Checkbox";
-import { UserInfoBlock } from "@/shared/ui/UserInfoBlock";
-import { Comment2, Star, Warn } from "@/shared/icons";
-import { RatingReview } from "@/shared/ui/Rating";
-import Image from "next/image";
+import { ReviewItem } from "@/entities/review/ui";
+import { useReviews } from "@/features/reviews";
+import { useUserInfo } from "@/features/user";
+import { Pagination } from "@/shared/ui/Pagination";
+import { NotContent } from "@/shared/ui/NotContent";
+import { Preloader } from "@/shared/ui/Preloader";
+import { Comment2, Warn } from "@/shared/icons";
 
 const ReviewsPage = () => {
+    const [page, setPage] = React.useState(1);
+
+    const { getReviews } = useReviews();
+
+    const { getShortInfo } = useUserInfo();
+
+    const { data: myData } = useQuery({
+        queryKey: ["shortInfo"],
+        queryFn: () => getShortInfo(),
+        gcTime: 0,
+        refetchOnMount: true,
+    });
+
+    const { id: myId } = myData || {};
+
+    const { data, isLoading, isError } = useQuery({
+        queryKey: ["usersReviewsById", myId],
+        queryFn: () => getReviews({ type: "user", entity_id: +(myId || 0) }),
+        enabled: !!myId,
+    });
+
+    const { data: reviews, total, totalPages } = data || {};
+
     return (
         <>
             <div className={styles.reviewsTop}>
                 <p className={styles.reviewsCount}>
-                    Всего: <span>2</span>
+                    Всего: <span>{total}</span>
                 </p>
 
-                <Checkbox label="Только с фото" id="with_photo" auto />
+                {/* <Checkbox label="Только с фото" id="with_photo" auto /> */}
             </div>
 
-            <div className={styles.reviewsItems}>
-                <div className={styles.reviewsItem}>
-                    <div className={styles.reviewsItemTop}>
-                        <UserInfoBlock
-                            name="Марианна"
-                            surname="Родионова"
-                            image="/img/people1.png"
-                            isPro
-                            status="Сегодня 20:20"
-                            id="1"
+            {isLoading ? (
+                <Preloader page small />
+            ) : isError ? (
+                <NotContent
+                    text="Произошла ошибка при загрузке данных"
+                    danger
+                />
+            ) : !!reviews?.length ? (
+                <div className={styles.reviewsItems}>
+                    {reviews.map((data) => (
+                        <ReviewItem
+                            key={data.id}
+                            data={data}
+                            actions={
+                                <>
+                                    {data.user.id === myId && (
+                                        <div
+                                            className={
+                                                styles.reviewsItemButtons
+                                            }
+                                        >
+                                            <button
+                                                className={
+                                                    styles.reviewsItemButton
+                                                }
+                                            >
+                                                <Comment2 />
+                                                Прокомментировать
+                                            </button>
+
+                                            <button
+                                                className={cn(
+                                                    styles.reviewsItemButton,
+                                                    styles.danger,
+                                                )}
+                                            >
+                                                <Warn />
+                                                Пожаловаться
+                                            </button>
+                                        </div>
+                                    )}
+                                </>
+                            }
                         />
-
-                        <RatingReview rating={3} />
-                    </div>
-
-                    <div className={styles.reviewsItemText}>
-                        <p>
-                            Если вы в поисках фотографа на свадьбу, то вам к
-                            Алексу!! Алекс, спасибо огромное за невероятно
-                            красивые, яркие фотографии, которые останутся с нами
-                            до конца жизни! Спасибо за память об этом важном
-                            дне! Мы, пока смотрели, всё время улыбались и
-                            восхищались качеством, яркостью и красотой
-                            фотографий! Кирилл тоже очень доволен! Мы счастливы!
-                            С тобой было нереально комфортно, легко и приятно на
-                            протяжении этих 5 часов!
-                        </p>
-                    </div>
-
-                    <div className={styles.reviewsPhotos}>
-                        <div className={styles.reviewsPhoto}>
-                            <Image src="/img/photo1.png" alt="Фото" fill />
-                        </div>
-
-                        <div className={styles.reviewsPhoto}>
-                            <Image src="/img/photo2.png" alt="Фото" fill />
-                        </div>
-
-                        <div className={styles.reviewsPhoto}>
-                            <Image src="/img/photo3.png" alt="Фото" fill />
-                        </div>
-
-                        <div className={styles.reviewsPhoto}>
-                            <Image src="/img/photo4.png" alt="Фото" fill />
-                        </div>
-
-                        <div className={styles.reviewsPhoto}>
-                            <Image src="/img/photo5.png" alt="Фото" fill />
-
-                            <div className={styles.reviewsPhotoMore}>+5 фото</div>
-                        </div>
-                    </div>
-
-                    <div className={styles.reviewsItemButtons}>
-                        <button className={styles.reviewsItemButton}>
-                            <Comment2 />
-                            Прокомментрировать
-                        </button>
-
-                        <button
-                            className={cn(
-                                styles.reviewsItemButton,
-                                styles.danger,
-                            )}
-                        >
-                            <Warn />
-                            Пожаловаться
-                        </button>
-                    </div>
+                    ))}
                 </div>
-            </div>
+            ) : (
+                <NotContent text="У пользователя еще нет отзывов" />
+            )}
+
+            <Pagination
+                page={page}
+                setPage={setPage}
+                totalPages={totalPages || 0}
+                isLoading={isLoading}
+            />
         </>
     );
 };

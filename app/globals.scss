@@ -23,6 +23,7 @@ html {
     --mainDark: #3C8278;
     --red: #D86369;
     --yellow: #F2CF74;
+    --green: #65C363;
 
     --grey: #9CA3A1;
     --lightGrey: #D2D9D8;
@@ -272,6 +273,10 @@ input::placeholder {
 
 .ant-picker-panel{
     width: 100%!important;
+}
+
+:where(.css-dev-only-do-not-override-tchc97).ant-select-single:not(.ant-select-customize) .ant-select-input{
+    font-size: 1.3rem;
 }
 
 /* Custom datepicker antd */

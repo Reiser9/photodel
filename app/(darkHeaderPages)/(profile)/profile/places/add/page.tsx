@@ -21,11 +21,10 @@ import useAlert from "@/shared/hooks/useAlert";
 import { getHtmlInEditor } from "@/shared/utils/getHtmlInEditor";
 import { BackLink } from "@/shared/ui/BackLink";
 import { usePlaces } from "@/features/places";
+import type { PhotoShort } from "@/entities/photos/photo";
 
 const AddProfilePlace = () => {
-    const [photoIds, setPhotoIds] = React.useState<
-        { id: number; key: string; url: string }[]
-    >([]);
+    const [photoIds, setPhotoIds] = React.useState<PhotoShort[]>([]);
     const [name, setName] = React.useState("");
 
     const [address, setAddress] = React.useState("");

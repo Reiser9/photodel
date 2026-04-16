@@ -1,0 +1,21 @@
+.photosessionById{
+    width: 100%;
+    padding: 2rem 0;
+}
+
+.photosessionByIdInner{
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 20px;
+}
+
+.photosessionByIdTop{
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 15px;
+    flex-wrap: wrap;
+}

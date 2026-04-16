@@ -1,64 +1,106 @@
+"use client";
+
 import Link from "next/link";
-import Image from "next/image";
+import { useQuery } from "@tanstack/react-query";
 
 import styles from "./index.module.scss";
-import base from '@/shared/styles/base.module.scss';
+import base from "@/shared/styles/base.module.scss";
 
-import { Pro } from "@/shared/ui/Pro";
 import { UserInfoBlock } from "@/shared/ui/UserInfoBlock";
+import { useReviews } from "@/features/reviews";
+import { Preloader } from "@/shared/ui/Preloader";
+import { NotContent } from "@/shared/ui/NotContent";
+import { formatDate } from "@/shared/utils/formatDate";
 
 const LastComments = () => {
-    return <section className={styles.lastcomments}>
-        <div className={base.container}>
-            <div className={styles.lastcommentsInner}>
-                <h2 className={styles.lastcommentsTitle}>Последние комментарии</h2>
+    const { getReviews } = useReviews();
 
-                <div className={styles.lastcommentsItems}>
-                    <div className={styles.lastcommentsItem}>
-                        <Link href="/photos" className={styles.lastcommentsItemTitle}>
-                            На священной горе
-                        </Link>
+    const { data, isLoading, isError } = useQuery({
+        queryKey: ["lastReviews"],
+        queryFn: () =>
+            getReviews({
+                limit: 3,
+                type: "photo",
+            }),
+    });
 
-                        <p className={styles.lastcommentsItemText}>
-                            Восхитительное по красоте место, очень удачное для съемок в ночное время! Советую всем влюбленным для романтической съемки!
-                        </p>
+    const { data: comments } = data || {};
 
-                        <div className={styles.lastcommentsItemInfo}>
-                            <UserInfoBlock id={1} image="/img/people1.png" name="Родионова" surname="Марианна" isPro status="Сегодня 20:20" />
+    return (
+        <section className={styles.lastcomments}>
+            <div className={base.container}>
+                <div className={styles.lastcommentsInner}>
+                    <h2 className={styles.lastcommentsTitle}>
+                        Последние комментарии
+                    </h2>
+
+                    {isLoading ? (
+                        <Preloader small page />
+                    ) : isError ? (
+                        <NotContent
+                            text="Произошла ошибка при загрузке данных"
+                            danger
+                        />
+                    ) : !!comments?.length ? (
+                        <div className={styles.lastcommentsItems}>
+                            {comments.map((data) => {
+                                const { id, entity, createdAt, user, content } =
+                                    data || {};
+                                const {
+                                    avatarUrl,
+                                    isPro,
+                                    firstName,
+                                    lastName,
+                                    id: userId,
+                                } = user || {};
+
+                                return (
+                                    <div
+                                        key={id}
+                                        className={styles.lastcommentsItem}
+                                    >
+                                        <Link
+                                            href="/photos"
+                                            className={
+                                                styles.lastcommentsItemTitle
+                                            }
+                                        >
+                                            На священной горе
+                                        </Link>
+
+                                        <p
+                                            className={
+                                                styles.lastcommentsItemText
+                                            }
+                                        >
+                                            {content}
+                                        </p>
+
+                                        <div
+                                            className={
+                                                styles.lastcommentsItemInfo
+                                            }
+                                        >
+                                            <UserInfoBlock
+                                                id={userId}
+                                                image={avatarUrl}
+                                                name={firstName || ""}
+                                                surname={lastName || ""}
+                                                isPro={isPro}
+                                                status={formatDate(createdAt)}
+                                            />
+                                        </div>
+                                    </div>
+                                );
+                            })}
                         </div>
-                    </div>
-
-                    <div className={styles.lastcommentsItem}>
-                        <Link href="/photos" className={styles.lastcommentsItemTitle}>
-                            Аполлон
-                        </Link>
-
-                        <p className={styles.lastcommentsItemText}>
-                            Очень качественные и красивые фото, видно, что настоящий профессионал своего дела, все четко и по делу, никаких соплей и непонятных моментов!
-                        </p>
-
-                        <div className={styles.lastcommentsItemInfo}>
-                            <UserInfoBlock id={1} image="/img/people1.png" name="Родионова" surname="Марианна" isPro status="Сегодня 20:20" />
-                        </div>
-                    </div>
-
-                    <div className={styles.lastcommentsItem}>
-                        <Link href="/photos" className={styles.lastcommentsItemTitle}>
-                            На берегу озера
-                        </Link>
-
-                        <p className={styles.lastcommentsItemText}>
-                            Байкал великолепен! Очень удачно подобранное место для съемок на фоне замечательного озера совсем недалеко от населенного пункта!
-                        </p>
-
-                        <div className={styles.lastcommentsItemInfo}>
-                            <UserInfoBlock id={1} image="/img/people1.png" name="Родионова" surname="Марианна" isPro status="Сегодня 20:20" />
-                        </div>
-                    </div>
+                    ) : (
+                        <NotContent text="Комментариев на сайте нет" />
+                    )}
                 </div>
             </div>
-        </div>
-    </section>;
+        </section>
+    );
 };
 
 export default LastComments;

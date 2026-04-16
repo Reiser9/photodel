@@ -45,7 +45,7 @@ const ProfileTrainingById = () => {
             <SinglePageWrapper
                 content={
                     <>
-                        <Comments
+                        {/* <Comments
                             comments={[
                                 {
                                     comment: "Тест",
@@ -67,7 +67,7 @@ const ProfileTrainingById = () => {
                             <Button auto disabled>
                                 Комментарировать
                             </Button>
-                        </Comments>
+                        </Comments> */}
                     </>
                 }
                 sidebar={

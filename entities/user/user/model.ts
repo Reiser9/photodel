@@ -1,20 +1,36 @@
 import type { Pagination } from "@/entities/pagination";
+import type { LocationCountry } from "@/entities/places";
+
+export type Favorite = {
+    count: number;
+    favoriteId: number | null;
+    isFavorite: boolean;
+};
+
+export type Like = {
+    count: number;
+    likeId: number | null;
+    isLiked: boolean;
+};
+
+export type Review = {
+    count: number;
+    rating: number;
+};
 
 export type UserInfo = {
-    user: {
-        id: number;
-        email: string;
-        firstName: string;
-        lastName: string;
-        avatarUrl: string;
-        avatarKey: string;
-        isAdult: boolean;
-        isProfessional: boolean;
-        isVerified: boolean;
-        createdAt: string;
-        roles: Roles;
-        isPro: boolean;
-    };
+    id: number;
+    email: string;
+    firstName: string;
+    lastName: string;
+    avatarUrl: string;
+    avatarKey: string;
+    isAdult: boolean;
+    isProfessional: boolean;
+    isVerified: boolean;
+    createdAt: string;
+    roles: Roles;
+    isPro: boolean;
 };
 
 export type Category = {
@@ -54,32 +70,32 @@ export type LocationDTO = {
 
 export type Location = LocationDTO & {
     id: number;
+    place: LocationCountry;
 };
 
 export type ProfileInfo = {
-    profile: {
-        id: number;
-        firstName: string;
-        lastName: string;
-        avatar: string;
-        isProfessional: boolean;
-        isPro: boolean;
-        createdAt: string;
-        price: string;
-        status: string;
-        conditions: string;
-        equipment: string;
-        geography: string[];
-        languages: string[];
-        about: string;
-        proCategories: Category[];
-        specializations: Specialization[];
-        socials: SocialUser[];
-        location: Location;
-        activeTemporaryLocation: TempLocation;
-        temporaryLocations: TempLocation[];
-        favorites: Favorite;
-    };
+    id: number;
+    firstName: string;
+    lastName: string;
+    avatar: string;
+    isProfessional: boolean;
+    isPro: boolean;
+    createdAt: string;
+    price: string;
+    status: string;
+    conditions: string;
+    equipment: string;
+    geography: string[];
+    languages: string[];
+    about: string;
+    proCategories: Category[];
+    specializations: Specialization[];
+    socials: SocialUser[];
+    location: Location;
+    activeTemporaryLocation: TempLocation;
+    temporaryLocations: TempLocation[];
+    favorites: Favorite;
+    reviews: Review;
 };
 
 export type ProfileInfoDTO = {
@@ -99,18 +115,6 @@ export type ProfileInfoDTO = {
 
 export type Roles = ("ADMIN" | "MODERATOR")[];
 
-export type Favorite = {
-    count: number;
-    favoriteId: number | null;
-    isFavorite: boolean;
-};
-
-export type Like = {
-    count: number;
-    likeId: number | null;
-    isLiked: boolean;
-};
-
 export type UserByIdShortInfo = {
     id: number;
     firstName: string;
@@ -123,6 +127,8 @@ export type UserByIdShortInfo = {
     location: Location | null;
     proCategories: Category[];
     specializations: Specialization[];
+    likes: Like;
+    reviews: Review;
 };
 
 export type UsersPagination = Pagination & {

@@ -1,6 +1,7 @@
 import React from "react";
 import Link from "next/link";
 import Image from "next/image";
+import cn from "classnames";
 
 import styles from "./index.module.scss";
 
@@ -14,6 +15,8 @@ type Props = {
     clickOnPhoto?: () => void;
     checkboxValue?: boolean;
     mode?: "default" | "edit" | "select";
+    showUser?: boolean;
+    className?: string;
 };
 
 const PlaceItem: React.FC<Props> = ({
@@ -21,12 +24,18 @@ const PlaceItem: React.FC<Props> = ({
     clickOnPhoto,
     checkboxValue,
     mode = "default",
+    showUser = false,
+    className,
 }) => {
-    const { preview, name, id, likes, favorites, location } = data || {};
-    const { address } = location || {};
+    const { preview, name, id, likes, favorites, location, user, reviews } =
+        data || {};
+    const { place } = location || {};
+    const { city } = place || {};
     const { count: favoritesCount, isFavorite } = favorites || {};
     const { count: likesCount, isLiked } = likes || {};
+    const { count: reviewsCount } = reviews || {};
     const { url } = preview || {};
+    const { avatarUrl, lastName, firstName, id: userId } = user || {};
 
     const content = () => {
         return (
@@ -47,7 +56,7 @@ const PlaceItem: React.FC<Props> = ({
     };
 
     return (
-        <div className={styles.placesItem}>
+        <div className={cn(styles.placesItem, className)}>
             {mode === "edit" || mode === "select" ? (
                 <div
                     className={styles.placesItemImage}
@@ -60,18 +69,15 @@ const PlaceItem: React.FC<Props> = ({
                     {content()}
                 </div>
             ) : (
-                <Link
-                    href={`/places/${id}`}
-                    className={styles.placesItemImage}
-                >
+                <Link href={`/places/${id}`} className={styles.placesItemImage}>
                     {content()}
                 </Link>
             )}
 
             <span className={styles.placesItemInfo}>
-                {address && (
+                {city && (
                     <span className={styles.placesItemLocation}>
-                        <span>{address}</span>
+                        <span>{city}</span>
                         <span>5 км</span>
                     </span>
                 )}
@@ -94,12 +100,34 @@ const PlaceItem: React.FC<Props> = ({
                     </Link>
                 )}
 
+                {showUser && user && (
+                    <Link
+                        href={`/user/${userId}`}
+                        className={styles.placesItemUser}
+                    >
+                        <span className={styles.placesItemUserImage}>
+                            <Image
+                                src={avatarUrl}
+                                alt={`${firstName} ${lastName} аватар`}
+                                fill
+                            />
+                        </span>
+
+                        <span className={styles.placesItemUserName}>
+                            {lastName} {firstName}
+                        </span>
+                    </Link>
+                )}
+
                 <StatsBlock
-                    comments={12}
-                    favorites={favoritesCount ?? 0}
-                    likes={likesCount ?? 0}
+                    comments={reviewsCount || 0}
+                    favorites={favoritesCount || 0}
+                    likes={likesCount || 0}
                     isFavorites={isFavorite}
                     isLiked={isLiked}
+                    showFavorites
+                    showLikes
+                    isComment
                 />
             </span>
         </div>

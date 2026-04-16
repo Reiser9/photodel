@@ -40,6 +40,7 @@ export type Photo = Omit<
     user: UserInfoShort;
     favorites: Favorite;
     likes: Like;
+    reviews: { count: number; rating: number };
 };
 
 export type UserInfoShort = {
@@ -53,4 +54,10 @@ export type UserInfoShort = {
 
 export type PhotosPagination = Pagination & {
     data: Photo[];
+};
+
+export type PhotoShort = {
+    id: number;
+    key: string;
+    url: string;
 };

@@ -3,7 +3,7 @@ import styles from "./index.module.scss";
 import { Star } from "@/shared/icons";
 
 type Props = {
-    rating: 1 | 2 | 3 | 4 | 5;
+    rating: number;
 };
 
 const RatingReview: React.FC<Props> = ({ rating }) => {

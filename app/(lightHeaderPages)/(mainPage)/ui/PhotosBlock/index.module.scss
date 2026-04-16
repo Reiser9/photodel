@@ -67,6 +67,16 @@
     font-weight: 500;
 }
 
+.photosSlideStat.like.active svg{
+    color: var(--red);
+    fill: var(--red);
+}
+
+.photosSlideStat.favorite.active svg{
+    color: var(--main);
+    fill: var(--main);
+}
+
 .photosSlideStat svg{
     width: 18px;
     height: 18px;

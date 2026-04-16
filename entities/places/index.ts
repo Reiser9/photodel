@@ -1,1 +1,10 @@
-export type { Place, PlaceDTO, PlacesPagination, PlaceById } from "./model";
+export type {
+    Place,
+    PlaceDTO,
+    PlacesPagination,
+    PlaceById,
+    LocationCountriesPagination,
+    LocationCountry,
+    PlaceRequestDTO,
+    PlaceRequest
+} from "./model";

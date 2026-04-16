@@ -10,7 +10,7 @@ import styles from "./index.module.scss";
 import { ArrowLeft } from "@/shared/icons";
 import { UserInfoBlock } from "@/shared/ui/UserInfoBlock";
 import { Rating } from "@/shared/ui/Rating";
-import { PhotosBlock } from "@/shared/ui/PhotosBlock";
+// import { PhotosBlock } from "@/shared/ui/PhotosBlock";
 
 const ProfileAlbumById = () => {
     const { id } = useParams();

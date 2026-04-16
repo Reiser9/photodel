@@ -1,5 +1,6 @@
 import type { Pagination } from "../pagination";
-import type { UserInfoShort } from "../photos/photo/model";
+import type { UserInfoShort } from "../photos/photo";
+import type { TeamStatuses } from "../team";
 import type {
     Favorite,
     Like,
@@ -28,6 +29,7 @@ export type Place = {
     user: UserInfoShort;
     favorites: Favorite;
     likes: Like;
+    reviews: { count: number };
 };
 
 export type PlaceById = Omit<Place, "preview"> & {
@@ -52,4 +54,37 @@ export type PlaceDTO = {
 
 export type PlacesPagination = Pagination & {
     data: Place[];
+};
+
+export type LocationCountry = {
+    id: number;
+    country: string;
+    city: string;
+    latitude: number;
+    longitude: number;
+};
+
+export type LocationCountriesPagination = Pagination & {
+    data: LocationCountry[];
+};
+
+export type PlaceRequestDTO = {
+    userId: number;
+    date: string;
+    durationHours: number;
+    location: LocationDTO | null;
+    type: string;
+    peoplesCount: number;
+    budget: string;
+    needsMakeupArtist: boolean;
+    comment: string;
+};
+
+export type PlaceRequest = Omit<PlaceRequestDTO, "userId" | "location"> & {
+    id: number;
+    user: UserInfoShort;
+    status: TeamStatuses;
+    location: Location | null;
+    createdAt: string;
+    updatedAt: string;
 };

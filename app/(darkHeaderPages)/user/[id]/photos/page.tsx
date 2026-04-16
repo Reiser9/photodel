@@ -8,21 +8,25 @@ import { useQuery } from "@tanstack/react-query";
 
 import styles from "./index.module.scss";
 
-import { useUserInfo } from "@/features/user";
 import { Preloader } from "@/shared/ui/Preloader";
 import { NotContent } from "@/shared/ui/NotContent";
 import { Pagination } from "@/shared/ui/Pagination";
+import { usePhotos } from "@/features/photos";
 
 const UserByIdPhotos = () => {
     const { id } = useParams();
 
     const [page, setPage] = React.useState(1);
 
-    const { getUsersPhotosById } = useUserInfo();
+    const { getPhotos } = usePhotos();
 
     const { data, isLoading, isError } = useQuery({
         queryKey: ["usersPhotoById", id, page],
-        queryFn: () => getUsersPhotosById(String(id), page),
+        queryFn: () =>
+            getPhotos({
+                page,
+                user_id: String(id),
+            }),
         enabled: !!id,
     });
 

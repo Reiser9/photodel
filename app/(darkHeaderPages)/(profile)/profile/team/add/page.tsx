@@ -217,13 +217,14 @@ const TeamAddPage = () => {
                             return (
                                 <div key={id} className={styles.teamAddItem}>
                                     <div className={styles.teamAddItemImage}>
-                                        {avatarUrl && (
-                                            <Image
-                                                src={avatarUrl}
-                                                alt={`Аватар пользователя ${firstName} ${lastName}`}
-                                                fill
-                                            />
-                                        )}
+                                        <Image
+                                            src={
+                                                avatarUrl ??
+                                                "/img/placeholder.png"
+                                            }
+                                            alt={`Аватар пользователя ${firstName} ${lastName}`}
+                                            fill
+                                        />
                                     </div>
 
                                     <div className={styles.teamAddItemInfo}>

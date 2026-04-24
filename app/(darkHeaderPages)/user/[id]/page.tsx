@@ -7,7 +7,7 @@ import parse from "html-react-parser";
 import dayjs, { Dayjs } from "dayjs";
 import { Map, Placemark } from "@iminside/react-yandex-maps";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { redirect, useParams } from "next/navigation";
+import { useParams } from "next/navigation";
 
 import styles from "./index.module.scss";
 
@@ -42,6 +42,7 @@ import { usePlaces } from "@/features/places";
 import useAlert from "@/shared/hooks/useAlert";
 import { GetLocation } from "@/shared/ui/GetLocation";
 import { getISOWithOffset } from "@/shared/utils/getISOWithOffset";
+import { useMessanger } from "@/features/messanger";
 
 const ProfileUserPage = () => {
     const { id } = useParams();
@@ -67,10 +68,11 @@ const ProfileUserPage = () => {
         [number, number] | null
     >(null);
 
-    const { getUserProfileById, getShortInfo } = useUserInfo();
+    const { getUserProfileById } = useUserInfo();
     const { addFavorite, removeFavorite } = useFavorite();
     const { createPlacesRequest } = usePlaces();
     const { alertNotify } = useAlert();
+    const { sendMessage } = useMessanger();
 
     const queryClient = useQueryClient();
 
@@ -94,13 +96,6 @@ const ProfileUserPage = () => {
         refetchOnMount: true,
         enabled: !!id,
     });
-
-    const { data: myData } = useQuery({
-        queryKey: ["shortInfo"],
-        queryFn: () => getShortInfo(),
-    });
-
-    const { id: myId } = myData || {};
 
     const {
         id: userId,
@@ -162,6 +157,14 @@ const ProfileUserPage = () => {
         if (!favoriteId) return;
 
         removeFavorite(favoriteId, invalidateUserProfile);
+    };
+
+    const sendMessageHandler = () => {
+        sendMessage(String(id), message, "user", () => {
+            setMessageModal(false);
+            setMessage("");
+            alertNotify("Успешно", "Сообщение отправлено");
+        });
     };
 
     const createPlacesRequestHandler = () => {
@@ -233,12 +236,6 @@ const ProfileUserPage = () => {
         );
     };
 
-    React.useEffect(() => {
-        if (myId == id) {
-            redirect("/profile");
-        }
-    }, [id, myId]);
-
     if (isLoading) {
         return <Preloader page />;
     }
@@ -257,13 +254,11 @@ const ProfileUserPage = () => {
                 <div className={styles.profileInfoBlock}>
                     <div className={styles.profileInfo}>
                         <div className={styles.profileImage}>
-                            {avatar && (
-                                <Image
-                                    src={avatar}
-                                    alt={`Аватар пользователя ${firstName} ${lastName}`}
-                                    fill
-                                />
-                            )}
+                            <Image
+                                src={avatar ?? "/img/placeholder.png"}
+                                alt={`Аватар пользователя ${firstName} ${lastName}`}
+                                fill
+                            />
                         </div>
 
                         <div className={styles.profileInfoBox}>
@@ -301,7 +296,7 @@ const ProfileUserPage = () => {
                     </div>
 
                     <div className={styles.profileRating}>
-                        {rating && <Rating rating={rating} />}
+                        <Rating rating={rating || 0} />
 
                         {/* <p className={styles.profileRatingTop}>
                             <Trophy />
@@ -724,7 +719,7 @@ const ProfileUserPage = () => {
 
                 <div className={styles.messageButtons}>
                     <Button
-                        href="/profile"
+                        href={`/profile/messanger`}
                         auto
                         variant="outline"
                         wrapperClass={styles.messageButton}
@@ -732,7 +727,11 @@ const ProfileUserPage = () => {
                         Перейти к диалогу
                     </Button>
 
-                    <Button auto wrapperClass={styles.messageButton}>
+                    <Button
+                        auto
+                        wrapperClass={styles.messageButton}
+                        onClick={sendMessageHandler}
+                    >
                         Отправить
                     </Button>
                 </div>

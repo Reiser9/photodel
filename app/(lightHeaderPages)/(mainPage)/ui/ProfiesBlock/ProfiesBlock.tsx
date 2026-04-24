@@ -18,18 +18,25 @@ import { Rating } from "@/shared/ui/Rating";
 import { useUserInfo } from "@/features/user";
 import { Preloader } from "@/shared/ui/Preloader";
 import { NotContent } from "@/shared/ui/NotContent";
+import { useLocation } from "@/shared/context/LocationProvider";
 
 const ProfiesBlock = () => {
+    const { location, currentLocation } = useLocation();
+    const selectedLocation = currentLocation ?? location;
     const swiperInstance = React.useRef<SwiperClass | null>(null);
 
     const { getUsers } = useUserInfo();
 
     const { data, isLoading, isError } = useQuery({
-        queryKey: ["usersSearch"],
+        queryKey: ["usersSearch", selectedLocation],
         queryFn: () =>
             getUsers({
                 limit: 10,
                 sort: "popularity",
+                ...(selectedLocation && {
+                    latitude: selectedLocation.latitude,
+                    longitude: selectedLocation.longitude,
+                }),
             }),
     });
 
@@ -113,9 +120,12 @@ const ProfiesBlock = () => {
                                         location,
                                         proCategories,
                                         id,
+                                        distance,
+                                        reviews,
                                     } = data || {};
                                     const { place } = location || {};
                                     const { city } = place || {};
+                                    const { rating } = reviews || {};
 
                                     return (
                                         <SwiperSlide
@@ -133,13 +143,14 @@ const ProfiesBlock = () => {
                                                         styles.profiesSlideImg
                                                     }
                                                 >
-                                                    {avatarUrl && (
-                                                        <Image
-                                                            src={avatarUrl}
-                                                            alt={`${firstName} ${lastName} аватарка`}
-                                                            fill
-                                                        />
-                                                    )}
+                                                    <Image
+                                                        src={
+                                                            avatarUrl ??
+                                                            "/img/placeholder.png"
+                                                        }
+                                                        alt={`${firstName} ${lastName} аватарка`}
+                                                        fill
+                                                    />
                                                 </span>
 
                                                 <span
@@ -158,7 +169,7 @@ const ProfiesBlock = () => {
                                                     }
                                                 >
                                                     <Rating
-                                                        rating="4.92"
+                                                        rating={rating || 0}
                                                         className={
                                                             styles.profiesSlideRate
                                                         }
@@ -187,7 +198,9 @@ const ProfiesBlock = () => {
                                                             styles.profiesSlideLocation
                                                         }
                                                     >
-                                                        {city}
+                                                        {city}{" "}
+                                                        {distance &&
+                                                            `| ${distance} км`}
                                                     </span>
                                                 )}
                                             </Link>

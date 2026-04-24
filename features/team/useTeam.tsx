@@ -1,7 +1,5 @@
 "use client";
 
-import React from "react";
-
 import useAlert from "@/shared/hooks/useAlert";
 import useRequest from "@/shared/hooks/useRequest";
 import { TeamItem } from "@/entities/team";
@@ -11,9 +9,13 @@ const useTeam = () => {
     const { request, catchRequestError, errorController } = useRequest();
     const { alertNotify } = useAlert();
 
-    const getTeam = async ({ accepted = false }: { accepted?: boolean }) => {
+    const getTeam = async ({
+        status,
+    }: {
+        status?: "pending" | "accepted" | "rejected";
+    }) => {
         const queryString = buildQueryString({
-            accepted,
+            status,
         });
 
         const response = await request<{ teamRequests: TeamItem[] }>({

@@ -7,6 +7,7 @@ import parse from "html-react-parser";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import { DatePicker } from "antd";
+import { Map, Placemark } from "@iminside/react-yandex-maps";
 
 import styles from "./index.module.scss";
 
@@ -30,7 +31,6 @@ import useAlert from "@/shared/hooks/useAlert";
 import { GetLocation } from "@/shared/ui/GetLocation";
 import { NotContent } from "@/shared/ui/NotContent";
 import { formatDate } from "@/shared/utils/formatDate";
-import { Map, Placemark } from "@iminside/react-yandex-maps";
 
 const { RangePicker } = DatePicker;
 
@@ -196,7 +196,7 @@ const ProfileEditPage = () => {
 
     const changeUserAvatar = async (avatar: FileList) => {
         const formData = new FormData();
-        for(let i = 0; i < avatar.length; i++){
+        for (let i = 0; i < avatar.length; i++) {
             formData.append("files", avatar[i]);
         }
 
@@ -206,7 +206,7 @@ const ProfileEditPage = () => {
             return alertNotify(
                 "Ошибка",
                 "Изображение не загружено, попробуйте позже",
-                "warn"
+                "warn",
             );
 
         updateUserAvatar(files[0].key, revalidatePreofileInfo);
@@ -307,8 +307,10 @@ const ProfileEditPage = () => {
             setSpecialization(
                 !!specializations.length ? specializations[0].id : null,
             );
-            setAddress(location.address);
-            setCoords([location.latitude, location.longitude]);
+            setAddress(location?.address || "");
+            setCoords(
+                location ? [location.latitude, location.longitude] : null,
+            );
 
             const tempLocations = temporaryLocations.map((data) => {
                 const { startDate, comment, location, endDate } = data || {};
@@ -362,13 +364,11 @@ const ProfileEditPage = () => {
         <div className={styles.profileEdit}>
             <div className={styles.profileEditInfo}>
                 <div className={styles.profileEditImg}>
-                    {avatar && (
-                        <Image
-                            src={avatar}
-                            alt={`Аватар пользователя ${firstName} ${lastName}`}
-                            fill
-                        />
-                    )}
+                    <Image
+                        src={avatar ?? "/img/placeholder.png"}
+                        alt={`Аватар пользователя ${firstName} ${lastName}`}
+                        fill
+                    />
 
                     <File id="profile_avatar" onChange={changeUserAvatar} />
 

@@ -8,6 +8,7 @@ import dayjs, { Dayjs } from "dayjs";
 
 import styles from "./index.module.scss";
 
+import type { PhotoShort } from "@/entities/photos/photo";
 import { Button } from "@/shared/ui/Button";
 import { CirclePlus, Lock, Remove, Unlock } from "@/shared/icons";
 import { Input } from "@/shared/ui/Input";
@@ -21,9 +22,19 @@ import { useFile } from "@/features/file";
 import useAlert from "@/shared/hooks/useAlert";
 import { getHtmlInEditor } from "@/shared/utils/getHtmlInEditor";
 import { BackLink } from "@/shared/ui/BackLink";
-import type { PhotoShort } from "@/entities/photos/photo";
 import { usePhotosessions } from "@/features/photosessions";
 import { DatePicker } from "@/shared/ui/DatePicker";
+import { useTeam } from "@/features/team";
+import { Pro } from "@/shared/ui/Pro";
+
+export type TempTeamItem = {
+    label: string;
+    value: number;
+    lastName: string;
+    image: string;
+    isPro: boolean;
+    category: string;
+};
 
 const AddPhotosessionPage = () => {
     const [photoIds, setPhotoIds] = React.useState<PhotoShort[]>([]);
@@ -35,6 +46,9 @@ const AddPhotosessionPage = () => {
     const [date, setDate] = React.useState<Dayjs | Dayjs[] | null>(null);
     const [category, setCategory] = React.useState<number | null>(null);
 
+    const [teamAdded, setTeamAdded] = React.useState<TempTeamItem | null>(null);
+    const [team, setTeam] = React.useState<TempTeamItem[]>([]);
+
     const [isPublished, setIsPublished] = React.useState(false);
 
     const descriptionRef = React.useRef<EditorCore | null>(null);
@@ -45,18 +59,32 @@ const AddPhotosessionPage = () => {
     const { uploadFile } = useFile();
     const { createPhotosession } = usePhotosessions();
     const { alertNotify } = useAlert();
+    const { getTeam } = useTeam();
 
     const {
-        data: categories,
-        isLoading: categoriesIsLoading,
-        isError: categoriesIsError,
+        data: teamData,
+        isLoading: teamDataIsLoading,
+        isError: teamDataIsError,
     } = useQuery({
-        queryKey: ["categories"],
+        queryKey: ["team"],
+        queryFn: () => getTeam({ status: "accepted" }),
+    });
+
+    const {
+        data: specializations,
+        isLoading: specializationsIsLoading,
+        isError: specializationsIsError,
+    } = useQuery({
+        queryKey: ["specializations"],
         queryFn: () => getSpecializations(),
     });
 
     const removePhoto = (id: number) => {
         setPhotoIds((prev) => prev.filter((data) => data.id !== id));
+    };
+
+    const removeTeamHandler = (id: number) => {
+        setTeam((prev) => prev.filter((elem) => elem.value !== id));
     };
 
     const uploadImage = async (image: FileList) => {
@@ -131,12 +159,19 @@ const AddPhotosessionPage = () => {
                 },
                 startDate: dayjs(date?.toString()).toDate(),
                 endDate: dayjs(date?.toString()).toDate(),
-                team: [],
+                team: team.map((elem) => elem.value),
                 specializationId: category,
             },
             () => router.back(),
         );
     };
+
+    React.useEffect(() => {
+        if (teamAdded) {
+            setTeam((prev) => [...prev, teamAdded]);
+            setTeamAdded(null);
+        }
+    }, [teamAdded]);
 
     return (
         <div className={styles.addPhotoWrapper}>
@@ -236,22 +271,201 @@ const AddPhotosessionPage = () => {
                             placeholder="Выберите дату"
                         />
 
-                        {categories && (
+                        {specializations && (
                             <Select
                                 title="Тип фотосессии"
                                 placeholder="Выберите тип"
                                 full
-                                options={categories?.map((data) => ({
+                                options={specializations?.map((data) => ({
                                     label: data.name,
                                     value: data.id,
                                 }))}
-                                error={categoriesIsError}
-                                loading={categoriesIsLoading}
+                                error={specializationsIsError}
+                                loading={specializationsIsLoading}
                                 value={category}
                                 setValue={setCategory}
                                 allowClear
                             />
                         )}
+                    </div>
+
+                    <div className={styles.addPhotoBlock}>
+                        <p className={styles.addPhotoBlockTitle}>Команда</p>
+
+                        {!!team.length && (
+                            <div className={styles.teamBlockItems}>
+                                {team.map((data) => {
+                                    const {
+                                        category,
+                                        image,
+                                        isPro,
+                                        label,
+                                        lastName,
+                                        value,
+                                    } = data || {};
+
+                                    return (
+                                        <div
+                                            key={value}
+                                            className={styles.teamBlockItem}
+                                        >
+                                            <div
+                                                className={
+                                                    styles.teamBlockItemInfoWrapper
+                                                }
+                                            >
+                                                <div
+                                                    className={
+                                                        styles.teamBlockItemImage
+                                                    }
+                                                >
+                                                    <Image
+                                                        src={
+                                                            image ??
+                                                            "/img/placeholder.png"
+                                                        }
+                                                        alt={`Аватар ${label} ${lastName}`}
+                                                        fill
+                                                    />
+                                                </div>
+
+                                                <div
+                                                    className={
+                                                        styles.teamBlockItemInfoInner
+                                                    }
+                                                >
+                                                    <div
+                                                        className={
+                                                            styles.teamBlockItemInfo
+                                                        }
+                                                    >
+                                                        <p
+                                                            className={
+                                                                styles.teamBlockItemInfoName
+                                                            }
+                                                        >
+                                                            {label} {lastName}
+                                                        </p>
+                                                        {isPro && <Pro />}
+                                                    </div>
+
+                                                    {category && (
+                                                        <p
+                                                            className={
+                                                                styles.teamBlockItemCategory
+                                                            }
+                                                        >
+                                                            {category}
+                                                        </p>
+                                                    )}
+                                                </div>
+                                            </div>
+
+                                            <button
+                                                className={
+                                                    styles.teamBlockItemRemove
+                                                }
+                                                onClick={() =>
+                                                    removeTeamHandler(value)
+                                                }
+                                            >
+                                                <Remove />
+                                            </button>
+                                        </div>
+                                    );
+                                })}
+                            </div>
+                        )}
+
+                        <Select
+                            placeholder="Добавить в команду"
+                            full
+                            value={teamAdded}
+                            onChange={(_, option) => {
+                                console.log(option);
+                                setTeamAdded(option as TempTeamItem);
+                            }}
+                            loading={teamDataIsLoading}
+                            error={teamDataIsError}
+                            options={
+                                !!teamData
+                                    ? teamData
+                                          ?.filter((elem) => {
+                                              const teamIds = team.map(
+                                                  (elem) => elem.value,
+                                              );
+                                              return !teamIds.includes(
+                                                  elem.user.id,
+                                              );
+                                          })
+                                          .map((data) => ({
+                                              label: data.user.firstName,
+                                              value: data.user.id,
+                                              lastName: data.user.lastName,
+                                              image: data.user.avatarUrl,
+                                              isPro: data.user.isPro,
+                                              category:
+                                                  data.user.proCategories[0]
+                                                      .name,
+                                          }))
+                                    : []
+                            }
+                            optionRender={({ data }) => {
+                                const {
+                                    label,
+                                    lastName,
+                                    image,
+                                    isPro,
+                                    category,
+                                } = data || {};
+
+                                return (
+                                    <div className={styles.teamOption}>
+                                        <div className={styles.teamOptionImage}>
+                                            <Image
+                                                src={
+                                                    image ??
+                                                    "/img/placeholder.png"
+                                                }
+                                                alt={`Аватар ${label} ${lastName}`}
+                                                fill
+                                            />
+                                        </div>
+
+                                        <div
+                                            className={
+                                                styles.teamOptionInfoInner
+                                            }
+                                        >
+                                            <div
+                                                className={
+                                                    styles.teamOptionInfo
+                                                }
+                                            >
+                                                <p
+                                                    className={
+                                                        styles.teamOptionInfoName
+                                                    }
+                                                >
+                                                    {label} {lastName}
+                                                </p>
+                                                {isPro && <Pro />}
+                                            </div>
+
+                                            {category && (
+                                                <p
+                                                    className={
+                                                        styles.teamOptionCategory
+                                                    }
+                                                >
+                                                    {category}
+                                                </p>
+                                            )}
+                                        </div>
+                                    </div>
+                                );
+                            }}
+                        />
                     </div>
 
                     <div className={styles.addPhotoButtons}>

@@ -35,23 +35,24 @@ const MainPage = () => {
 
             <InfoBlock />
 
-            <section className={styles.banner}>
-                <div className={styles.bannerImg}>
-                    <Image src="/img/banner.png" alt="Баннер" fill />
-                </div>
+            {!isAuth && (
+                <section className={styles.banner}>
+                    <div className={styles.bannerImg}>
+                        <Image src="/img/banner.png" alt="Баннер" fill />
+                    </div>
 
-                <div className={base.container}>
-                    <div className={styles.bannerInner}>
-                        <h2 className={styles.bannerTitle}>
-                            Вы отличный фотограф или профессиональная модель?
-                        </h2>
+                    <div className={base.container}>
+                        <div className={styles.bannerInner}>
+                            <h2 className={styles.bannerTitle}>
+                                Вы отличный фотограф или профессиональная
+                                модель?
+                            </h2>
 
-                        <p className={styles.bannerText}>
-                            Зарегистрируйтесь на Фотодел  и начните получать
-                            заказы прямо сейчас!
-                        </p>
+                            <p className={styles.bannerText}>
+                                Зарегистрируйтесь на Фотодел  и начните получать
+                                заказы прямо сейчас!
+                            </p>
 
-                        {!isAuth && (
                             <Button
                                 auto
                                 className={styles.bannerButton}
@@ -59,10 +60,10 @@ const MainPage = () => {
                             >
                                 Зарегистрироваться
                             </Button>
-                        )}
+                        </div>
                     </div>
-                </div>
-            </section>
+                </section>
+            )}
         </>
     );
 };

@@ -90,7 +90,8 @@ const PhotosessionsById = () => {
     } = data || {};
 
     const { avatarUrl, firstName, isPro, lastName, id: userId } = user || {};
-    const { address, latitude, longitude } = location || {};
+    const { latitude, longitude, place } = location || {};
+    const { city } = place || {};
     const { favoriteId, isFavorite, count: favoriteCount } = favorites || {};
     const { count: likesCount, isLiked, likeId } = likes || {};
     const { count: commentsCount } = reviewsPlace || {};
@@ -189,7 +190,7 @@ const PhotosessionsById = () => {
                                 size="medium"
                             />
 
-                            <Rating rating="4.92" />
+                            {/* <Rating rating="4.92" /> */}
                         </div>
                     )}
 
@@ -240,9 +241,9 @@ const PhotosessionsById = () => {
                                         </Button>
                                     )}
 
-                                    {address && (
+                                    {city && (
                                         <MapLocation
-                                            location={address || ""}
+                                            location={city || ""}
                                             distance=""
                                             coords={
                                                 longitude && latitude
@@ -277,6 +278,7 @@ const PhotosessionsById = () => {
                                                     firstName,
                                                     isPro,
                                                     lastName,
+                                                    proCategories,
                                                 } = data || {};
                                                 return (
                                                     <PeopleItem
@@ -285,8 +287,11 @@ const PhotosessionsById = () => {
                                                         image={avatarUrl}
                                                         name={firstName}
                                                         surname={lastName}
-                                                        role="Фотограф"
                                                         isPro={isPro}
+                                                        role={
+                                                            proCategories[0]
+                                                                ?.name || ""
+                                                        }
                                                     />
                                                 );
                                             })}
@@ -315,7 +320,6 @@ const PhotosessionsById = () => {
                                     likes={likesCount || 0}
                                     isLike={isLiked}
                                     likeCallback={likeHandler}
-                                    views={23}
                                     isCarousel
                                     slides={photos || []}
                                     title={name || ""}

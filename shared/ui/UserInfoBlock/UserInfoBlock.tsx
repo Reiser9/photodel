@@ -32,13 +32,11 @@ const UserInfoBlock: React.FC<Props> = ({
         return (
             <>
                 <span className={styles.userInfoBlockImg}>
-                    {image && (
-                        <Image
-                            src={image}
-                            alt={`Аватар пользователя ${name} ${surname}`}
-                            fill
-                        />
-                    )}
+                    <Image
+                        src={image ?? "/img/placeholder.png"}
+                        alt={`Аватар пользователя ${name} ${surname}`}
+                        fill
+                    />
                 </span>
 
                 <span className={styles.userInfoBlockName}>

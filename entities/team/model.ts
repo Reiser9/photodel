@@ -11,3 +11,12 @@ export type TeamItem = {
     createdAt: string;
     updatedAt: string;
 };
+
+export type TempTeamItem = {
+    label: string;
+    value: number;
+    lastName: string;
+    image: string;
+    isPro: boolean;
+    category: string;
+};

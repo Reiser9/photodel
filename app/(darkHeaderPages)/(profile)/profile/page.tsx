@@ -52,13 +52,11 @@ const ProfilePage = () => {
                 <div className={styles.profileInfoBlock}>
                     <div className={styles.profileInfo}>
                         <div className={styles.profileImage}>
-                            {avatar && (
-                                <Image
-                                    src={avatar}
-                                    alt={`Аватар пользователя ${firstName} ${lastName}`}
-                                    fill
-                                />
-                            )}
+                            <Image
+                                src={avatar ?? "/img/placeholder.png"}
+                                alt={`Аватар пользователя ${firstName} ${lastName}`}
+                                fill
+                            />
                         </div>
 
                         <div className={styles.profileInfoBox}>
@@ -288,7 +286,9 @@ const ProfilePage = () => {
                                             styles.profileBlockDataItemComment
                                         }
                                     >
-                                        {parse(comment)}
+                                        {comment
+                                            ? parse(comment)
+                                            : "Не указано"}
                                     </div>
                                 </div>
                             </div>

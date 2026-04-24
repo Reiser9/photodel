@@ -96,7 +96,7 @@ const PhotoItem: React.FC<Props> = ({
                     >
                         <span className={styles.placesItemUserImage}>
                             <Image
-                                src={avatarUrl}
+                                src={avatarUrl ?? "/img/placeholder.png"}
                                 alt={`${firstName} ${lastName} аватар`}
                                 fill
                             />

@@ -1,0 +1,175 @@
+.messangerContent{
+    width: 100%;
+    height: calc(100dvh - 144px - 40px);
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+.messangerTop{
+    width: 100%;
+    padding: 1rem 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    border-bottom: 1px solid var(--lightGrey);
+}
+
+.messangerDialogContent{
+    width: 100%;
+    flex-grow: 1;
+    padding: 1.6rem 0;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 20px;
+    overflow-y: auto;
+}
+
+.messangerSendInner{
+    width: 100%;
+    padding: 2rem 1.6rem;
+    background: var(--lightWhite);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.messangerSendButton{
+    width: 38px;
+    height: 38px;
+    border-radius: 8px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    background: var(--main);
+}
+
+.messangerSendButton.disabled{
+    opacity: 0.7;
+    pointer-events: none;
+    filter: grayscale(1);
+}
+
+.messangerSendButton svg{
+    width: 20px;
+    flex-shrink: 0;
+}
+
+@media (any-hover: hover) {
+    .messangerSendButton:hover{
+        background: var(--mainDark);
+    }
+}
+
+.messangerSendInput{
+    width: 100%;
+    background: var(--white);
+    border-radius: 30px;
+    font-size: 1.3rem;
+    color: var(--black);
+    padding: 1.1rem 1.9rem;
+}
+
+.messangerTopInfo{
+    display: flex;
+    align-items: center;
+    gap: 9px;
+}
+
+.messangerTopAvatar{
+    position: relative;
+    overflow: hidden;
+    border-radius: 4px;
+    width: 24px;
+    height: 24px;
+    flex-shrink: 0;
+    background: var(--lightGrey);
+}
+
+.messangerTopAvatar img{
+    object-fit: cover;
+}
+
+.messangerTopName, .messangerDialogItemName{
+    position: relative;
+    padding-left: 1.2rem;
+    font-size: 1.4rem;
+    font-weight: 600;
+    color: var(--grey);
+}
+
+.messangerDialogItemName{
+    font-size: 1.3rem;
+}
+
+.messangerTopName:before, .messangerDialogItemName:before{
+    content: "";
+    display: block;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--grey);
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    left: 0;
+}
+
+.messangerTopBack{
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    color: var(--mainDark);
+    font-size: 1.3rem;
+    font-weight: 500;
+}
+
+.messangerTopBack svg{
+    width: 12px;
+    flex-shrink: 0;
+    color: var(--main);
+}
+
+.messangerDialogItem{
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 5px;
+}
+
+.messangerDialogItemText{
+    font-size: 1.4rem;
+    color: var(--black);
+    width: 100%;
+}
+
+.messangerDialogItemInfo{
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.messangerDialogItemAvatar{
+    width: 24px;
+    height: 24px;
+    flex-shrink: 0;
+    border-radius: 4px;
+    position: relative;
+    overflow: hidden;
+    background: var(--lightGrey);
+}
+
+.messangerDialogItemAvatar img{
+    object-fit: cover;
+}
+
+.messangerDialogItemTime{
+    font-size: 1.2rem;
+    color: var(--grey);
+}

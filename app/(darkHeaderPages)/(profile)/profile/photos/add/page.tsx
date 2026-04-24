@@ -48,7 +48,7 @@ const ProfileAddPhotoPage = () => {
 
     const router = useRouter();
 
-    const { getCategories } = useUserInfo();
+    const { getSpecializations } = useUserInfo();
     const { uploadFile } = useFile();
     const { alertNotify } = useAlert();
     const { createPhoto } = usePhotos();
@@ -59,8 +59,8 @@ const ProfileAddPhotoPage = () => {
         isLoading: categoriesIsLoading,
         isError: categoriesIsError,
     } = useQuery({
-        queryKey: ["categories"],
-        queryFn: () => getCategories(),
+        queryKey: ["specializations"],
+        queryFn: () => getSpecializations(),
     });
 
     const {

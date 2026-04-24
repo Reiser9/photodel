@@ -1,12 +1,12 @@
 import type { FavoriteEntites } from "../favorite";
-import { Pagination } from "../pagination";
+import type { Pagination } from "../pagination";
 import type { PhotoShort, UserInfoShort } from "../photos/photo";
 
 export type Review = {
     id: number;
     entityType: FavoriteEntites;
     entityId: number;
-    entity: UserInfoShort | null;
+    entity: UserInfoShort | { id: number; name: string } | null;
     content: string;
     rating: number;
     isPublished: boolean;

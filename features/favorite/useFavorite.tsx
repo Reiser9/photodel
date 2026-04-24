@@ -5,6 +5,7 @@ import type { PlacesPagination } from "@/entities/places";
 import { buildQueryString } from "@/shared/utils/buildQueryString";
 import useRequest from "@/shared/hooks/useRequest";
 import { PhotosessionsPagination } from "@/entities/photosessions";
+import { TrainingsPagination } from "@/entities/trainings";
 
 const useFavorite = () => {
     const { request, catchRequestError, errorController } = useRequest();
@@ -26,6 +27,7 @@ const useFavorite = () => {
             | PhotosPagination
             | UsersPagination
             | PhotosessionsPagination
+            | TrainingsPagination
         >({
             url: `/favorites?${queryString}`,
             isAuth: true,

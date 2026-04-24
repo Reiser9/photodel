@@ -36,22 +36,22 @@ const UserItem: React.FC<Props> = ({
         location,
         proCategories,
         specializations,
+        reviews,
     } = data || {};
 
     const { place } = location || {};
     const { count, isFavorite } = favorites || {};
     const { city } = place || {};
+    const { rating } = reviews || {};
 
     const content = () => {
         return (
             <>
-                {avatarUrl && (
-                    <Image
-                        src={avatarUrl}
-                        alt={`Аватар пользователя ${firstName} ${lastName}`}
-                        fill
-                    />
-                )}
+                <Image
+                    src={avatarUrl ?? "/img/placeholder.png"}
+                    alt={`Аватар пользователя ${firstName} ${lastName}`}
+                    fill
+                />
 
                 {(mode === "edit" || mode === "select") && (
                     <Checkbox
@@ -93,7 +93,8 @@ const UserItem: React.FC<Props> = ({
                 </div>
 
                 <StatsBlock
-                    rate={4.92}
+                    showRate
+                    rate={rating}
                     favorites={count}
                     isFavorites={isFavorite}
                     showFavorites

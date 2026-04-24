@@ -1,7 +1,6 @@
 "use client";
 
 import type { FavoriteEntites } from "@/entities/favorite";
-import { UserInfoShort } from "@/entities/photos/photo";
 import { Review, ReviewDTO, ReviewsPagination } from "@/entities/review";
 import useAlert from "@/shared/hooks/useAlert";
 import useRequest from "@/shared/hooks/useRequest";

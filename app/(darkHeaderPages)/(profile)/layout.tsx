@@ -23,6 +23,8 @@ import {
     Text,
 } from "@/shared/icons";
 import { AuthWrapper } from "@/shared/wrappers/AuthWrapper";
+import { useMessanger } from "@/features/messanger";
+import { useQuery } from "@tanstack/react-query";
 
 const sidebarLinks = [
     {
@@ -42,7 +44,12 @@ const sidebarLinks = [
         icon: <Message />,
     },
     {
-        paths: ["/profile/photos", "/profile/photos/albums", "/profile/photos/add", "/profile/albums/add"],
+        paths: [
+            "/profile/photos",
+            "/profile/photos/albums",
+            "/profile/photos/add",
+            "/profile/albums/add",
+        ],
         name: "Фотографии",
         icon: <Photo />,
         exact: true,
@@ -92,6 +99,13 @@ const sidebarLinks = [
 const ProfileLayout: React.FC<{ children: React.ReactNode }> = ({
     children,
 }) => {
+    const { getUnreadCount } = useMessanger();
+
+    const { data: unreadCount } = useQuery({
+        queryKey: ["messangerUnreadCount"],
+        queryFn: () => getUnreadCount(),
+    });
+
     const pathname = usePathname();
 
     const checkPathExact = (pathname: string, paths: string[]) => {
@@ -127,6 +141,16 @@ const ProfileLayout: React.FC<{ children: React.ReactNode }> = ({
                                 >
                                     {data.icon}
                                     {data.name}
+                                    {data.name === "Сообщения" &&
+                                        !!unreadCount && (
+                                            <span
+                                                className={
+                                                    styles.profileSidebarNumber
+                                                }
+                                            >
+                                                {unreadCount}
+                                            </span>
+                                        )}
                                 </Link>
                             ))}
                         </div>

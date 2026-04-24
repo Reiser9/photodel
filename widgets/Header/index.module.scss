@@ -563,3 +563,39 @@ div.profileMenuContent{
         background: var(--input);
     }
 }
+
+.locationModalContent{
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 15px;
+    margin-top: 2rem;
+}
+
+.locationModalItems{
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+}
+
+.locationModalItem{
+    width: 100%;
+    font-size: 1.3rem;
+    color: var(--black);
+    text-align: left;
+}
+
+@media (any-hover: hover) {
+    .locationModalItem:not(.active):hover{
+        color: var(--main);
+    }
+}
+
+.locationModalItem.active{
+    font-size: 1.3rem;
+    font-weight: 600;
+    color: var(--main);
+}

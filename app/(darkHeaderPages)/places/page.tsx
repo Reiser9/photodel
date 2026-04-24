@@ -126,8 +126,8 @@ const PlacesPage = () => {
                         />
                     </div>
 
-                    <div className={styles.profiesFilterItem}>
-                        {categories && (
+                    {categories && (
+                        <div className={styles.profiesFilterItem}>
                             <Select
                                 title="Категория"
                                 placeholder="Выберите категорию"
@@ -145,8 +145,8 @@ const PlacesPage = () => {
                                     setCategory(value);
                                 }}
                             />
-                        )}
-                    </div>
+                        </div>
+                    )}
 
                     <div className={styles.profiesFilterItem}>
                         <Button color="grey" onClick={resetFilters}>
@@ -175,7 +175,7 @@ const PlacesPage = () => {
                 <div className={styles.profiesItemsInner}>
                     <div className={styles.profiesItemsTitleInner}>
                         <p className={styles.profiesItemsTitle}>
-                            {total} найдено
+                            {total || 0} найдено
                         </p>
 
                         <div className={styles.profiesItemsSort}>
@@ -220,7 +220,7 @@ const PlacesPage = () => {
                             ))}
                         </div>
                     ) : (
-                        <NotContent text="Пользователей не найдено" />
+                        <NotContent text="Мест для съемок не найдено" />
                     )}
                 </div>
 

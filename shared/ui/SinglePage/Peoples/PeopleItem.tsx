@@ -24,9 +24,9 @@ const PeopleItem: React.FC<Props> = ({
     role,
 }) => {
     return (
-        <Link href={`/profile/${id}`} className={styles.peopleItem}>
+        <Link href={`/user/${id}`} className={styles.peopleItem}>
             <span className={styles.peopleItemImage}>
-                <Image src={image} alt="Фото пользователя" fill />
+                <Image src={image ?? "/img/placeholder.png"} alt="Фото пользователя" fill />
             </span>
 
             <span className={styles.peopleItemInfo}>

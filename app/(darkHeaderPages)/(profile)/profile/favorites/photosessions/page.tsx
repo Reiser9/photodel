@@ -32,7 +32,7 @@ const FavoritePhotosessions = () => {
 
     const { total, data: photosessions, totalPages } = data || {};
 
-    const selectPhoto = (id: number) => {
+    const selectPhotosession = (id: number) => {
         if (selectedIds.includes(id)) {
             setSelectedIds((prev) => prev.filter((item) => item != id));
         } else {
@@ -40,9 +40,11 @@ const FavoritePhotosessions = () => {
         }
     };
 
-    const deleteCheckedFavoritesPhotos = () => {
+    const deleteCheckedFavoritesPhotosessions = () => {
         deleteBulkFavorites({ ids: selectedIds }, () => {
-            queryClient.invalidateQueries({ queryKey: ["myFavorites", "photo_session"] });
+            queryClient.invalidateQueries({
+                queryKey: ["myFavorites", "photo_session"],
+            });
             setSelectedIds([]);
             setAction(null);
         });
@@ -62,7 +64,9 @@ const FavoritePhotosessions = () => {
         } else {
             if (!photosessions) return;
 
-            const allIds = photosessions.map((item) => item.favorites.favoriteId || 0);
+            const allIds = photosessions.map(
+                (item) => item.favorites.favoriteId || 0,
+            );
             setSelectedIds(allIds);
         }
     };
@@ -122,7 +126,9 @@ const FavoritePhotosessions = () => {
                                 data={data as Photosession}
                                 mode="select"
                                 clickOnPhoto={() =>
-                                    selectPhoto(data.favorites.favoriteId || 0)
+                                    selectPhotosession(
+                                        data.favorites.favoriteId || 0,
+                                    )
                                 }
                                 checkboxValue={selectedIds.includes(
                                     data.favorites.favoriteId || 0,
@@ -145,8 +151,8 @@ const FavoritePhotosessions = () => {
             <ConfirmModal
                 value={confirmDeleteModal}
                 setValue={setConfirmDeleteModal}
-                title={`Вы действительно хотите удалить ${selectedIds.length} фото из избранного?`}
-                callback={deleteCheckedFavoritesPhotos}
+                title={`Вы действительно хотите удалить ${selectedIds.length} фотосессий из избранного?`}
+                callback={deleteCheckedFavoritesPhotosessions}
                 rejectCallback={() => setAction(null)}
             />
         </>

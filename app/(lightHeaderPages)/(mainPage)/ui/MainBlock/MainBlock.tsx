@@ -28,7 +28,7 @@ const MainBlock = () => {
         queryFn: () => getTopPhoto(),
     });
 
-    const { imageUrl, name, user } = data || {};
+    const { imageUrl, name, user, id: photoId } = data || {};
     const { firstName, lastName, id } = user || {};
 
     return (
@@ -71,7 +71,12 @@ const MainBlock = () => {
                 <div className={styles.mainAuthorInner}>
                     <p className={styles.mainImageTitle}>Фото дня</p>
 
-                    <p className={styles.mainImgName}>{name}</p>
+                    <Link
+                        href={`/photos/${photoId}`}
+                        className={styles.mainImgName}
+                    >
+                        {name}
+                    </Link>
 
                     <Link href={`/user/${id}`} className={styles.mainAuthor}>
                         <Profile />

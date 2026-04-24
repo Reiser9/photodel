@@ -59,7 +59,7 @@ const ProfilePhotoEdit = () => {
 
     const router = useRouter();
 
-    const { getCategories } = useUserInfo();
+    const { getSpecializations } = useUserInfo();
     const { uploadFile } = useFile();
     const { alertNotify } = useAlert();
     const { updatePhoto, getPhotoById, deletePhoto } = usePhotos();
@@ -70,8 +70,8 @@ const ProfilePhotoEdit = () => {
         isLoading: categoriesIsLoading,
         isError: categoriesIsError,
     } = useQuery({
-        queryKey: ["categories"],
-        queryFn: () => getCategories(),
+        queryKey: ["specializations"],
+        queryFn: () => getSpecializations(),
     });
 
     const {

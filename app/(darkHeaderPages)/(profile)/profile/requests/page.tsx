@@ -40,8 +40,16 @@ const ProfileRequests = () => {
                 ) : data && !!data?.length ? (
                     <div className={styles.requestsItems}>
                         {data.map((data) => {
-                            const { id, user, location, date, durationHours, status } = data || {};
-                            const { avatarUrl, firstName, lastName } = user || {};
+                            const {
+                                id,
+                                user,
+                                location,
+                                date,
+                                durationHours,
+                                status,
+                            } = data || {};
+                            const { avatarUrl, firstName, lastName } =
+                                user || {};
                             const { place } = location || {};
                             const { city } = place || {};
 
@@ -52,29 +60,54 @@ const ProfileRequests = () => {
                                     className={styles.requestsItem}
                                 >
                                     <span className={styles.requestsItemImage}>
-                                        {avatarUrl && <Image src={avatarUrl} alt={`Аватар пользователя ${firstName} ${lastName}`} fill />}
+                                        <Image
+                                            src={
+                                                avatarUrl ??
+                                                "/img/placeholder.png"
+                                            }
+                                            alt={`Аватар пользователя ${firstName} ${lastName}`}
+                                            fill
+                                        />
                                     </span>
 
-                                    <span className={styles.requestsItemContent}>
-                                        <span className={styles.requestsItemInfo}>
-                                            <span className={styles.requestsItemName}>
+                                    <span
+                                        className={styles.requestsItemContent}
+                                    >
+                                        <span
+                                            className={styles.requestsItemInfo}
+                                        >
+                                            <span
+                                                className={
+                                                    styles.requestsItemName
+                                                }
+                                            >
                                                 {lastName} {firstName}
                                             </span>
 
-                                            <span className={styles.requestsItemShort}>
-                                                {city} | {formatDate(date)} | {durationHours} ч.
+                                            <span
+                                                className={
+                                                    styles.requestsItemShort
+                                                }
+                                            >
+                                                {city} | {formatDate(date)} |{" "}
+                                                {durationHours} ч.
                                             </span>
 
-                                            <span className={styles.requestsItemStatus}>
-                                                {status === "pending" && "Новый"}
-                                                {status === "accepted" && "Принят"}
-                                                {status === "rejected" && "Отклонён"}
+                                            <span
+                                                className={
+                                                    styles.requestsItemStatus
+                                                }
+                                            >
+                                                {status === "pending" &&
+                                                    "Новый"}
+                                                {status === "accepted" &&
+                                                    "Принят"}
+                                                {status === "rejected" &&
+                                                    "Отклонён"}
                                             </span>
                                         </span>
 
-                                        <span>
-                                            
-                                        </span>
+                                        <span></span>
                                     </span>
                                 </Link>
                             );

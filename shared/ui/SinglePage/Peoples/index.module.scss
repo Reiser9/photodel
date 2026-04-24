@@ -34,7 +34,7 @@
     width: 32px;
     height: 32px;
     flex-shrink: 0;
-    border-radius: 8px;
+    border-radius: 4px;
     overflow: hidden;
     position: relative;
 }
@@ -56,9 +56,9 @@
 
 .peopleItemInfoName{
     font-size: 1.2rem;
-    font-weight: 500;
-    color: var(--mainDark);
-    padding-left: 1rem;
+    font-weight: 600;
+    color: var(--grey);
+    padding-left: .8rem;
     position: relative;
 }
 
@@ -68,7 +68,7 @@
     width: 4px;
     height: 4px;
     border-radius: 50%;
-    background: var(--main);
+    background: var(--grey);
     position: absolute;
     top: 50%;
     left: 0;
@@ -79,6 +79,6 @@
     font-size: 1.2rem;
     font-weight: 500;
     color: var(--black);
-    padding-left: 1rem;
+    padding-left: .8rem;
     text-transform: lowercase;
 }

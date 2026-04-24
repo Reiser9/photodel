@@ -27,8 +27,14 @@ import { useAppSelector } from "@/shared/hooks/useRedux";
 import { useAuth, useUserInfo } from "@/features/user";
 import { HoverMenu, MenuLink } from "@/shared/ui/HoverMenu";
 import { Pro } from "@/shared/ui/Pro";
-import { ConfirmModal } from "@/shared/ui/Modal";
+import { ConfirmModal, Modal } from "@/shared/ui/Modal";
 import { useAuthContext } from "@/shared/context/AuthProvider";
+import { usePlaces } from "@/features/places";
+import { Input } from "@/shared/ui/Input";
+import { useDebounce } from "@/shared/hooks/useDebounce";
+import { NotContent } from "@/shared/ui/NotContent";
+import { Preloader } from "@/shared/ui/Preloader";
+import { useLocation } from "@/shared/context/LocationProvider";
 
 type Props = {
     light?: boolean;
@@ -36,10 +42,16 @@ type Props = {
 
 const Header: React.FC<Props> = ({ light = false }) => {
     const [confirmLogoutModal, setConfirmLogoutModal] = React.useState(false);
+    const [locationModal, setLocationModal] = React.useState(false);
 
     const [menuIsOpen, setMenuIsOpen] = React.useState(false);
     const [profileMenu, setProfileMenu] = React.useState(false);
     const [profileAuthMenu, setProfileAuthMenu] = React.useState(false);
+
+    const { location, currentLocation, setCurrentLocation } = useLocation();
+
+    const [searchCity, setSearchCity] = React.useState("");
+    const searchCityDebounce = useDebounce(searchCity, 500);
 
     const { loginModal, setLoginModal, registerModal, setRegisterModal } =
         useAuthContext();
@@ -50,6 +62,7 @@ const Header: React.FC<Props> = ({ light = false }) => {
     const { logout } = useAuth();
     const { getShortInfo } = useUserInfo();
     const pathname = usePathname();
+    const { getLocationPlaces } = usePlaces();
 
     const { isAuth, isVerified } = useAppSelector((state) => state.user);
 
@@ -64,6 +77,48 @@ const Header: React.FC<Props> = ({ light = false }) => {
     });
 
     const { avatarUrl, firstName, lastName } = data || {};
+
+    const { data: cityGeo } = useQuery({
+        queryKey: ["cities", location],
+        queryFn: () =>
+            getLocationPlaces({
+                limit: 1,
+                longitude: location?.longitude,
+                latitude: location?.latitude,
+                sort: "distance",
+            }),
+        enabled: !!location && !currentLocation,
+    });
+
+    const {
+        data: allCities,
+        isLoading: allCitiesIsLoading,
+        isError: allCitiesIsError,
+    } = useQuery({
+        queryKey: [
+            "allCities",
+            searchCityDebounce,
+            location,
+            currentLocation?.id,
+        ],
+        queryFn: () =>
+            getLocationPlaces({
+                limit: 20,
+                search: searchCityDebounce,
+                longitude: location?.longitude || undefined,
+                latitude: location?.latitude || undefined,
+                sort: "distance",
+                excluded_place_id: currentLocation?.id,
+            }),
+    });
+
+    const { data: allCitiesData } = allCities || {};
+
+    React.useEffect(() => {
+        if (cityGeo && cityGeo.data && cityGeo.data[0]) {
+            setCurrentLocation(cityGeo.data[0]);
+        }
+    }, [cityGeo]);
 
     return (
         <>
@@ -83,11 +138,14 @@ const Header: React.FC<Props> = ({ light = false }) => {
                             </button>
 
                             <div className={styles.headerTopWrapper}>
-                                <button className={styles.headerLocation}>
+                                <button
+                                    className={styles.headerLocation}
+                                    onClick={() => setLocationModal(true)}
+                                >
                                     <Pin />
 
                                     <span className={styles.headerCity}>
-                                        Москва
+                                        {currentLocation?.city || "Выбрать"}
                                     </span>
 
                                     <ArrowDown />
@@ -142,17 +200,17 @@ const Header: React.FC<Props> = ({ light = false }) => {
 
                             {isAuth ? (
                                 <div className={styles.profileWrapper}>
-                                    <div className={styles.profileNotifyInner}>
+                                    {/* <div className={styles.profileNotifyInner}>
                                         <button
                                             className={styles.profileNotify}
                                         >
                                             <Notify />
                                         </button>
 
-                                        {/* <p className={styles.profileCounter}>
+                                        <p className={styles.profileCounter}>
                                             2
-                                        </p> */}
-                                    </div>
+                                        </p>
+                                    </div> */}
 
                                     <div
                                         className={styles.profileContent}
@@ -168,13 +226,14 @@ const Header: React.FC<Props> = ({ light = false }) => {
                                                         styles.profileAvatar
                                                     }
                                                 >
-                                                    {avatarUrl && (
-                                                        <Image
-                                                            src={avatarUrl}
-                                                            alt={`Аватар пользователя ${firstName} ${lastName}`}
-                                                            fill
-                                                        />
-                                                    )}
+                                                    <Image
+                                                        src={
+                                                            avatarUrl ??
+                                                            "/img/placeholder.png"
+                                                        }
+                                                        alt={`Аватар пользователя ${firstName} ${lastName}`}
+                                                        fill
+                                                    />
                                                 </div>
                                             }
                                             value={profileAuthMenu}
@@ -194,13 +253,14 @@ const Header: React.FC<Props> = ({ light = false }) => {
                                                         styles.profileMenuUserImg
                                                     }
                                                 >
-                                                    {avatarUrl && (
-                                                        <Image
-                                                            src={avatarUrl}
-                                                            alt={`Аватар пользователя ${firstName} ${lastName}`}
-                                                            fill
-                                                        />
-                                                    )}
+                                                    <Image
+                                                        src={
+                                                            avatarUrl ??
+                                                            "/img/placeholder.png"
+                                                        }
+                                                        alt={`Аватар пользователя ${firstName} ${lastName}`}
+                                                        fill
+                                                    />
                                                 </div>
 
                                                 <div
@@ -546,6 +606,63 @@ const Header: React.FC<Props> = ({ light = false }) => {
                 setValue={setConfirmLogoutModal}
                 callback={() => logout()}
             />
+
+            <Modal
+                value={locationModal}
+                setValue={setLocationModal}
+                title="Города"
+                size="small"
+            >
+                <div className={styles.locationModalContent}>
+                    <Input
+                        placeholder="Найти город..."
+                        full
+                        value={searchCity}
+                        setValue={setSearchCity}
+                    />
+
+                    {allCitiesIsLoading ? (
+                        <Preloader small page />
+                    ) : allCitiesIsError ? (
+                        <NotContent
+                            text="Произошла ошибка при загрузке данных"
+                            small
+                            danger
+                        />
+                    ) : !!allCitiesData?.length ? (
+                        <div className={styles.locationModalItems}>
+                            {currentLocation && (
+                                <button
+                                    className={cn(
+                                        styles.locationModalItem,
+                                        styles.active,
+                                    )}
+                                >
+                                    {currentLocation.city}
+                                </button>
+                            )}
+
+                            {allCitiesData.map((data) => (
+                                <button
+                                    key={data.id}
+                                    className={styles.locationModalItem}
+                                    onClick={() => {
+                                        setCurrentLocation(data);
+                                        setLocationModal(false);
+                                    }}
+                                >
+                                    {data.city}
+                                </button>
+                            ))}
+                        </div>
+                    ) : (
+                        <NotContent
+                            text="На сайте не создан ни один город"
+                            small
+                        />
+                    )}
+                </div>
+            </Modal>
         </>
     );
 };

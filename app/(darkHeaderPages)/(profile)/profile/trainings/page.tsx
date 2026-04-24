@@ -1,100 +1,140 @@
+"use client";
+
 import React from "react";
-import Link from "next/link";
-import Image from "next/image";
-import cn from 'classnames';
 
 import styles from "./index.module.scss";
 
-import { Bookmark2, Comment, Date, Format, Heart, Money } from "@/shared/icons";
-import { UserInfoBlock } from "@/shared/ui/UserInfoBlock";
-import { Rating } from "@/shared/ui/Rating";
 import { Tabs } from "@/shared/ui/Tabs";
-import { StatsBlock } from "@/shared/ui/StatsBlock";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { Pagination } from "@/shared/ui/Pagination";
+import { ConfirmModal } from "@/shared/ui/Modal";
+import { NotContent } from "@/shared/ui/NotContent";
+import { Preloader } from "@/shared/ui/Preloader";
+import { ProfileActionsBlock } from "@/shared/ui/PhotosBlock";
+import TrainingItem from "@/entities/trainings/ui/TrainingItem";
+import { useTrainings } from "@/features/trainings";
 
 const ProfileTrainingsPage = () => {
+    const [page, setPage] = React.useState(1);
+    const [selectedIds, setSelectedIds] = React.useState<number[]>([]);
+    const [action, setAction] = React.useState<string | null>(null);
+
+    const [confirmDeleteModal, setConfirmDeleteModal] = React.useState(false);
+
+    const { getTrainings, deleteBulkTrainings } = useTrainings();
+
+    const queryClient = useQueryClient();
+
+    const { data, isLoading, isError } = useQuery({
+        queryKey: ["trainings", page],
+        queryFn: () =>
+            getTrainings({
+                page,
+                my: true,
+            }),
+    });
+
+    const { data: trainings, total, totalPages } = data || {};
+
+    const selectPlace = (id: number) => {
+        if (selectedIds.includes(id)) {
+            setSelectedIds((prev) => prev.filter((item) => item != id));
+        } else {
+            setSelectedIds((prev) => [...prev, id]);
+        }
+    };
+
+    const deleteCheckedPlaces = () => {
+        deleteBulkTrainings({ ids: selectedIds }, () => {
+            queryClient.invalidateQueries({ queryKey: ["trainings"] });
+            setSelectedIds([]);
+            setAction(null);
+        });
+    };
+
+    React.useEffect(() => {
+        if (action) {
+            if (!selectedIds.length) {
+                alert(
+                    "Для применения действия требуется выбрать хотя бы 1 элемент",
+                );
+                return setAction(null);
+            }
+
+            if (action === "delete") {
+                return setConfirmDeleteModal(true);
+            }
+        }
+    }, [action]);
+
     return (
-        <div className={styles.places}>
-            <div className={styles.placesTop}>
-                <UserInfoBlock
-                    image="/img/people1.png"
-                    name="Иванов"
-                    surname="Александр"
-                    id={1}
-                    isPro
-                    size="medium"
-                />
+        <>
+            <div className={styles.places}>
+                <Tabs tabs={[{ name: "Обучение" }]} />
 
-                <Rating rating="4.92" />
-            </div>
-
-            <Tabs
-                tabs={[{ name: "Обучение" }]}
-                className={styles.placesTabs}
-            />
-
-            <div className={styles.placesContent}>
-                <p className={styles.placesCount}>
-                    Всего: <span>3</span>
-                </p>
-
-                <div className={styles.placesItems}>
-                    <Link
-                        href="/profile/trainings/1"
-                        className={styles.placesItem}
+                <div className={styles.placesContent}>
+                    <ProfileActionsBlock
+                        count={total}
+                        elems={trainings || []}
+                        selectedIds={selectedIds}
+                        setSelectedIds={setSelectedIds}
+                        action={action}
+                        setAction={setAction}
+                        linkValue="/profile/trainings/add"
+                        linkText="Добавить обучение"
+                        checkboxId="trainings_checkbox"
+                        actionOptions={[
+                            {
+                                label: "Удалить",
+                                value: "delete",
+                            },
+                        ]}
                     >
-                        <span className={styles.placesItemImage}>
-                            <Image
-                                src="/img/photo5.png"
-                                alt="Фото места для съемки"
-                                fill
+                        {isLoading ? (
+                            <Preloader page small />
+                        ) : isError ? (
+                            <NotContent
+                                text="Произошла ошибка при загрузке данных"
+                                danger
                             />
-                        </span>
-
-                        <span className={styles.placesItemInfo}>
-                            <span className={styles.placesItemLocation}>
-                                <span>Москва</span>
-                                <span>5 км</span>
-                            </span>
-
-                            <span className={styles.placesItemTitle}>
-                                Мастер-класс по черно-белой фотографии
-                            </span>
-
-                            <span className={styles.trainingItemPoints}>
-                                <span className={styles.trainingItemPoint}>
-                                    <Date />
-                                    20 мар - 23 мар
-                                </span>
-                                
-                                <span className={styles.trainingItemPoint}>
-                                    <Money />
-                                    10 000 руб.
-                                </span>
-
-                                <span className={styles.trainingItemPoint}>
-                                    <Format />
-                                    Онлайн
-                                </span>
-                            </span>
-
-                            <span className={styles.trainingItemOwner}>
-                                <span className={styles.trainingItemOwnerTitle}>Организатор</span>
-
-                                <span className={styles.trainingItemOwnerInfo}>
-                                    <span className={styles.trainingItemOwnerImage}>
-                                        <Image src="/img/people1.png" alt="Фото" fill />
-                                    </span>
-
-                                    <span className={styles.trainingItemOwnerName}>Христорождественская Галина</span>
-                                </span>
-                            </span>
-
-                            <StatsBlock comments={12} favorites={422} likes={63} isFavorites isLiked />
-                        </span>
-                    </Link>
+                        ) : total && total > 0 ? (
+                            <div className={styles.placesItems}>
+                                {(trainings || []).map((data) => (
+                                    <TrainingItem
+                                        key={data.id}
+                                        data={data}
+                                        mode="edit"
+                                        checkboxValue={selectedIds.includes(
+                                            data.id,
+                                        )}
+                                        clickOnPhoto={() =>
+                                            selectPlace(data.id)
+                                        }
+                                    />
+                                ))}
+                            </div>
+                        ) : (
+                            <NotContent text="Обучений еще нет" />
+                        )}
+                    </ProfileActionsBlock>
                 </div>
             </div>
-        </div>
+
+            <Pagination
+                page={page}
+                totalPages={totalPages || 0}
+                setPage={setPage}
+                isLoading={isLoading}
+            />
+
+            <ConfirmModal
+                value={confirmDeleteModal}
+                setValue={setConfirmDeleteModal}
+                title={`Вы действительно хотите удалить ${selectedIds.length} обучений?`}
+                callback={deleteCheckedPlaces}
+                rejectCallback={() => setAction(null)}
+            />
+        </>
     );
 };
 

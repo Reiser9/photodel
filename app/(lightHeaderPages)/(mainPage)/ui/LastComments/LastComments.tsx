@@ -53,6 +53,9 @@ const LastComments = () => {
                                     lastName,
                                     id: userId,
                                 } = user || {};
+                                const { id: entityId, name } =
+                                    (entity as { id: number; name: string }) ||
+                                    {};
 
                                 return (
                                     <div
@@ -60,12 +63,12 @@ const LastComments = () => {
                                         className={styles.lastcommentsItem}
                                     >
                                         <Link
-                                            href="/photos"
+                                            href={`/photos/${entityId}`}
                                             className={
                                                 styles.lastcommentsItemTitle
                                             }
                                         >
-                                            На священной горе
+                                            {name}
                                         </Link>
 
                                         <p

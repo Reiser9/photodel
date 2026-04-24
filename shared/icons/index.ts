@@ -67,3 +67,4 @@ export { MapIcon } from "./MapIcon";
 export { Money2 } from "./Money2";
 export { Message } from "./Message";
 export { Settings } from "./Settings";
+export { Send } from "./Send";

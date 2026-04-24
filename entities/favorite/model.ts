@@ -1,1 +1,6 @@
-export type FavoriteEntites = "user" | "photo" | "place" | "photo_session";
+export type FavoriteEntites =
+    | "user"
+    | "photo"
+    | "place"
+    | "photo_session"
+    | "training";

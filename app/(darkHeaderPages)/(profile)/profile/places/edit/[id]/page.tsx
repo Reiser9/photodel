@@ -189,7 +189,7 @@ const EditProfilePlace = () => {
     }, [data]);
 
     if (isLoading) {
-        return <Preloader page />;
+        return <Preloader page small />;
     }
 
     if (isError) {

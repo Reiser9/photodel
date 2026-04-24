@@ -76,7 +76,7 @@
     position: relative;
     font-size: 1.4rem;
     font-weight: 600;
-    color: var(--main);
+    color: var(--grey);
 }
 
 .teamItemName:before{
@@ -85,7 +85,7 @@
     width: 6px;
     height: 6px;
     border-radius: 50%;
-    background: var(--main);
+    background: var(--grey);
     position: absolute;
     top: 50%;
     left: 0;

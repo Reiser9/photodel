@@ -29,6 +29,12 @@ button.teamAddFilterButton{
     width: calc(100% / 3 - 60px / 3);
 }
 
+@media (max-width: 768px) {
+    .teamAddFilterItem{
+        width: 100%;
+    }
+}
+
 .teamAddFilterItem.full{
     width: 100%;
 }

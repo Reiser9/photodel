@@ -22,11 +22,13 @@ const PhotosessionItem: React.FC<Props> = ({
     checkboxValue,
     mode = "default",
 }) => {
-    const { likes, favorites, id, preview, location, name, reviews } = data || {};
+    const { likes, favorites, id, preview, location, name, reviews } =
+        data || {};
     const { url } = preview || {};
     const { isLiked, count: likesCount } = likes || {};
     const { isFavorite, count: favoritesCount } = favorites || {};
-    const { address } = location || {};
+    const { place } = location || {};
+    const { city } = place || {};
     const { count: commentsCount } = reviews || {};
 
     const content = () => {
@@ -68,10 +70,10 @@ const PhotosessionItem: React.FC<Props> = ({
             )}
 
             <div className={styles.placesItemInfo}>
-                {address && (
+                {city && (
                     <span className={styles.placesItemLocation}>
-                        <span>{address}</span>
-                        <span>5 км</span>
+                        <span>{city}</span>
+                        {/* <span>5 км</span> */}
                     </span>
                 )}
 

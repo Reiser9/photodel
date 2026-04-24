@@ -1,8 +1,6 @@
 "use client";
 
 import type { AlbumsPagination } from "@/entities/photos/album";
-import type { PhotosPagination } from "@/entities/photos/photo";
-import type { PlacesPagination } from "@/entities/places";
 import type {
     Category,
     ProfileInfo,

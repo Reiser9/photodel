@@ -6,6 +6,7 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 
 import styles from "../index.module.scss";
 
+import type { UserInfoShort } from "@/entities/photos/photo";
 import { UserInfoBlock } from "@/shared/ui/UserInfoBlock";
 import { Edit2, Remove } from "@/shared/icons";
 import { useReviews } from "@/features/reviews";
@@ -63,7 +64,7 @@ const ReviewsMePage = () => {
                             lastName,
                             isPro,
                             id: entityId,
-                        } = entity || {};
+                        } = (entity as UserInfoShort) || {};
 
                         return (
                             <ReviewItem

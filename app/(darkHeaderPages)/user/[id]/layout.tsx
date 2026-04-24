@@ -3,7 +3,8 @@
 import React from "react";
 import Link from "next/link";
 import cn from "classnames";
-import { useParams, usePathname } from "next/navigation";
+import { redirect, useParams, usePathname } from "next/navigation";
+import { useQuery } from "@tanstack/react-query";
 
 import styles from "./index.module.scss";
 import base from "@/shared/styles/base.module.scss";
@@ -19,6 +20,7 @@ import {
     Team,
     Text,
 } from "@/shared/icons";
+import { useUserInfo } from "@/features/user";
 
 const ProfileUserLayout: React.FC<{ children: React.ReactNode }> = ({
     children,
@@ -26,49 +28,67 @@ const ProfileUserLayout: React.FC<{ children: React.ReactNode }> = ({
     const pathname = usePathname();
     const { id } = useParams();
 
+    const { getShortInfo } = useUserInfo();
+
+    const { data: myData } = useQuery({
+        queryKey: ["shortInfo"],
+        queryFn: () => getShortInfo(),
+    });
+
+    const { id: myId } = myData || {};
+
     const sidebarLinks = [
         {
-            path: `/user/${id}`,
+            paths: [`/user/${id}`],
             name: "Профиль",
             icon: <Profile />,
             exact: true,
         },
         {
-            path: `/user/${id}/photos`,
+            paths: [`/user/${id}/photos`, `/user/${id}/photos/albums`],
             name: "Фотографии",
             icon: <Photo />,
+            exact: true,
         },
         {
-            path: `/user/${id}/places`,
+            paths: [`/user/${id}/places`],
             name: "Места для съемок",
             icon: <Pin2 />,
         },
         {
-            path: `/user/${id}/photosessions`,
+            paths: [`/user/${id}/photosessions`],
             name: "Фотосессии",
             icon: <Book />,
         },
         {
-            path: `/user/${id}/trainings`,
+            paths: [`/user/${id}/trainings`],
             name: "Обучение",
             icon: <Text />,
         },
         {
-            path: `/user/${id}/team`,
-            name: "Команда",
-            icon: <Team />,
-        },
-        {
-            path: `/user/${id}/reviews`,
+            paths: [`/user/${id}/reviews`],
             name: "Отзывы",
             icon: <Reviews />,
         },
-        {
-            path: `/user/${id}/requests`,
-            name: "Запросы",
-            icon: <Edit />,
-        },
     ];
+
+    const checkPathExact = (pathname: string, paths: string[]) => {
+        let pathIsActive = false;
+
+        paths.forEach((path) => {
+            if (path === pathname) {
+                pathIsActive = true;
+            }
+        });
+
+        return pathIsActive;
+    };
+
+    React.useEffect(() => {
+        if (myId == id) {
+            redirect("/profile");
+        }
+    }, [id, myId]);
 
     return (
         <div className={styles.profile}>
@@ -78,11 +98,11 @@ const ProfileUserLayout: React.FC<{ children: React.ReactNode }> = ({
                         {sidebarLinks.map((data, id) => (
                             <Link
                                 key={id}
-                                href={data.path}
+                                href={data.paths[0]}
                                 className={cn(styles.profileSidebarLink, {
                                     [styles.active]: data.exact
-                                        ? pathname === data.path
-                                        : pathname.startsWith(data.path),
+                                        ? checkPathExact(pathname, data.paths)
+                                        : pathname.includes(data.paths[0]),
                                 })}
                             >
                                 {data.icon}

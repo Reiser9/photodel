@@ -20,11 +20,14 @@ import { UserByIdShortInfo } from "@/entities/user";
 import { Pagination } from "@/shared/ui/Pagination";
 import { Button } from "@/shared/ui/Button";
 import { buildQueryString } from "@/shared/utils/buildQueryString";
+import { useLocation } from "@/shared/context/LocationProvider";
 
 type Distance = "unlimit" | "5" | "100";
 type Sort = "popularity" | "distance";
 
 const ProfiesPage = () => {
+    const { location, currentLocation } = useLocation();
+    const selectedLocation = currentLocation ?? location;
     const router = useRouter();
     const searchParams = useSearchParams();
     const pageParam = searchParams.get("page");
@@ -71,6 +74,7 @@ const ProfiesPage = () => {
             sort,
             radius,
             category,
+            selectedLocation,
         ],
         queryFn: () =>
             getUsers({
@@ -79,6 +83,10 @@ const ProfiesPage = () => {
                 sort,
                 ...(radius !== "unlimit" && { radius: +radius }),
                 ...(category && { pro_category_id: category }),
+                ...(selectedLocation && {
+                    latitude: selectedLocation.latitude,
+                    longitude: selectedLocation.longitude,
+                }),
             }),
     });
 
@@ -174,8 +182,8 @@ const ProfiesPage = () => {
                         />
                     </div>
 
-                    <div className={styles.profiesFilterItem}>
-                        {categories && (
+                    {categories && (
+                        <div className={styles.profiesFilterItem}>
                             <Select
                                 title="Категория"
                                 placeholder="Выберите категорию"
@@ -193,8 +201,8 @@ const ProfiesPage = () => {
                                     setCategory(value);
                                 }}
                             />
-                        )}
-                    </div>
+                        </div>
+                    )}
 
                     <div className={styles.profiesFilterItem}>
                         <Button color="grey" onClick={resetFilters}>
@@ -223,7 +231,7 @@ const ProfiesPage = () => {
                 <div className={styles.profiesItemsInner}>
                     <div className={styles.profiesItemsTitleInner}>
                         <p className={styles.profiesItemsTitle}>
-                            {total} найдено
+                            {total || 0} найдено
                         </p>
 
                         <div className={styles.profiesItemsSort}>

@@ -23,7 +23,6 @@ type Props = {
     image?: string;
     isCarousel?: boolean;
     slides?: PhotoShort[];
-    views: string | number;
     isLike?: boolean;
     likes: string | number;
     likeCallback?: () => void;
@@ -47,7 +46,6 @@ const PhotoInfoBlock: React.FC<Props> = ({
     isLike,
     likes,
     likeCallback,
-    views,
     date,
     title,
     text,
@@ -109,10 +107,10 @@ const PhotoInfoBlock: React.FC<Props> = ({
 
             <div className={styles.photoByIdActions}>
                 <div className={styles.photoByIdActionsContent}>
-                    <p className={styles.photoByIdAction} title="Просмотры">
+                    {/* <p className={styles.photoByIdAction} title="Просмотры">
                         <Eye />
                         {views}
-                    </p>
+                    </p> */}
 
                     <button
                         className={cn(styles.photoByIdAction, styles.like, {

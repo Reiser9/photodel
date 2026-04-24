@@ -1,6 +1,7 @@
 import type { Pagination } from "../pagination";
 import type { PhotoShort, UserInfoShort } from "../photos/photo";
 import type {
+    Category,
     Favorite,
     Like,
     Location,
@@ -27,7 +28,7 @@ export type Photosession = Omit<
     id: number;
     preview: PhotoShort;
     location: Location | null;
-    team: UserInfoShort[];
+    team: (UserInfoShort & { proCategories: Category[] })[];
     createdAt: string;
     updatedAt: string;
     user: UserInfoShort;

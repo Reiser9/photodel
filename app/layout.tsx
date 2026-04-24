@@ -5,7 +5,11 @@ import "./globals.scss";
 import "react-loading-skeleton/dist/skeleton.css";
 
 import { ReactQueryProvider, ReduxProvider } from "@/shared/providers";
-import { AuthProvider, ThemeProvider } from "@/shared/context";
+import {
+    AuthProvider,
+    LocationProvider,
+    ThemeProvider,
+} from "@/shared/context";
 import { InitialWrapper } from "@/shared/wrappers/InitialWrapper";
 import { NotifiesWrapper } from "@/shared/wrappers/NotifiesWrapper";
 import { GeolocationWrapper } from "@/shared/wrappers/GeolocationWrapper";
@@ -34,18 +38,20 @@ export default function RootLayout({
                     <ReactQueryProvider>
                         <ThemeProvider>
                             <AuthProvider>
-                                <SkeletonTheme
-                                    baseColor="var(--lightGrey)"
-                                    highlightColor="var(--lightWhite)"
-                                >
-                                    <InitialWrapper>
-                                        <GeolocationWrapper>
-                                            <NotifiesWrapper>
-                                                {children}
-                                            </NotifiesWrapper>
-                                        </GeolocationWrapper>
-                                    </InitialWrapper>
-                                </SkeletonTheme>
+                                <LocationProvider>
+                                    <SkeletonTheme
+                                        baseColor="var(--lightGrey)"
+                                        highlightColor="var(--lightWhite)"
+                                    >
+                                        <InitialWrapper>
+                                            <GeolocationWrapper>
+                                                <NotifiesWrapper>
+                                                    {children}
+                                                </NotifiesWrapper>
+                                            </GeolocationWrapper>
+                                        </InitialWrapper>
+                                    </SkeletonTheme>
+                                </LocationProvider>
                             </AuthProvider>
                         </ThemeProvider>
                     </ReactQueryProvider>

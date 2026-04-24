@@ -30,6 +30,7 @@ const ProfilePhotosessionsPage = () => {
         queryFn: () =>
             getPhotosessions({
                 page,
+                my: true
             }),
     });
 

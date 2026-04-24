@@ -176,15 +176,27 @@ const usePlaces = () => {
         page = 1,
         limit = 12,
         search,
+        latitude,
+        longitude,
+        sort = "alphabet",
+        excluded_place_id
     }: {
         page?: number;
         limit?: number;
         search?: string;
+        latitude?: number;
+        longitude?: number;
+        sort?: "alphabet" | "distance";
+        excluded_place_id?: number;
     }) => {
         const queryString = buildQueryString({
             page,
             limit,
             search,
+            latitude,
+            longitude,
+            sort,
+            excluded_place_id
         });
 
         const response = await request<LocationCountriesPagination>({
@@ -226,7 +238,7 @@ const usePlaces = () => {
     };
 
     const getPlacesRequest = async () => {
-        const response = await request<{filmingRequests: PlaceRequest[]}>({
+        const response = await request<{ filmingRequests: PlaceRequest[] }>({
             url: "/filming-requests",
             isAuth: true,
         });
@@ -287,7 +299,10 @@ const usePlaces = () => {
         }
     };
 
-    const removePlaceRequest = async (requestId: number, successCallback = () => {}) => {
+    const removePlaceRequest = async (
+        requestId: number,
+        successCallback = () => {},
+    ) => {
         const response = await request({
             url: `/filming-requests/${requestId}`,
             isAuth: true,
@@ -319,7 +334,7 @@ const usePlaces = () => {
         getPlacesRequest,
         acceptRequestPlace,
         rejectRequestPlace,
-        removePlaceRequest
+        removePlaceRequest,
     };
 };
 

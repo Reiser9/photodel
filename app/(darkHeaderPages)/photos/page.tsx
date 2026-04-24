@@ -90,13 +90,7 @@ const PhotosPage = () => {
         if (sortParam === "popularity" || sortParam === "distance") {
             setSort(sortParam);
         }
-    }, [
-        pageParam,
-        searchParam,
-        mapIsShowParam,
-        categoryParam,
-        sortParam,
-    ]);
+    }, [pageParam, searchParam, mapIsShowParam, categoryParam, sortParam]);
 
     React.useEffect(() => {
         const queryString = buildQueryString({
@@ -131,8 +125,8 @@ const PhotosPage = () => {
                         />
                     </div>
 
-                    <div className={styles.profiesFilterItem}>
-                        {categories && (
+                    {categories && (
+                        <div className={styles.profiesFilterItem}>
                             <Select
                                 title="Категория"
                                 placeholder="Выберите категорию"
@@ -150,8 +144,8 @@ const PhotosPage = () => {
                                     setCategory(value);
                                 }}
                             />
-                        )}
-                    </div>
+                        </div>
+                    )}
 
                     <div className={styles.profiesFilterItem}>
                         <Button color="grey" onClick={resetFilters}>
@@ -180,7 +174,7 @@ const PhotosPage = () => {
                 <div className={styles.profiesItemsInner}>
                     <div className={styles.profiesItemsTitleInner}>
                         <p className={styles.profiesItemsTitle}>
-                            {total} найдено
+                            {total || 0} найдено
                         </p>
 
                         <div className={styles.profiesItemsSort}>

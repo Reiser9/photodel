@@ -11,6 +11,7 @@ type Props = {
     favorites?: number | string;
     isFavorites?: boolean;
     showFavorites?: boolean;
+    showRate?: boolean;
     rate?: number | string;
     likes?: number | string;
     isLiked?: boolean;
@@ -24,6 +25,7 @@ const StatsBlock: React.FC<Props> = ({
     favorites,
     isFavorites = false,
     showFavorites = false,
+    showRate = false,
     rate,
     likes,
     isLiked = false,
@@ -32,10 +34,10 @@ const StatsBlock: React.FC<Props> = ({
 }) => {
     return (
         <span className={cn(styles.actions, className)}>
-            {rate && (
+            {showRate && (
                 <span className={cn(styles.action, styles.rate)}>
                     <Star />
-                    {rate}
+                    {rate || 0}
                 </span>
             )}
 

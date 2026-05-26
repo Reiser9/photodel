@@ -1,4 +1,4 @@
-export type TypesLocalNotify = 'success' | 'info' | 'warn' | 'error';
+export type TypesLocalNotify = "success" | "info" | "warn" | "error";
 
 export type LocalNotify = {
     id: number;
@@ -6,4 +6,12 @@ export type LocalNotify = {
     text: string;
     type: TypesLocalNotify;
     time: number;
+};
+
+export type Notify = {
+    filming: number;
+    training: number;
+    team: number;
+    unreadChats: number;
+    total: number;
 };

@@ -4,26 +4,28 @@ import Image from "next/image";
 import cn from "classnames";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 
-import styles from "./index.module.scss";
+import styles from "../index.module.scss";
 
-import { usePlaces } from "@/features/places";
+import { useTrainings } from "@/features/trainings";
 import { Preloader } from "@/shared/ui/Preloader";
 import { NotContent } from "@/shared/ui/NotContent";
-import { formatDate } from "@/shared/utils/formatDate";
 
-const ProfileRequests = () => {
-    const { getPlacesRequest, rejectRequestPlace, acceptRequestPlace } =
-        usePlaces();
+const RequestsTrainingPage = () => {
+    const {
+        getTrainingsRequest,
+        acceptRequestTraining,
+        rejectRequestTraining,
+    } = useTrainings();
 
     const { data, isLoading, isError } = useQuery({
-        queryKey: ["placesRequests"],
-        queryFn: () => getPlacesRequest(),
+        queryKey: ["trainingsRequests"],
+        queryFn: () => getTrainingsRequest(),
     });
 
     const queryClient = useQueryClient();
 
     const revalidateQuery = () => {
-        queryClient.invalidateQueries({ queryKey: ["placesRequests"] });
+        queryClient.invalidateQueries({ queryKey: ["trainingsRequests"] });
     };
 
     return (
@@ -42,17 +44,9 @@ const ProfileRequests = () => {
             ) : data && !!data?.length ? (
                 <div className={styles.requestsItems}>
                     {data.map((data) => {
-                        const {
-                            id,
-                            user,
-                            location,
-                            date,
-                            durationHours,
-                            status,
-                        } = data || {};
+                        const { id, user, training, status } = data || {};
                         const { avatarUrl, firstName, lastName } = user || {};
-                        const { place } = location || {};
-                        const { city } = place || {};
+                        const { format, prepayment } = training || {};
 
                         return (
                             <div key={id} className={styles.requestsItem}>
@@ -77,8 +71,9 @@ const ProfileRequests = () => {
                                         <span
                                             className={styles.requestsItemShort}
                                         >
-                                            {city} | {formatDate(date)} |{" "}
-                                            {durationHours} ч.
+                                            {format && `Формат: ${format}`}
+                                            {prepayment &&
+                                                ` | Предоплата: ${prepayment}`}
                                         </span>
 
                                         <span
@@ -92,8 +87,6 @@ const ProfileRequests = () => {
                                                 "Отклонён"}
                                         </span>
                                     </span>
-
-                                    <span></span>
                                 </span>
 
                                 {status === "pending" && (
@@ -105,7 +98,7 @@ const ProfileRequests = () => {
                                                 styles.requestsItemButton
                                             }
                                             onClick={() =>
-                                                acceptRequestPlace(
+                                                acceptRequestTraining(
                                                     id,
                                                     revalidateQuery,
                                                 )
@@ -120,7 +113,7 @@ const ProfileRequests = () => {
                                                 styles.red,
                                             )}
                                             onClick={() =>
-                                                rejectRequestPlace(
+                                                rejectRequestTraining(
                                                     id,
                                                     revalidateQuery,
                                                 )
@@ -135,10 +128,10 @@ const ProfileRequests = () => {
                     })}
                 </div>
             ) : (
-                <NotContent text="Запросов на съемку нет" />
+                <NotContent text="Запросов на обучение нет" />
             )}
         </div>
     );
 };
 
-export default ProfileRequests;
+export default RequestsTrainingPage;

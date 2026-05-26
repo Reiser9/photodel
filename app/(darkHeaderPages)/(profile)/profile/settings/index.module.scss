@@ -1,0 +1,24 @@
+.profileSettingsChange{
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 15px;
+}
+
+.profileSettingsChangeContent{
+    width: 100%;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+}
+
+.profileSettingsChangeItem{
+    width: calc(100% / 3 - 30px / 3);
+}
+
+@media (max-width: 768px) {
+    .profileSettingsChangeItem{
+        width: 100%;
+    }
+}

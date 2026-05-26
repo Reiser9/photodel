@@ -5,6 +5,7 @@ import type {
     Category,
     ProfileInfo,
     ProfileInfoDTO,
+    SiteSocial,
     Social,
     UserInfo,
     UsersPagination,
@@ -121,6 +122,72 @@ const useUserInfo = () => {
 
         if ("data" in response) {
             return response.data.socials;
+        }
+    };
+
+    const getSiteSocials = async () => {
+        const response = await request<{ socials: SiteSocial[] }>({
+            url: "/site-socials",
+        });
+
+        if (catchRequestError(response)) {
+            errorController(response);
+            return "";
+        }
+
+        if ("data" in response) {
+            return response.data.socials;
+        }
+    };
+
+    const createSocial = async (
+        name: string,
+        siteIcon: string,
+        profileIcon: string,
+        successCallback = () => {},
+    ) => {
+        const response = await request<{ social: Social }>({
+            url: "/admin/socials",
+            method: "POST",
+            isAuth: true,
+            data: {
+                name,
+                siteIcon,
+                profileIcon,
+            },
+        });
+
+        if (catchRequestError(response)) {
+            errorController(response);
+            return "";
+        }
+
+        successCallback();
+
+        if ("data" in response) {
+            return response.data.social;
+        }
+    };
+
+    const removeSocialById = async (
+        id: number | string,
+        successCallback = () => {},
+    ) => {
+        const response = await request({
+            url: `/admin/socials/${id}`,
+            method: "DELETE",
+            isAuth: true,
+        });
+
+        if (catchRequestError(response)) {
+            errorController(response);
+            return "";
+        }
+
+        successCallback();
+
+        if ("data" in response) {
+            return response.data;
         }
     };
 
@@ -282,6 +349,9 @@ const useUserInfo = () => {
         getCategories,
         getSpecializations,
         getSocials,
+        getSiteSocials,
+        createSocial,
+        removeSocialById,
         updateProfile,
         updateUserAvatar,
         updateUserName,

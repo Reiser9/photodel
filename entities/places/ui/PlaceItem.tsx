@@ -49,6 +49,7 @@ const PlaceItem: React.FC<Props> = ({
                         id={`place_checkbox_${id}`}
                         wrapperClass={styles.placeItemCheckbox}
                         value={checkboxValue}
+                        auto
                     />
                 )}
             </>

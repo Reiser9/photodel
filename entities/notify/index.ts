@@ -1,1 +1,1 @@
-export type { LocalNotify, TypesLocalNotify } from './model';
+export type { LocalNotify, TypesLocalNotify, Notify } from "./model";

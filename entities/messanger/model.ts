@@ -15,6 +15,7 @@ export type Chat = {
     picture: string;
     latestMessage: Message;
     unreadCount: number;
+    userId: number;
 };
 
 export type ChatsPagination = Pagination & {

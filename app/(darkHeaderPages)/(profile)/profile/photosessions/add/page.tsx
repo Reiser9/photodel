@@ -267,7 +267,6 @@ const AddPhotosessionPage = () => {
                             value={date}
                             setValue={setDate}
                             title="Дата проведения"
-                            disablePrevDate
                             placeholder="Выберите дату"
                         />
 

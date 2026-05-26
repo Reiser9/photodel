@@ -8,10 +8,10 @@ import { Preloader } from "@/shared/ui/Preloader";
 import { useUserInfo } from "@/features/user";
 
 const PrivateWrapper = ({
-    haveRole = "ADMIN",
+    haveRole = "admin",
     children,
 }: {
-    haveRole: "ADMIN" | "MODERATOR";
+    haveRole: "admin" | "moderator";
     children: React.ReactNode;
 }) => {
     const { getShortInfo } = useUserInfo();

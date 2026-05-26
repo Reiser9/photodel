@@ -365,7 +365,7 @@ const ProfileEditPage = () => {
             <div className={styles.profileEditInfo}>
                 <div className={styles.profileEditImg}>
                     <Image
-                        src={avatar ?? "/img/placeholder.png"}
+                        src={avatar || "/img/placeholder.png"}
                         alt={`Аватар пользователя ${firstName} ${lastName}`}
                         fill
                     />
@@ -555,22 +555,24 @@ const ProfileEditPage = () => {
                 />
             </Chapter>
 
-            <Chapter title="Контакты">
-                <div className={styles.profileEditData}>
-                    {socialBlocks.map((data) => (
-                        <Input
-                            key={data.id}
-                            title={data.name}
-                            placeholder={`Введите ${data.name}`}
-                            wrapperClass={styles.profileEditDataItem}
-                            value={data.value}
-                            onInputChange={(value) =>
-                                changeSocial(value, data.id)
-                            }
-                        />
-                    ))}
-                </div>
-            </Chapter>
+            {!!socialBlocks.length && (
+                <Chapter title="Контакты">
+                    <div className={styles.profileEditData}>
+                        {socialBlocks.map((data) => (
+                            <Input
+                                key={data.id}
+                                title={data.name}
+                                placeholder={`Введите ${data.name}`}
+                                wrapperClass={styles.profileEditDataItem}
+                                value={data.value}
+                                onInputChange={(value) =>
+                                    changeSocial(value, data.id)
+                                }
+                            />
+                        ))}
+                    </div>
+                </Chapter>
+            )}
 
             <Chapter title="Геолокация">
                 <GetLocation

@@ -37,3 +37,8 @@ export type RecoveryVerifyData = RecoveryData & {
 export type RecoveryChangeData = RecoveryVerifyData & {
     password: string;
 };
+
+export type ChangePasswordData = {
+    oldPassword: string;
+    newPassword: string;
+};

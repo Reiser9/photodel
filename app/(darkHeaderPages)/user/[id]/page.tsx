@@ -452,20 +452,24 @@ const ProfileUserPage = () => {
                     <p className={styles.profileBlockTitle}>Контакты</p>
 
                     <div className={styles.profileBlockPoints}>
-                        {socials.map((data) => (
-                            <div
-                                key={data.id}
-                                className={styles.profileBlockPoint}
-                            >
-                                <a
-                                    href={data.value}
-                                    className={styles.profileBlockLink}
+                        {socials.map((data) => {
+                            const { id, name, profileIcon, value } = data || {};
+
+                            return (
+                                <div
+                                    key={id}
+                                    className={styles.profileBlockPoint}
                                 >
-                                    <Mail />
-                                    {data.name}
-                                </a>
-                            </div>
-                        ))}
+                                    <p
+                                        className={styles.profileBlockLink}
+                                        title={name}
+                                    >
+                                        {profileIcon && parse(profileIcon)}
+                                        {value}
+                                    </p>
+                                </div>
+                            );
+                        })}
                     </div>
                 </div>
             )}

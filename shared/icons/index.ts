@@ -68,3 +68,5 @@ export { Money2 } from "./Money2";
 export { Message } from "./Message";
 export { Settings } from "./Settings";
 export { Send } from "./Send";
+export { Dots } from "./Dots";
+export { Dashboard } from "./Dashboard";

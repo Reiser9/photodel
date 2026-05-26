@@ -1,0 +1,80 @@
+.usersAdmin{
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 24px;
+}
+
+.profiesFilters{
+    width: 100%;
+    display: flex;
+    align-items: flex-end;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+
+.profiesFilterItem{
+    width: calc(100% / 3 - 40px / 3);
+}
+
+@media (max-width: 998px){
+    .profiesFilterItem{
+        width: calc(100% / 2 - 20px / 2);
+    }
+}
+@media (max-width: 430px){
+    .profiesFilterItem{
+        width: 100%;
+    }
+}
+
+.profiesItemsInner{
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+}
+
+.profiesItemsTitle{
+    font-size: 1.3rem;
+    color: var(--black);
+}
+
+.profiesItemsSort{
+    width: 100%;
+    max-width: 200px;
+}
+
+.profiesItemsTitleInner{
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    flex-wrap: wrap;
+    padding-bottom: .7rem;
+    border-bottom: 1px solid var(--lightGrey);
+}
+
+.profiesItems{
+    width: 100%;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px 30px;
+}
+
+div.profiesItem{
+    width: calc(100% / 2 - 30px / 2);
+}
+
+@media (max-width: 768px) {
+    div.profiesItem{
+        width: 100%;
+    }
+}
+
+div.profiesPagination{
+    margin-top: 0;
+}

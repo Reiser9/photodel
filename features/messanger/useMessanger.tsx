@@ -134,6 +134,28 @@ const useMessanger = () => {
         }
     };
 
+    const deleteChat = async (
+        chatId: number | string,
+        successCallback = () => {},
+    ) => {
+        const response = await request({
+            url: `/chats/${chatId}`,
+            isAuth: true,
+            method: "DELETE",
+        });
+
+        if (catchRequestError(response)) {
+            errorController(response);
+            return "";
+        }
+
+        successCallback();
+
+        if ("data" in response) {
+            return response.data;
+        }
+    };
+
     return {
         sendMessage,
         readMessage,
@@ -141,6 +163,7 @@ const useMessanger = () => {
         getChats,
         getChatById,
         getUnreadCount,
+        deleteChat,
     };
 };
 

@@ -43,8 +43,14 @@ export type Specialization = Category;
 export type Social = {
     id: number;
     name: string;
-    icon: string;
+    profileIcon: string;
+    siteIcon: string;
 };
+
+export type SiteSocial = Social & {
+    label: string;
+    url: string;
+}
 
 export type SocialUser = Social & {
     value: string;
@@ -113,7 +119,7 @@ export type ProfileInfoDTO = {
     temporaryLocations: TempLocationDTO[] | null;
 };
 
-export type Roles = ("ADMIN" | "MODERATOR")[];
+export type Roles = ("admin" | "moderator")[];
 
 export type UserByIdShortInfo = {
     id: number;
@@ -133,4 +139,10 @@ export type UserByIdShortInfo = {
 
 export type UsersPagination = Pagination & {
     data: UserByIdShortInfo[];
+};
+
+export type AdminUsersPagination = Pagination & {
+    data: (UserByIdShortInfo & {
+        isBlocked: boolean;
+    })[];
 };

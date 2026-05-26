@@ -11,6 +11,7 @@ import type {
     RecoveryData,
     RecoveryVerifyData,
     RecoveryChangeData,
+    ChangePasswordData,
 } from "@/entities/user";
 import useRequest from "@/shared/hooks/useRequest";
 import useAlert from "@/shared/hooks/useAlert";
@@ -175,7 +176,7 @@ const useAuth = () => {
         alertNotify("Успешно", "Код подтверждения верный");
         successCallback();
 
-        if("data" in response){
+        if ("data" in response) {
             return response.data.code;
         }
     };
@@ -201,6 +202,28 @@ const useAuth = () => {
         successCallback();
     };
 
+    const changePassword = async (
+        data: ChangePasswordData,
+        successCallback = () => {},
+    ) => {
+        setAuthIsLoading(true);
+        const response = await request({
+            url: "/auth/change-password",
+            method: "POST",
+            data,
+            isAuth: true,
+        }).finally(() => {
+            setAuthIsLoading(false);
+        });
+
+        if (catchRequestError(response)) {
+            return errorController(response);
+        }
+
+        alertNotify("Успешно", "Пароль изменен");
+        successCallback();
+    };
+
     return {
         authIsLoading,
         register,
@@ -211,6 +234,7 @@ const useAuth = () => {
         sendRecoveryCode,
         verifyRecoveryCode,
         changePasswordRecovery,
+        changePassword,
     };
 };
 

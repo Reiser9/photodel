@@ -33,11 +33,11 @@ import { useFavorite } from "@/features/favorite";
 import { useUserInfo } from "@/features/user";
 import { useTrainings } from "@/features/trainings";
 import { formatDate } from "@/shared/utils/formatDate";
-import dayjs from "dayjs";
+import { ConfirmModal } from "@/shared/ui/Modal";
 
 const ProfileTrainingById = () => {
     const { id } = useParams();
-    const { getTrainingById } = useTrainings();
+    const { getTrainingById, createTrainingRequest } = useTrainings();
     const { getShortInfo } = useUserInfo();
     const { addFavorite, removeFavorite } = useFavorite();
     const { addLike, removeLike } = useLike();
@@ -47,6 +47,8 @@ const ProfileTrainingById = () => {
     const queryClient = useQueryClient();
 
     const [comment, setComment] = React.useState("");
+
+    const [confirmModal, setConfirmModal] = React.useState(false);
 
     const { data, isLoading, isError } = useQuery({
         queryKey: ["trainingById", String(id)],
@@ -96,6 +98,8 @@ const ProfileTrainingById = () => {
         maxParticipants,
         prepayment,
         reviews: reviewsPlace,
+        availableSpots,
+        participants,
     } = data || {};
 
     const { avatarUrl, firstName, isPro, lastName, id: userId } = user || {};
@@ -185,196 +189,242 @@ const ProfileTrainingById = () => {
     }
 
     return (
-        <div className={styles.trainingById}>
-            <div className={base.container}>
-                <div className={styles.trainingByIdInner}>
-                    {user && (
-                        <div className={styles.trainingByIdTop}>
-                            <UserInfoBlock
-                                image={avatarUrl}
-                                name={firstName || ""}
-                                surname={lastName || ""}
-                                id={userId}
-                                isPro={isPro}
-                                size="medium"
-                            />
+        <>
+            <div className={styles.trainingById}>
+                <div className={base.container}>
+                    <div className={styles.trainingByIdInner}>
+                        {user && (
+                            <div className={styles.trainingByIdTop}>
+                                <UserInfoBlock
+                                    image={avatarUrl}
+                                    name={firstName || ""}
+                                    surname={lastName || ""}
+                                    id={userId}
+                                    isPro={isPro}
+                                    size="medium"
+                                />
 
-                            {/* <Rating rating="4.92" /> */}
-                        </div>
-                    )}
+                                {/* <Rating rating="4.92" /> */}
+                            </div>
+                        )}
 
-                    <BackLink href="/profile/trainings" text="Все обучения" />
+                        <BackLink
+                            href="/profile/trainings"
+                            text="Все обучения"
+                        />
 
-                    <SinglePageWrapper
-                        content={
-                            <>
-                                <Comments
-                                    commentsIsLoading={reviewsIsLoading}
-                                    commentsIsError={reviewsIsError}
-                                    comments={reviews || []}
-                                >
-                                    <Input
-                                        placeholder="Ваш комментарий"
-                                        component="textarea"
-                                        full
-                                        value={comment}
-                                        setValue={setComment}
-                                    />
-
-                                    <Button
-                                        auto
-                                        disabled={!comment}
-                                        onClick={leaveCommentHandler}
+                        <SinglePageWrapper
+                            content={
+                                <>
+                                    <Comments
+                                        commentsIsLoading={reviewsIsLoading}
+                                        commentsIsError={reviewsIsError}
+                                        comments={reviews || []}
                                     >
-                                        Комментарировать
-                                    </Button>
-                                </Comments>
-                            </>
-                        }
-                        sidebar={
-                            <>
-                                {currentUserId === userId && (
-                                    <Button
-                                        href={`/profile/photosessions/edit/${id}`}
-                                    >
-                                        Редактировать
-                                    </Button>
-                                )}
+                                        <Input
+                                            placeholder="Ваш комментарий"
+                                            component="textarea"
+                                            full
+                                            value={comment}
+                                            setValue={setComment}
+                                        />
 
-                                {city && (
-                                    <MapLocation
-                                        location={city || ""}
-                                        distance=""
-                                        coords={
-                                            longitude && latitude
-                                                ? [latitude, longitude]
-                                                : undefined
-                                        }
-                                    />
-                                )}
-
-                                <Points>
-                                    {format && (
-                                        <Point full>
-                                            <Format />
-                                            {format}
-                                        </Point>
+                                        <Button
+                                            auto
+                                            disabled={!comment}
+                                            onClick={leaveCommentHandler}
+                                        >
+                                            Комментарировать
+                                        </Button>
+                                    </Comments>
+                                </>
+                            }
+                            sidebar={
+                                <>
+                                    {currentUserId === userId && (
+                                        <Button
+                                            href={`/profile/trainings/edit/${id}`}
+                                        >
+                                            Редактировать
+                                        </Button>
                                     )}
 
-                                    <Point full>
-                                        <Date />
-                                        {formatDate(
-                                            startDate,
-                                            "DD MMMM",
-                                        )} - {formatDate(endDate, "DD MMMM")}
-                                    </Point>
-
-                                    {price && (
-                                        <Point full>
-                                            <Money />
-                                            {price}
-                                        </Point>
+                                    {city && (
+                                        <MapLocation
+                                            location={city || ""}
+                                            distance=""
+                                            coords={
+                                                longitude && latitude
+                                                    ? [latitude, longitude]
+                                                    : undefined
+                                            }
+                                        />
                                     )}
-                                </Points>
 
-                                {prepayment && (
-                                    <TextPoint
-                                        title="Предоплата:"
-                                        text={prepayment}
-                                    />
-                                )}
+                                    <Points>
+                                        {format && (
+                                            <Point full>
+                                                <Format />
+                                                {format}
+                                            </Point>
+                                        )}
 
-                                <p className={styles.trainingPlacesLeft}>
-                                    6 из {maxParticipants} мест свободно
-                                </p>
+                                        <Point full>
+                                            <Date />
+                                            {formatDate(
+                                                startDate,
+                                                "DD MMMM",
+                                            )} -{" "}
+                                            {formatDate(endDate, "DD MMMM")}
+                                        </Point>
 
-                                <Button>Записаться</Button>
+                                        {price && (
+                                            <Point full>
+                                                <Money />
+                                                {price}
+                                            </Point>
+                                        )}
+                                    </Points>
 
-                                {!!organizers && !!organizers?.length && (
-                                    <Peoples title="Организаторы">
-                                        {organizers.map((data) => {
-                                            const {
-                                                avatarUrl,
-                                                id,
-                                                lastName,
-                                                isPro,
-                                                firstName,
-                                            } = data || {};
+                                    {prepayment && (
+                                        <TextPoint
+                                            title="Предоплата:"
+                                            text={prepayment}
+                                        />
+                                    )}
 
-                                            return (
-                                                <PeopleItem
-                                                    key={id}
-                                                    id={id}
-                                                    image={avatarUrl}
-                                                    name={firstName}
-                                                    surname={lastName}
-                                                    isPro={isPro}
-                                                />
-                                            );
-                                        })}
-                                    </Peoples>
-                                )}
+                                    <p className={styles.trainingPlacesLeft}>
+                                        {availableSpots} из {maxParticipants}{" "}
+                                        мест свободно
+                                    </p>
 
-                                {!!team && !!team?.length && (
-                                    <Peoples title="Команда">
-                                        {team.map((data) => {
-                                            const {
-                                                avatarUrl,
-                                                id,
-                                                lastName,
-                                                isPro,
-                                                firstName,
-                                            } = data || {};
+                                    {currentUserId !== userId && (
+                                        <Button
+                                            onClick={() =>
+                                                setConfirmModal(true)
+                                            }
+                                        >
+                                            Записаться
+                                        </Button>
+                                    )}
 
-                                            return (
-                                                <PeopleItem
-                                                    key={id}
-                                                    id={id}
-                                                    image={avatarUrl}
-                                                    name={firstName}
-                                                    surname={lastName}
-                                                    isPro={isPro}
-                                                />
-                                            );
-                                        })}
-                                    </Peoples>
-                                )}
+                                    {!!organizers && !!organizers?.length && (
+                                        <Peoples title="Организаторы">
+                                            {organizers.map((data) => {
+                                                const {
+                                                    avatarUrl,
+                                                    id,
+                                                    lastName,
+                                                    isPro,
+                                                    firstName,
+                                                } = data || {};
 
-                                {/* <Peoples title="Участники">
-                                    <PeopleItem
-                                        id="1"
-                                        image="/img/people3.png"
-                                        name="Альберт"
-                                        surname="Кокшаров"
-                                        isPro
-                                    />
-                                </Peoples> */}
-                            </>
-                        }
-                        infoBlock={
-                            <PhotoInfoBlock
-                                date={
-                                    createdAt
-                                        ? formatDate(createdAt, "DD MMMM YYYY")
-                                        : ""
-                                }
-                                comments={commentsCount || 0}
-                                favorites={favoriteCount || 0}
-                                isFavorite={isFavorite}
-                                favoriteCallback={favoriteHandler}
-                                likes={likesCount || 0}
-                                isLike={isLiked}
-                                likeCallback={likeHandler}
-                                isCarousel
-                                slides={photos || []}
-                                title={name || ""}
-                                text={description}
-                            />
-                        }
-                    />
+                                                return (
+                                                    <PeopleItem
+                                                        key={id}
+                                                        id={id}
+                                                        image={avatarUrl}
+                                                        name={firstName}
+                                                        surname={lastName}
+                                                        isPro={isPro}
+                                                    />
+                                                );
+                                            })}
+                                        </Peoples>
+                                    )}
+
+                                    {!!team && !!team?.length && (
+                                        <Peoples title="Команда">
+                                            {team.map((data) => {
+                                                const {
+                                                    avatarUrl,
+                                                    id,
+                                                    lastName,
+                                                    isPro,
+                                                    firstName,
+                                                } = data || {};
+
+                                                return (
+                                                    <PeopleItem
+                                                        key={id}
+                                                        id={id}
+                                                        image={avatarUrl}
+                                                        name={firstName}
+                                                        surname={lastName}
+                                                        isPro={isPro}
+                                                    />
+                                                );
+                                            })}
+                                        </Peoples>
+                                    )}
+
+                                    {!!participants &&
+                                        !!participants?.length && (
+                                            <Peoples title="Участники">
+                                                {participants.map((data) => {
+                                                    const {
+                                                        avatarUrl,
+                                                        id,
+                                                        lastName,
+                                                        isPro,
+                                                        firstName,
+                                                    } = data || {};
+
+                                                    return (
+                                                        <PeopleItem
+                                                            key={id}
+                                                            id={id}
+                                                            image={avatarUrl}
+                                                            name={firstName}
+                                                            surname={lastName}
+                                                            isPro={isPro}
+                                                        />
+                                                    );
+                                                })}
+                                            </Peoples>
+                                        )}
+                                </>
+                            }
+                            infoBlock={
+                                <PhotoInfoBlock
+                                    date={
+                                        createdAt
+                                            ? formatDate(
+                                                  createdAt,
+                                                  "DD MMMM YYYY",
+                                              )
+                                            : ""
+                                    }
+                                    comments={commentsCount || 0}
+                                    favorites={favoriteCount || 0}
+                                    isFavorite={isFavorite}
+                                    favoriteCallback={favoriteHandler}
+                                    likes={likesCount || 0}
+                                    isLike={isLiked}
+                                    likeCallback={likeHandler}
+                                    isCarousel
+                                    slides={photos || []}
+                                    title={name || ""}
+                                    text={description}
+                                />
+                            }
+                        />
+                    </div>
                 </div>
             </div>
-        </div>
+
+            <ConfirmModal
+                value={confirmModal}
+                setValue={setConfirmModal}
+                title="Вы действительно хотите записаться на обучение?"
+                callback={() =>
+                    createTrainingRequest({
+                        userId: userId || 0,
+                        trainingId: trainingId || 0,
+                    })
+                }
+            />
+        </>
     );
 };
 

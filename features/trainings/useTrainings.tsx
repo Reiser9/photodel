@@ -4,13 +4,17 @@ import type {
     Training,
     TrainingById,
     TrainingDTO,
+    TrainingRequest,
+    TrainingRequestDTO,
     TrainingsPagination,
 } from "@/entities/trainings";
+import useAlert from "@/shared/hooks/useAlert";
 import useRequest from "@/shared/hooks/useRequest";
 import { buildQueryString } from "@/shared/utils/buildQueryString";
 
 const useTrainings = () => {
     const { request, catchRequestError, errorController } = useRequest();
+    const { alertNotify } = useAlert();
 
     const getTrainings = async ({
         page,
@@ -167,6 +171,117 @@ const useTrainings = () => {
         }
     };
 
+    const createTrainingRequest = async (
+        data: TrainingRequestDTO,
+        successCallback = () => {},
+    ) => {
+        const response = await request({
+            url: "/training-requests",
+            isAuth: true,
+            method: "POST",
+            data,
+        });
+
+        if (catchRequestError(response)) {
+            errorController(response);
+            return "";
+        }
+
+        successCallback();
+        alertNotify("Успешно", "Вы записались на тренинг, ждем ответа организатора");
+
+        if ("data" in response) {
+            return response.data;
+        }
+    };
+
+    const getTrainingsRequest = async () => {
+        const response = await request<{ trainingRequests: TrainingRequest[] }>(
+            {
+                url: "/training-requests",
+                isAuth: true,
+            },
+        );
+
+        if (catchRequestError(response)) {
+            errorController(response);
+            return "";
+        }
+
+        if ("data" in response) {
+            return response.data.trainingRequests;
+        }
+    };
+
+    const acceptRequestTraining = async (
+        id: number,
+        successCallback = () => {},
+    ) => {
+        const response = await request({
+            url: `/training-requests/${id}/accept`,
+            isAuth: true,
+            method: "PATCH",
+        });
+
+        if (catchRequestError(response)) {
+            errorController(response);
+            return "";
+        }
+
+        successCallback();
+        alertNotify("Успешно", "Запрос на обучение принят");
+
+        if ("data" in response) {
+            return response.data;
+        }
+    };
+
+    const rejectRequestTraining = async (
+        id: number,
+        successCallback = () => {},
+    ) => {
+        const response = await request({
+            url: `/training-requests/${id}/reject`,
+            isAuth: true,
+            method: "PATCH",
+        });
+
+        if (catchRequestError(response)) {
+            errorController(response);
+            return "";
+        }
+
+        successCallback();
+        alertNotify("Успешно", "Запрос на обучение отклонён");
+
+        if ("data" in response) {
+            return response.data;
+        }
+    };
+
+    const removeTrainingRequest = async (
+        requestId: number,
+        successCallback = () => {},
+    ) => {
+        const response = await request({
+            url: `/training-requests/${requestId}`,
+            isAuth: true,
+            method: "DELETE",
+        });
+
+        if (catchRequestError(response)) {
+            errorController(response);
+            return "";
+        }
+
+        successCallback();
+        alertNotify("Успешно", "Запрос на обучение удалён");
+
+        if ("data" in response) {
+            return response.data;
+        }
+    };
+
     return {
         getTrainings,
         createTraining,
@@ -174,6 +289,11 @@ const useTrainings = () => {
         updateTraining,
         deleteTraining,
         deleteBulkTrainings,
+        createTrainingRequest,
+        getTrainingsRequest,
+        acceptRequestTraining,
+        rejectRequestTraining,
+        removeTrainingRequest,
     };
 };
 

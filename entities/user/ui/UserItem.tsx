@@ -9,12 +9,17 @@ import type { UserByIdShortInfo } from "../user/model";
 import { Checkbox } from "@/shared/ui/Checkbox";
 import { Pro } from "@/shared/ui/Pro";
 import { StatsBlock } from "@/shared/ui/StatsBlock";
+import { Button } from "@/shared/ui/Button";
 
 type Props = {
     data: UserByIdShortInfo;
     clickOnUser?: () => void;
     checkboxValue?: boolean;
     mode?: "default" | "edit" | "select";
+    isAdmin?: boolean;
+    isBlocked?: boolean;
+    blockCallback?: () => void;
+    unblockCallback?: () => void;
     className?: string;
 };
 
@@ -24,6 +29,10 @@ const UserItem: React.FC<Props> = ({
     checkboxValue,
     mode = "default",
     className,
+    isAdmin = false,
+    isBlocked = false,
+    blockCallback = () => {},
+    unblockCallback = () => {},
 }) => {
     const {
         avatarUrl,
@@ -121,6 +130,29 @@ const UserItem: React.FC<Props> = ({
                         {city} {distance && `| ${distance} км`}
                     </p>
                 )}
+
+                {isAdmin &&
+                    (isBlocked ? (
+                        <Button
+                            auto
+                            small
+                            color="danger"
+                            className={styles.userItemBlock}
+                            onClick={unblockCallback}
+                        >
+                            Разблокировать
+                        </Button>
+                    ) : (
+                        <Button
+                            auto
+                            small
+                            color="danger"
+                            className={styles.userItemBlock}
+                            onClick={blockCallback}
+                        >
+                            Заблокировать
+                        </Button>
+                    ))}
             </div>
         </div>
     );

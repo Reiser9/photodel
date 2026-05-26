@@ -35,6 +35,7 @@ import { useDebounce } from "@/shared/hooks/useDebounce";
 import { NotContent } from "@/shared/ui/NotContent";
 import { Preloader } from "@/shared/ui/Preloader";
 import { useLocation } from "@/shared/context/LocationProvider";
+import { useNotify } from "@/features/notify";
 
 type Props = {
     light?: boolean;
@@ -61,6 +62,7 @@ const Header: React.FC<Props> = ({ light = false }) => {
     const { theme, toggleTheme, chooseTheme } = useThemeContext();
     const { logout } = useAuth();
     const { getShortInfo } = useUserInfo();
+    const { getNotifies } = useNotify();
     const pathname = usePathname();
     const { getLocationPlaces } = usePlaces();
 
@@ -68,6 +70,14 @@ const Header: React.FC<Props> = ({ light = false }) => {
 
     const profileMenuRef = React.useRef<HTMLDivElement>(null);
     const profileAuthMenuRef = React.useRef<HTMLDivElement>(null);
+
+    const { data: notifies } = useQuery({
+        queryKey: ["notifies"],
+        queryFn: () => getNotifies(),
+        enabled: isAuth,
+    });
+
+    const { filming, team, total, training, unreadChats } = notifies || {};
 
     const { data } = useQuery({
         queryKey: ["shortInfo"],
@@ -234,6 +244,16 @@ const Header: React.FC<Props> = ({ light = false }) => {
                                                         alt={`Аватар пользователя ${firstName} ${lastName}`}
                                                         fill
                                                     />
+
+                                                    {!!total && (
+                                                        <p
+                                                            className={
+                                                                styles.profileNotifyCounter
+                                                            }
+                                                        >
+                                                            {total}
+                                                        </p>
+                                                    )}
                                                 </div>
                                             }
                                             value={profileAuthMenu}
@@ -299,37 +319,45 @@ const Header: React.FC<Props> = ({ light = false }) => {
                                                     Мой профиль
                                                 </Link>
 
-                                                <Link
-                                                    href="/profile"
-                                                    className={cn(
-                                                        styles.profileMenuNavLink,
-                                                        styles.active,
-                                                    )}
-                                                >
-                                                    1 новый запрос на съемку
-                                                </Link>
+                                                {!!filming && (
+                                                    <Link
+                                                        href="/profile/requests"
+                                                        className={cn(
+                                                            styles.profileMenuNavLink,
+                                                            styles.active,
+                                                        )}
+                                                    >
+                                                        {filming} новый запрос
+                                                        на съемку
+                                                    </Link>
+                                                )}
 
-                                                <Link
-                                                    href="/profile"
-                                                    className={cn(
-                                                        styles.profileMenuNavLink,
-                                                        styles.active,
-                                                    )}
-                                                >
-                                                    1 новый запрос на обучение
-                                                </Link>
+                                                {!!training && (
+                                                    <Link
+                                                        href="/profile/requests/training"
+                                                        className={cn(
+                                                            styles.profileMenuNavLink,
+                                                            styles.active,
+                                                        )}
+                                                    >
+                                                        {training} новый запрос на обучение
+                                                    </Link>
+                                                )}
 
-                                                <Link
-                                                    href="/profile"
-                                                    className={cn(
-                                                        styles.profileMenuNavLink,
-                                                        styles.active,
-                                                    )}
-                                                >
-                                                    1 новый запрос в команду
-                                                </Link>
+                                                {!!team && (
+                                                    <Link
+                                                        href="/profile/team"
+                                                        className={cn(
+                                                            styles.profileMenuNavLink,
+                                                            styles.active,
+                                                        )}
+                                                    >
+                                                        {team} новый запрос в
+                                                        команду
+                                                    </Link>
+                                                )}
 
-                                                <Link
+                                                {/* <Link
                                                     href="/profile"
                                                     className={cn(
                                                         styles.profileMenuNavLink,
@@ -337,16 +365,20 @@ const Header: React.FC<Props> = ({ light = false }) => {
                                                     )}
                                                 >
                                                     1 новый запрос на покупку
-                                                </Link>
+                                                </Link> */}
 
-                                                <Link
-                                                    href="/profile"
-                                                    className={
-                                                        styles.profileMenuNavLink
-                                                    }
-                                                >
-                                                    3 новых сообщения
-                                                </Link>
+                                                {!!unreadChats && (
+                                                    <Link
+                                                        href="/profile/messanger"
+                                                        className={cn(
+                                                            styles.profileMenuNavLink,
+                                                            styles.active,
+                                                        )}
+                                                    >
+                                                        {unreadChats} новых
+                                                        сообщения
+                                                    </Link>
+                                                )}
 
                                                 <button
                                                     className={
@@ -510,10 +542,15 @@ const Header: React.FC<Props> = ({ light = false }) => {
                         </Link>
                     </nav>
 
-                    <button className={styles.headerLocation}>
+                    <button
+                        className={styles.headerLocation}
+                        onClick={() => setLocationModal(true)}
+                    >
                         <Pin />
 
-                        <span className={styles.headerCity}>Москва</span>
+                        <span className={styles.headerCity}>
+                            {currentLocation?.city || "Выбрать"}
+                        </span>
 
                         <ArrowDown />
                     </button>
@@ -621,46 +658,46 @@ const Header: React.FC<Props> = ({ light = false }) => {
                         setValue={setSearchCity}
                     />
 
-                    {allCitiesIsLoading ? (
-                        <Preloader small page />
-                    ) : allCitiesIsError ? (
-                        <NotContent
-                            text="Произошла ошибка при загрузке данных"
-                            small
-                            danger
-                        />
-                    ) : !!allCitiesData?.length ? (
-                        <div className={styles.locationModalItems}>
-                            {currentLocation && (
-                                <button
-                                    className={cn(
-                                        styles.locationModalItem,
-                                        styles.active,
-                                    )}
-                                >
-                                    {currentLocation.city}
-                                </button>
-                            )}
+                    <div className={styles.locationModalItemsWrapper}>
+                        {allCitiesIsLoading ? (
+                            <Preloader small page />
+                        ) : allCitiesIsError ? (
+                            <NotContent
+                                text="Произошла ошибка при загрузке данных"
+                                small
+                                danger
+                            />
+                        ) : !!allCitiesData?.length ? (
+                            <div className={styles.locationModalItems}>
+                                {currentLocation && (
+                                    <button
+                                        className={cn(
+                                            styles.locationModalItem,
+                                            styles.active,
+                                        )}
+                                    >
+                                        {currentLocation.city}
+                                    </button>
+                                )}
 
-                            {allCitiesData.map((data) => (
-                                <button
-                                    key={data.id}
-                                    className={styles.locationModalItem}
-                                    onClick={() => {
-                                        setCurrentLocation(data);
-                                        setLocationModal(false);
-                                    }}
-                                >
-                                    {data.city}
-                                </button>
-                            ))}
-                        </div>
-                    ) : (
-                        <NotContent
-                            text="На сайте не создан ни один город"
-                            small
-                        />
-                    )}
+                                {allCitiesData.map((data) => (
+                                    <button
+                                        key={data.id}
+                                        className={styles.locationModalItem}
+                                        onClick={() => {
+                                            setCurrentLocation(data);
+                                            setLocationModal(false);
+                                            setSearchCity("");
+                                        }}
+                                    >
+                                        {data.city}
+                                    </button>
+                                ))}
+                            </div>
+                        ) : (
+                            <NotContent text="Городов не найдено" small />
+                        )}
+                    </div>
                 </div>
             </Modal>
         </>

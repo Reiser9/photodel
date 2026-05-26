@@ -41,6 +41,7 @@ const PhotosessionItem: React.FC<Props> = ({
                         id={`photosession_checkbox_${id}`}
                         wrapperClass={styles.photosessionItemCheckbox}
                         value={checkboxValue}
+                        auto
                     />
                 )}
             </>

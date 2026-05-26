@@ -1,0 +1,192 @@
+.admin{
+    width: 100%;
+    padding: 2rem 0rem 5rem 0;
+}
+
+@media (max-width: 998px) {
+    .admin{
+        padding: 0rem 0rem 5rem 0;
+    }
+}
+
+.adminInner{
+    width: 100%;
+    display: flex;
+    align-items: flex-start;
+    gap: 30px;
+}
+
+@media (max-width: 998px) {
+    .adminInner{
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 20px;
+    }
+}
+
+.adminSidebar{
+    width: 100%;
+    max-width: 255px;
+    flex-shrink: 0;
+    position: sticky;
+    top: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+.adminSidebar::-webkit-scrollbar{
+    width: 0;
+    height: 0;
+}
+
+@media (max-width: 1140px) {
+    .adminSidebar{
+        max-width: 230px;
+    }
+}
+@media (max-width: 998px) {
+    .adminSidebar{
+        width: 100dvw;
+        flex-direction: row;
+        padding: 0 calc((100dvw - 728px) / 2);
+        border-bottom: 1px solid var(--lightGrey);
+        gap: 20px;
+        max-width: unset;
+        position: relative;
+        left: calc((100dvw - 728px) / 2 * -1);
+        overflow-x: auto;
+    }
+}
+@media (max-width: 768px) {
+    .adminSidebar{
+        padding: 0 calc((100dvw - 460px) / 2);
+        left: calc((100dvw - 460px) / 2 * -1);
+    }
+}
+@media (max-width: 480px) {
+    .adminSidebar{
+        padding: 0 16px;
+        left: -16px;
+    }
+}
+@media (max-width: 400px) {
+    .adminSidebar{
+        padding: 0 12px;
+        left: -12px;
+    }
+}
+
+.adminSidebarLink{
+    width: 100%;
+    padding: 1.8rem 1rem;
+    border-bottom: 1px solid var(--lightGrey);
+    display: flex;
+    align-items: center;
+    flex-shrink: 0;
+    gap: 9px;
+    text-transform: uppercase;
+    font-size: 1.3rem;
+    font-weight: 600;
+    color: var(--grey);
+    position: relative;
+}
+
+@media (max-width: 998px) {
+    .adminSidebarLink{
+        width: auto;
+        border-bottom: none;
+        position: relative;
+        padding: 1.8rem 0;
+    }
+}
+
+@media (any-hover: hover) {
+    .adminSidebarLink:hover, .adminSidebarLink:hover svg{
+        color: var(--black);
+    }
+}
+
+.adminSidebarLink.active{
+    color: var(--black);
+}
+
+.adminSidebarLink svg{
+    width: 24px;
+    height: 24px;
+    flex-shrink: 0;
+    color: var(--grey);
+}
+
+.adminSidebarLink.active svg{
+    color: var(--main);
+}
+
+@media (max-width: 998px) {
+    .adminSidebarLink:before{
+        content: "";
+        display: block;
+        width: 100%;
+        height: 2px;
+        background: var(--main);
+        position: absolute;
+        bottom: 0px;
+        left: 0;
+        opacity: 0;
+        transition: opacity .2s linear;
+    }
+
+    .adminSidebarLink.active:before{
+        opacity: 1;
+    }
+}
+
+.adminContent{
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 30px;
+}
+
+.adminPanel, .contactBlock, .contactSocials, .contactSocialItem{
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 32px;
+}
+
+.contactBlock{
+    gap: 16px;
+}
+
+.contactSocials{
+    gap: 12px;
+}
+
+.contactSocialsTitle{
+    font-size: 1.4rem;
+    font-weight: 500;
+}
+
+.contactSocialItem{
+    gap: 8px;
+}
+
+.deleteButton{
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    border-radius: 4px;
+    background: var(--red);
+    color: #fff;
+}
+
+.deleteButton svg{
+    width: 24px;
+    flex-shrink: 0;
+}

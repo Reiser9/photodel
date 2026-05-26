@@ -1,11 +1,23 @@
+"use client";
+
 import React from "react";
+import Link from "next/link";
+import { useQuery } from "@tanstack/react-query";
 
 import styles from "./index.module.scss";
 import base from "@/shared/styles/base.module.scss";
-import Link from "next/link";
+
 import { Facebook, Instagram, Mail, Twitter, Vk } from "@/shared/icons";
+import { useUserInfo } from "@/features/user";
 
 const Footer = () => {
+    const { getSiteSocials } = useUserInfo();
+
+    const { data, isLoading, isError } = useQuery({
+        queryKey: ["siteSocials"],
+        queryFn: getSiteSocials,
+    });
+
     return (
         <footer className={styles.footer}>
             <div className={base.container}>
@@ -87,19 +99,35 @@ const Footer = () => {
                         </button>
 
                         <div className={styles.footerSocials}>
-                            <a href="#" className={styles.footerSocial} target="_blank">
+                            <a
+                                href="#"
+                                className={styles.footerSocial}
+                                target="_blank"
+                            >
                                 <Vk />
                             </a>
 
-                            <a href="#" className={styles.footerSocial} target="_blank">
+                            <a
+                                href="#"
+                                className={styles.footerSocial}
+                                target="_blank"
+                            >
                                 <Facebook />
                             </a>
 
-                            <a href="#" className={styles.footerSocial} target="_blank">
+                            <a
+                                href="#"
+                                className={styles.footerSocial}
+                                target="_blank"
+                            >
                                 <Instagram />
                             </a>
 
-                            <a href="#" className={styles.footerSocial} target="_blank">
+                            <a
+                                href="#"
+                                className={styles.footerSocial}
+                                target="_blank"
+                            >
                                 <Twitter />
                             </a>
                         </div>

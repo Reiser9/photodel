@@ -96,7 +96,7 @@ const ReviewsPage = () => {
                     ))}
                 </div>
             ) : (
-                <NotContent text="У пользователя еще нет отзывов" />
+                <NotContent text="У вас еще нет отзывов" />
             )}
 
             <Pagination

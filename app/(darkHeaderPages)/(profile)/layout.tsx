@@ -84,11 +84,11 @@ const sidebarLinks = [
         name: "Избранное",
         icon: <Bookmark2 />,
     },
-    {
-        paths: ["/profile/finance"],
-        name: "Финансы",
-        icon: <Money2 />,
-    },
+    // {
+    //     paths: ["/profile/finance"],
+    //     name: "Финансы",
+    //     icon: <Money2 />,
+    // },
     {
         paths: ["/profile/settings"],
         name: "Настройки",

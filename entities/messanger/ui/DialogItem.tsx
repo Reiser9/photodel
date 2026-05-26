@@ -36,9 +36,11 @@ const DialogItem: React.FC<Props> = ({ data }) => {
         >
             <span className={styles.messangerDialogInfo}>
                 <span className={styles.messangerDialogAvatar}>
-                    {picture && (
-                        <Image src={picture} alt={`Аватар ${title}`} fill />
-                    )}
+                    <Image
+                        src={picture ?? "/img/placeholder.png"}
+                        alt={`Аватар ${title}`}
+                        fill
+                    />
                 </span>
 
                 <span className={styles.messangerDialogContent}>

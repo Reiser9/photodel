@@ -7,6 +7,7 @@ export type {
     RecoveryChangeData,
     RecoveryData,
     RecoveryVerifyData,
+    ChangePasswordData,
 } from "./auth/model";
 
 export type {
@@ -16,6 +17,7 @@ export type {
     Category,
     Location,
     Social,
+    SiteSocial,
     Specialization,
     TempLocation,
     ProfileInfoDTO,
@@ -26,5 +28,6 @@ export type {
     Like,
     UserByIdShortInfo,
     UsersPagination,
-    Review
+    Review,
+    AdminUsersPagination,
 } from "./user/model";

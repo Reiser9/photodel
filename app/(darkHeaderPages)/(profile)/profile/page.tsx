@@ -199,7 +199,7 @@ const ProfilePage = () => {
                 <Chapter title="Контакты">
                     <div className={styles.profileBlockPoints}>
                         {socials.map((data) => {
-                            const { icon, name, value, id } = data || {};
+                            const { name, profileIcon, value, id } = data || {};
 
                             if (!value) return false;
 
@@ -208,14 +208,10 @@ const ProfilePage = () => {
                                     key={id}
                                     className={styles.profileBlockPoint}
                                 >
-                                    <a
-                                        href={value}
-                                        target="_blank"
-                                        className={styles.profileBlockLink}
-                                    >
-                                        {icon && <Mail />}
-                                        {name}
-                                    </a>
+                                    <p className={styles.profileBlockLink}>
+                                        {profileIcon && parse(profileIcon)}
+                                        {value}
+                                    </p>
                                 </div>
                             );
                         })}

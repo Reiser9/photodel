@@ -1,6 +1,6 @@
 'use client';
 
-import axios, { AxiosInstance, isAxiosError } from 'axios';
+import axios, { AxiosInstance, AxiosResponse, isAxiosError } from 'axios';
 import { jwtDecode } from 'jwt-decode';
 
 const axiosInstance: AxiosInstance = axios.create({
@@ -8,8 +8,8 @@ const axiosInstance: AxiosInstance = axios.create({
     timeout: 15000,
     withCredentials: true,
     headers: {
-        'Content-Type': 'application/json',
-    },
+        'Content-Type': 'application/json'
+    }
 });
 
 const publicEndpoints = [
@@ -18,7 +18,7 @@ const publicEndpoints = [
     '/auth/register',
     '/auth/recovery-password',
     '/auth/pro-categories',
-    '/auth/specializations',
+    '/auth/specializations'
 ];
 
 export const isAccessTokenValid = (accessToken: string | null) => {
@@ -39,8 +39,23 @@ export const isAccessTokenValid = (accessToken: string | null) => {
     }
 };
 
+type RefreshResponse = AxiosResponse<{
+    accessToken: string;
+}>;
+
+let refreshPromise: Promise<RefreshResponse> | null = null;
+
+const refreshAccessToken = async (): Promise<RefreshResponse> => {
+    return await axios.get<{ accessToken: string }>(
+        `${process.env.NEXT_PUBLIC_BASE_URL}/auth/refresh`,
+        {
+            withCredentials: true
+        }
+    );
+};
+
 axiosInstance.interceptors.request.use(
-    async (req) => {
+    async req => {
         const accessToken = localStorage.getItem('accessToken');
 
         if (publicEndpoints.includes(req.url || '')) {
@@ -67,35 +82,35 @@ axiosInstance.interceptors.request.use(
             }
 
             try {
-                const refresh = await axios.get<{ accessToken: string }>(
-                    `${process.env.NEXT_PUBLIC_BASE_URL}/auth/refresh`,
-                    {
-                        headers: {
-                            'Content-Type': 'application/json',
-                        },
-                        withCredentials: true,
-                    },
-                );
+                if (!refreshPromise) {
+                    refreshPromise = refreshAccessToken().finally(() => {
+                        refreshPromise = null;
+                    });
+                }
 
-                if (refresh.status === 200) {
-                    localStorage.setItem('accessToken', refresh.data.accessToken);
-                    req.headers.Authorization = `Bearer ${refresh.data.accessToken}`;
+                const response = await refreshPromise;
+
+                if (response.status === 200) {
+                    localStorage.setItem(
+                        'accessToken',
+                        response.data.accessToken
+                    );
+                    req.headers.Authorization = `Bearer ${response.data.accessToken}`;
 
                     return req;
                 }
             } catch (error) {
                 console.error('2', error);
-
-                // localStorage.removeItem('accessToken');
+                localStorage.removeItem('accessToken');
             }
         }
 
         return req;
     },
-    (error) => {
+    error => {
         console.log('Request interceptor error:', error);
         return Promise.reject(error);
-    },
+    }
 );
 
 export default axiosInstance;

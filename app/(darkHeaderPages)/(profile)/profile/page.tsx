@@ -43,8 +43,10 @@ const ProfilePage = () => {
         about,
         status,
         reviews,
+        location,
     } = profileData || {};
     const { rating } = reviews || {};
+    const { address } = location || {};
 
     return (
         <>
@@ -215,6 +217,22 @@ const ProfilePage = () => {
                                 </div>
                             );
                         })}
+                    </div>
+                </Chapter>
+            )}
+
+            {!!location && (
+                <Chapter title="Геолокация">
+                    <div className={styles.profileBlockData}>
+                        <div className={styles.profileBlockDataItem}>
+                            <p className={styles.profileBlockDataItemTitle}>
+                                Местонахождение:
+                            </p>
+
+                            <p className={styles.profileBlockDataItemText}>
+                                {address}
+                            </p>
+                        </div>
                     </div>
                 </Chapter>
             )}

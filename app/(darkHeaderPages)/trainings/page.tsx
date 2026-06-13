@@ -55,6 +55,7 @@ const TrainingsPage = () => {
                 page,
                 sort,
                 search: userSearchDebounce,
+                isAuth: false
             }),
     });
 

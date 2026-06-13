@@ -22,7 +22,8 @@ const usePhotos = () => {
         my,
         sort = "newest",
         search,
-        category
+        category,
+        isAuth = true,
     }: {
         page?: number;
         limit?: number;
@@ -33,6 +34,7 @@ const usePhotos = () => {
         sort?: "newest" | "popularity" | "distance";
         search?: string;
         category?: string | number;
+        isAuth?: boolean;
     }) => {
         const queryString = buildQueryString({
             page,
@@ -48,7 +50,7 @@ const usePhotos = () => {
 
         const response = await request<PhotosPagination>({
             url: `/photos?${queryString}`,
-            isAuth: true,
+            isAuth,
         });
 
         if (catchRequestError(response)) {
@@ -177,7 +179,7 @@ const usePhotos = () => {
     const getTopPhoto = async () => {
         const response = await request<{ photo: Photo }>({
             url: "/photos/top",
-            isAuth: true
+            isAuth: true,
         });
 
         if (catchRequestError(response)) {
@@ -188,7 +190,7 @@ const usePhotos = () => {
         if ("data" in response) {
             return response.data.photo;
         }
-    }
+    };
 
     return {
         getPhotos,
@@ -197,7 +199,7 @@ const usePhotos = () => {
         getPhotoById,
         deletePhoto,
         deleteBulkPhotos,
-        getTopPhoto
+        getTopPhoto,
     };
 };
 

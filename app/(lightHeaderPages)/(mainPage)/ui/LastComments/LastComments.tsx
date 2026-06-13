@@ -21,6 +21,7 @@ const LastComments = () => {
             getReviews({
                 limit: 3,
                 type: "photo",
+                isAuth: false
             }),
     });
 

@@ -70,6 +70,7 @@ const PlacesPage = () => {
                 sort,
                 search: userSearchDebounce,
                 ...(category && { category }),
+                isAuth: false
             }),
     });
 

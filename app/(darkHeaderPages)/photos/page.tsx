@@ -69,6 +69,7 @@ const PhotosPage = () => {
                 sort,
                 search: userSearchDebounce,
                 ...(category && { category }),
+                isAuth: false,
             }),
     });
 

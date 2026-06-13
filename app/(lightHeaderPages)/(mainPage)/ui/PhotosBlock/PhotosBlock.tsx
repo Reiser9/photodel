@@ -35,6 +35,7 @@ const PhotosBlock = () => {
             getPhotos({
                 limit: 10,
                 sort: "popularity",
+                isAuth: false
             }),
     });
 

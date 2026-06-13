@@ -25,6 +25,7 @@ const usePlaces = () => {
         my,
         search,
         category,
+        isAuth = true,
     }: {
         page?: number;
         limit?: number;
@@ -33,6 +34,7 @@ const usePlaces = () => {
         my?: boolean;
         search?: string;
         category?: string | number;
+        isAuth?: boolean;
     }) => {
         const queryString = buildQueryString({
             page,
@@ -46,7 +48,7 @@ const usePlaces = () => {
 
         const response = await request<PlacesPagination>({
             url: `/filming-locations?${queryString}`,
-            isAuth: true,
+            isAuth,
         });
 
         if (catchRequestError(response)) {
@@ -179,7 +181,7 @@ const usePlaces = () => {
         latitude,
         longitude,
         sort = "alphabet",
-        excluded_place_id
+        excluded_place_id,
     }: {
         page?: number;
         limit?: number;
@@ -196,7 +198,7 @@ const usePlaces = () => {
             latitude,
             longitude,
             sort,
-            excluded_place_id
+            excluded_place_id,
         });
 
         const response = await request<LocationCountriesPagination>({

@@ -60,10 +60,22 @@
 
 .profiesMap{
     width: 50%;
+    flex-shrink: 0;
     height: 100dvh;
     min-height: 500px;
     position: relative;
-    flex-shrink: 0;
+    padding: 0 calc((100dvw - 1110px) / 2) 0 0;
+}
+
+@media (max-width: 1140px) {
+    .profiesMap{
+        padding: 0 calc((100dvw - 958px) / 2) 0 0;
+    }
+}
+@media (max-width: 998px) {
+    .profiesMap{
+        padding: 0;
+    }
 }
 
 @media (max-width: 998px) {

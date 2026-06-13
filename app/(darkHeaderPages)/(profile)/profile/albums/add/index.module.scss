@@ -13,6 +13,12 @@
     gap: 30px;
 }
 
+.addPhoto.hide{
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
+}
+
 @media (max-width: 768px) {
     .addPhoto{
         flex-direction: column-reverse;

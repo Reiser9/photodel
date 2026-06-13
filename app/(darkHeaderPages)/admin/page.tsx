@@ -13,6 +13,7 @@ import { useUserInfo } from "@/features/user";
 import { Preloader } from "@/shared/ui/Preloader";
 import { NotContent } from "@/shared/ui/NotContent";
 import useAlert from "@/shared/hooks/useAlert";
+import { PrivateWrapper } from "@/shared/wrappers/PrivateWrapper";
 
 const AdminPage = () => {
     const [socials, setSocials] = React.useState<Social[]>([]);
@@ -64,81 +65,83 @@ const AdminPage = () => {
     }, [data]);
 
     return (
-        <div className={styles.adminPanel}>
-            <div className={styles.contactBlock}>
-                <div className={styles.contactSocials}>
-                    <p className={styles.contactSocialsTitle}>
-                        Социальные сети ({socials.length})
-                    </p>
+        <PrivateWrapper haveRole="admin">
+            <div className={styles.adminPanel}>
+                <div className={styles.contactBlock}>
+                    <div className={styles.contactSocials}>
+                        <p className={styles.contactSocialsTitle}>
+                            Социальные сети ({socials.length})
+                        </p>
 
-                    {isLoading ? (
-                        <Preloader page small />
-                    ) : isError ? (
-                        <NotContent
-                            text="Произошла ошибка при загрузке данных"
-                            danger
-                        />
-                    ) : (
-                        <>
-                            {socials.map((data) => (
-                                <div
-                                    key={data.id}
-                                    className={styles.contactSocialItem}
-                                >
+                        {isLoading ? (
+                            <Preloader page small />
+                        ) : isError ? (
+                            <NotContent
+                                text="Произошла ошибка при загрузке данных"
+                                danger
+                            />
+                        ) : (
+                            <>
+                                {socials.map((data) => (
+                                    <div
+                                        key={data.id}
+                                        className={styles.contactSocialItem}
+                                    >
+                                        <Input
+                                            component="textarea"
+                                            placeholder="Иконка svg"
+                                            value={data.siteIcon || ""}
+                                            disabled
+                                            full
+                                        />
+
+                                        <Input
+                                            full
+                                            value={data.name || ""}
+                                            placeholder="Название"
+                                            disabled
+                                        />
+
+                                        <button
+                                            className={styles.deleteButton}
+                                            onClick={() => {
+                                                removeSocialById(
+                                                    data.id,
+                                                    invalidateRequest,
+                                                );
+                                            }}
+                                        >
+                                            <Remove />
+                                        </button>
+                                    </div>
+                                ))}
+
+                                <div className={styles.contactSocialItem}>
                                     <Input
                                         component="textarea"
                                         placeholder="Иконка svg"
-                                        value={data.siteIcon || ""}
-                                        disabled
+                                        value={icon}
+                                        setValue={setIcon}
                                         full
                                     />
 
                                     <Input
                                         full
-                                        value={data.name || ""}
+                                        value={name}
                                         placeholder="Название"
-                                        disabled
+                                        setValue={setName}
                                     />
-
-                                    <button
-                                        className={styles.deleteButton}
-                                        onClick={() => {
-                                            removeSocialById(
-                                                data.id,
-                                                invalidateRequest,
-                                            );
-                                        }}
-                                    >
-                                        <Remove />
-                                    </button>
                                 </div>
-                            ))}
 
-                            <div className={styles.contactSocialItem}>
-                                <Input
-                                    component="textarea"
-                                    placeholder="Иконка svg"
-                                    value={icon}
-                                    setValue={setIcon}
-                                    full
-                                />
-
-                                <Input
-                                    full
-                                    value={name}
-                                    placeholder="Название"
-                                    setValue={setName}
-                                />
-                            </div>
-
-                            <Button small auto onClick={addSocial}>
-                                Добавить соц. сеть
-                            </Button>
-                        </>
-                    )}
+                                <Button small auto onClick={addSocial}>
+                                    Добавить соц. сеть
+                                </Button>
+                            </>
+                        )}
+                    </div>
                 </div>
             </div>
-        </div>
+        </PrivateWrapper>
     );
 };
 

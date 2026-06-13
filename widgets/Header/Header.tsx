@@ -340,7 +340,8 @@ const Header: React.FC<Props> = ({ light = false }) => {
                                                             styles.active,
                                                         )}
                                                     >
-                                                        {training} новый запрос на обучение
+                                                        {training} новый запрос
+                                                        на обучение
                                                     </Link>
                                                 )}
 

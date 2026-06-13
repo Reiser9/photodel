@@ -27,7 +27,8 @@ const PlacesBlock = () => {
         queryFn: () =>
             getPlaces({
                 limit: 10,
-                sort: "popularity"
+                sort: "popularity",
+                isAuth: false
             }),
     });
 

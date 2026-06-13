@@ -30,8 +30,13 @@ const MessangerDialogPage = () => {
 
     const messengerMenuRef = React.useRef<HTMLDivElement>(null);
 
-    const { getChatById, getChatMessages, sendMessage, deleteChat } =
-        useMessanger();
+    const {
+        getChatById,
+        getChatMessages,
+        sendMessage,
+        deleteChat,
+        readMessage,
+    } = useMessanger();
 
     const { data, isLoading, isError } = useQuery({
         queryKey: ["chatById", id],
@@ -69,6 +74,16 @@ const MessangerDialogPage = () => {
     const deleteChatHandler = () => {
         deleteChat(String(id), () => router.push("/profile/messanger"));
     };
+
+    React.useEffect(() => {
+        if (data && data.latestMessage && data.latestMessage.id) {
+            readMessage(data.latestMessage.id, () =>
+                queryClient.invalidateQueries({
+                    queryKey: ["messangerUnreadCount"],
+                }),
+            );
+        }
+    }, [data]);
 
     if (isLoading) {
         return <Preloader page />;

@@ -24,6 +24,7 @@ const useTrainings = () => {
         my,
         search,
         specialization_id,
+        isAuth = true,
     }: {
         page?: number;
         limit?: number;
@@ -32,6 +33,7 @@ const useTrainings = () => {
         my?: boolean;
         search?: string;
         specialization_id?: number;
+        isAuth?: boolean;
     }) => {
         const queryString = buildQueryString({
             page,
@@ -45,7 +47,7 @@ const useTrainings = () => {
 
         const response = await request<TrainingsPagination>({
             url: `/trainings?${queryString}`,
-            isAuth: true,
+            isAuth,
         });
 
         if (catchRequestError(response)) {
@@ -188,7 +190,10 @@ const useTrainings = () => {
         }
 
         successCallback();
-        alertNotify("Успешно", "Вы записались на тренинг, ждем ответа организатора");
+        alertNotify(
+            "Успешно",
+            "Вы записались на тренинг, ждем ответа организатора",
+        );
 
         if ("data" in response) {
             return response.data;

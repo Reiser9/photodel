@@ -118,22 +118,6 @@ const useMessanger = () => {
         }
     };
 
-    const getUnreadCount = async () => {
-        const response = await request<{ count: number }>({
-            url: "/chats/unread/count",
-            isAuth: true,
-        });
-
-        if (catchRequestError(response)) {
-            errorController(response);
-            return "";
-        }
-
-        if ("data" in response) {
-            return response.data.count;
-        }
-    };
-
     const deleteChat = async (
         chatId: number | string,
         successCallback = () => {},
@@ -162,7 +146,6 @@ const useMessanger = () => {
         getChatMessages,
         getChats,
         getChatById,
-        getUnreadCount,
         deleteChat,
     };
 };

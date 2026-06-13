@@ -21,6 +21,8 @@ import {
     Text,
 } from "@/shared/icons";
 import { useUserInfo } from "@/features/user";
+import { Preloader } from "@/shared/ui/Preloader";
+import { NotContent } from "@/shared/ui/NotContent";
 
 const ProfileUserLayout: React.FC<{ children: React.ReactNode }> = ({
     children,
@@ -28,12 +30,22 @@ const ProfileUserLayout: React.FC<{ children: React.ReactNode }> = ({
     const pathname = usePathname();
     const { id } = useParams();
 
-    const { getShortInfo } = useUserInfo();
+    const { getShortInfo, getUserProfileById } = useUserInfo();
 
     const { data: myData } = useQuery({
         queryKey: ["shortInfo"],
         queryFn: () => getShortInfo(),
     });
+
+    const { data, isLoading, isError } = useQuery({
+        queryKey: ["userProfileInfo", id],
+        queryFn: () => getUserProfileById(String(id)),
+        gcTime: 0,
+        refetchOnMount: true,
+        enabled: !!id,
+    });
+
+    const { isProfessional } = data || {};
 
     const { id: myId } = myData || {};
 
@@ -43,32 +55,38 @@ const ProfileUserLayout: React.FC<{ children: React.ReactNode }> = ({
             name: "Профиль",
             icon: <Profile />,
             exact: true,
+            hideForNotProfessional: false,
         },
         {
             paths: [`/user/${id}/photos`, `/user/${id}/photos/albums`],
             name: "Фотографии",
             icon: <Photo />,
             exact: true,
+            hideForNotProfessional: true,
         },
         {
             paths: [`/user/${id}/places`],
             name: "Места для съемок",
             icon: <Pin2 />,
+            hideForNotProfessional: true,
         },
         {
             paths: [`/user/${id}/photosessions`],
             name: "Фотосессии",
             icon: <Book />,
+            hideForNotProfessional: true,
         },
         {
             paths: [`/user/${id}/trainings`],
             name: "Обучение",
             icon: <Text />,
+            hideForNotProfessional: true,
         },
         {
             paths: [`/user/${id}/reviews`],
             name: "Отзывы",
             icon: <Reviews />,
+            hideForNotProfessional: false,
         },
     ];
 
@@ -90,25 +108,51 @@ const ProfileUserLayout: React.FC<{ children: React.ReactNode }> = ({
         }
     }, [id, myId]);
 
+    if (isLoading) {
+        return <Preloader page />;
+    }
+
+    if (isError) {
+        return <NotContent text="Произошла ошибка при загрузе данных" danger />;
+    }
+
+    if (!data) {
+        return <NotContent text="Пользователь не найден" danger />;
+    }
+
     return (
         <div className={styles.profile}>
             <div className={base.container}>
                 <div className={styles.profileInner}>
                     <div className={styles.profileSidebar}>
-                        {sidebarLinks.map((data, id) => (
-                            <Link
-                                key={id}
-                                href={data.paths[0]}
-                                className={cn(styles.profileSidebarLink, {
-                                    [styles.active]: data.exact
-                                        ? checkPathExact(pathname, data.paths)
-                                        : pathname.includes(data.paths[0]),
-                                })}
-                            >
-                                {data.icon}
-                                {data.name}
-                            </Link>
-                        ))}
+                        {sidebarLinks.map((data, id) => {
+                            const {
+                                hideForNotProfessional,
+                                icon,
+                                name,
+                                paths,
+                                exact,
+                            } = data || {};
+
+                            if (hideForNotProfessional && !isProfessional) {
+                                return;
+                            }
+
+                            return (
+                                <Link
+                                    key={id}
+                                    href={paths[0]}
+                                    className={cn(styles.profileSidebarLink, {
+                                        [styles.active]: exact
+                                            ? checkPathExact(pathname, paths)
+                                            : pathname.includes(paths[0]),
+                                    })}
+                                >
+                                    {icon}
+                                    {name}
+                                </Link>
+                            );
+                        })}
                     </div>
 
                     <div className={styles.profileContent}>{children}</div>

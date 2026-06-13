@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import cn from "classnames";
+import Link from "next/link";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 
 import styles from "../index.module.scss";
@@ -45,12 +46,25 @@ const RequestsTrainingPage = () => {
                 <div className={styles.requestsItems}>
                     {data.map((data) => {
                         const { id, user, training, status } = data || {};
-                        const { avatarUrl, firstName, lastName } = user || {};
-                        const { format, prepayment } = training || {};
+                        const {
+                            avatarUrl,
+                            firstName,
+                            lastName,
+                            id: userId,
+                        } = user || {};
+                        const {
+                            format,
+                            prepayment,
+                            name,
+                            id: trainingId,
+                        } = training || {};
 
                         return (
                             <div key={id} className={styles.requestsItem}>
-                                <span className={styles.requestsItemImage}>
+                                <Link
+                                    href={`/user/${userId}`}
+                                    className={styles.requestsItemImage}
+                                >
                                     <Image
                                         src={
                                             avatarUrl ?? "/img/placeholder.png"
@@ -58,15 +72,16 @@ const RequestsTrainingPage = () => {
                                         alt={`Аватар пользователя ${firstName} ${lastName}`}
                                         fill
                                     />
-                                </span>
+                                </Link>
 
                                 <span className={styles.requestsItemContent}>
                                     <span className={styles.requestsItemInfo}>
-                                        <span
+                                        <Link
+                                            href={`/user/${userId}`}
                                             className={styles.requestsItemName}
                                         >
                                             {lastName} {firstName}
-                                        </span>
+                                        </Link>
 
                                         <span
                                             className={styles.requestsItemShort}
@@ -75,6 +90,13 @@ const RequestsTrainingPage = () => {
                                             {prepayment &&
                                                 ` | Предоплата: ${prepayment}`}
                                         </span>
+
+                                        <Link
+                                            href={`/trainings/${trainingId}`}
+                                            className={styles.requestsItemLink}
+                                        >
+                                            Обучение: {name}
+                                        </Link>
 
                                         <span
                                             className={

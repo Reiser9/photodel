@@ -16,12 +16,14 @@ const useReviews = () => {
         type,
         entity_id,
         my = false,
+        isAuth = true,
     }: {
         page?: number;
         limit?: number;
         type: FavoriteEntites;
         entity_id?: number;
         my?: boolean;
+        isAuth?: boolean;
     }) => {
         const queryString = buildQueryString({
             page,
@@ -33,7 +35,7 @@ const useReviews = () => {
 
         const response = await request<ReviewsPagination>({
             url: `/reviews?${queryString}`,
-            isAuth: true,
+            isAuth,
         });
 
         if (catchRequestError(response)) {

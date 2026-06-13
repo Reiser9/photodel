@@ -41,7 +41,7 @@ const AdminLayout = ({ children }: { children: React.ReactNode }) => {
     };
 
     return (
-        <PrivateWrapper haveRole="admin">
+        <PrivateWrapper haveRole="moderator">
             <div className={styles.admin}>
                 <div className={base.container}>
                     <div className={styles.adminInner}>

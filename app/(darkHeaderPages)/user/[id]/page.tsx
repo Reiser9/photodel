@@ -232,21 +232,10 @@ const ProfileUserPage = () => {
             () => {
                 alertNotify("Успешно", "Запрос на съемку отправлен");
                 setRequestModal(false);
+                resetRequestForm();
             },
         );
     };
-
-    if (isLoading) {
-        return <Preloader page />;
-    }
-
-    if (isError) {
-        return <NotContent text="Произошла ошибка при загрузе данных" danger />;
-    }
-
-    if (!data) {
-        return <NotContent text="Пользователь не найден" danger />;
-    }
 
     return (
         <>

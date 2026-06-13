@@ -84,7 +84,7 @@ const ProfileAlbumEdit = () => {
             getPhotos({
                 page,
                 album_id: String(id),
-                my: true
+                my: true,
             }),
         enabled: !!id,
     });
@@ -100,7 +100,7 @@ const ProfileAlbumEdit = () => {
                 page,
                 limit: 6,
                 excluded_album_id: String(id),
-                my: true
+                my: true,
             }),
         enabled: !!photosAddModal,
     });
@@ -274,113 +274,93 @@ const ProfileAlbumEdit = () => {
                     </button>
                 </div>
 
-                {tab === "content" && (
-                    <>
-                        {isLoading ? (
-                            <Preloader page small />
-                        ) : isError ? (
-                            <NotContent
-                                text="Ошибка при загрузке данных"
-                                danger
-                            />
-                        ) : (
-                            <div className={styles.addPhoto}>
-                                <div className={styles.addPhotoContent}>
-                                    <div className={styles.addPhotoBlock}>
-                                        <p
-                                            className={
-                                                styles.addPhotoBlockTitle
-                                            }
-                                        >
-                                            Фотография
-                                        </p>
+                {isLoading ? (
+                    <Preloader page small />
+                ) : isError ? (
+                    <NotContent text="Ошибка при загрузке данных" danger />
+                ) : (
+                    <div
+                        className={cn(styles.addPhoto, {
+                            [styles.hide]: tab !== "content",
+                        })}
+                    >
+                        <div className={styles.addPhotoContent}>
+                            <div className={styles.addPhotoBlock}>
+                                <p className={styles.addPhotoBlockTitle}>
+                                    Фотография
+                                </p>
 
-                                        <File
-                                            id="album_add"
-                                            onChange={uploadImage}
+                                <File id="album_add" onChange={uploadImage} />
+
+                                <label
+                                    htmlFor="album_add"
+                                    className={styles.addPhotoLabel}
+                                >
+                                    <CirclePlus />
+                                    <span>Загрузить фотографию</span>
+
+                                    {imageUrl && (
+                                        <Image
+                                            src={imageUrl}
+                                            alt="Загруженное фото"
+                                            fill
                                         />
-
-                                        <label
-                                            htmlFor="album_add"
-                                            className={styles.addPhotoLabel}
-                                        >
-                                            <CirclePlus />
-                                            <span>Загрузить фотографию</span>
-
-                                            {imageUrl && (
-                                                <Image
-                                                    src={imageUrl}
-                                                    alt="Загруженное фото"
-                                                    fill
-                                                />
-                                            )}
-                                        </label>
-                                    </div>
-
-                                    <div className={styles.addPhotoBlock}>
-                                        <p
-                                            className={
-                                                styles.addPhotoBlockTitle
-                                            }
-                                        >
-                                            Название и описание
-                                        </p>
-
-                                        <Input
-                                            title="Название"
-                                            placeholder="Введите название"
-                                            full
-                                            value={title}
-                                            setValue={setTitle}
-                                        />
-
-                                        <Editor
-                                            id="photo_description"
-                                            editorRef={descriptionRef}
-                                            title="Описание"
-                                            placeholder="Введите описание (+0,001 к рейтингу)"
-                                            onReady={() =>
-                                                setDescriptionEditorIsReady(
-                                                    true,
-                                                )
-                                            }
-                                        />
-                                    </div>
-                                </div>
-
-                                <div className={styles.addPhotoSidebar}>
-                                    <button
-                                        className={styles.addPhotoButton}
-                                        onClick={() =>
-                                            setIsPublished((prev) => !prev)
-                                        }
-                                    >
-                                        {isPublished ? (
-                                            <>
-                                                <Lock />
-                                                Скрыть альбом
-                                            </>
-                                        ) : (
-                                            <>
-                                                <Unlock />
-                                                Опубликовать альбом
-                                            </>
-                                        )}
-                                    </button>
-
-                                    <button
-                                        className={styles.addPhotoButton}
-                                        onClick={() =>
-                                            setConfirmDeleteModal(true)
-                                        }
-                                    >
-                                        <Remove />
-                                        Удалить фото
-                                    </button>
-                                </div>
+                                    )}
+                                </label>
                             </div>
-                        )}
-                    </>
+
+                            <div className={styles.addPhotoBlock}>
+                                <p className={styles.addPhotoBlockTitle}>
+                                    Название и описание
+                                </p>
+
+                                <Input
+                                    title="Название"
+                                    placeholder="Введите название"
+                                    full
+                                    value={title}
+                                    setValue={setTitle}
+                                />
+
+                                <Editor
+                                    id="photo_description"
+                                    editorRef={descriptionRef}
+                                    title="Описание"
+                                    placeholder="Введите описание (+0,001 к рейтингу)"
+                                    onReady={() =>
+                                        setDescriptionEditorIsReady(true)
+                                    }
+                                />
+                            </div>
+                        </div>
+
+                        <div className={styles.addPhotoSidebar}>
+                            <button
+                                className={styles.addPhotoButton}
+                                onClick={() => setIsPublished((prev) => !prev)}
+                            >
+                                {isPublished ? (
+                                    <>
+                                        <Lock />
+                                        Скрыть альбом
+                                    </>
+                                ) : (
+                                    <>
+                                        <Unlock />
+                                        Опубликовать альбом
+                                    </>
+                                )}
+                            </button>
+
+                            <button
+                                className={styles.addPhotoButton}
+                                onClick={() => setConfirmDeleteModal(true)}
+                            >
+                                <Remove />
+                                Удалить фото
+                            </button>
+                        </div>
+                    </div>
                 )}
 
                 {tab === "photos" && (

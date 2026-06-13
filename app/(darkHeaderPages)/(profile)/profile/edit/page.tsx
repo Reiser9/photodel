@@ -103,7 +103,7 @@ const ProfileEditPage = () => {
         refetchOnMount: true,
     });
 
-    const { isPro } = data || {};
+    const { isPro, isProfessional } = data || {};
 
     const {
         data: categories,
@@ -446,7 +446,7 @@ const ProfileEditPage = () => {
                 </div>
             </div>
 
-            <Chapter title="Общие данные">
+            {isProfessional && <Chapter title="Общие данные">
                 <div className={styles.profileEditData}>
                     {categories && (
                         <Select
@@ -544,16 +544,16 @@ const ProfileEditPage = () => {
                         setValue={setLanguages}
                     />
                 </div>
-            </Chapter>
+            </Chapter>}
 
-            <Chapter title="Обо мне">
+            {isProfessional && <Chapter title="Обо мне">
                 <Editor
                     title="Введите информацию о Вас (+0,001 к рейтингу)"
                     editorRef={aboutRef}
                     id="aboutEditor"
                     onReady={() => setAboutEditorIsReady(true)}
                 />
-            </Chapter>
+            </Chapter>}
 
             {!!socialBlocks.length && (
                 <Chapter title="Контакты">
@@ -574,16 +574,16 @@ const ProfileEditPage = () => {
                 </Chapter>
             )}
 
-            <Chapter title="Геолокация">
+            {isProfessional && <Chapter title="Геолокация">
                 <GetLocation
                     address={address}
                     setAddress={setAddress}
                     coords={coords}
                     setCoords={setCoords}
                 />
-            </Chapter>
+            </Chapter>}
 
-            <Chapter title="Временная геолокация">
+            {isProfessional && <Chapter title="Временная геолокация">
                 <div className={styles.tempLocationItems}>
                     {tempLocations.map((data, id) => {
                         const { startDate, endDate, comment, location } =
@@ -756,7 +756,7 @@ const ProfileEditPage = () => {
                         </Button>
                     </div>
                 </div>
-            </Chapter>
+            </Chapter>}
 
             <div className={styles.profileEditButtons}>
                 <Button color="grey" auto onClick={() => router.back()}>

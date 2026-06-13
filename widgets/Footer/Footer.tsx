@@ -93,21 +93,21 @@ const Footer = () => {
                             &copy; photodel.ru, 2020-{new Date().getFullYear()}
                         </p>
 
-                        <button className={styles.footerSupport}>
+                        {/* <button className={styles.footerSupport}>
                             <Mail />
                             Обратная связь
-                        </button>
+                        </button> */}
 
                         <div className={styles.footerSocials}>
                             <a
-                                href="#"
+                                href="https://vk.com/photodel"
                                 className={styles.footerSocial}
                                 target="_blank"
                             >
                                 <Vk />
                             </a>
 
-                            <a
+                            {/* <a
                                 href="#"
                                 className={styles.footerSocial}
                                 target="_blank"
@@ -129,7 +129,7 @@ const Footer = () => {
                                 target="_blank"
                             >
                                 <Twitter />
-                            </a>
+                            </a> */}
                         </div>
                     </div>
                 </div>

@@ -22,6 +22,9 @@ const Register: React.FC<Props> = ({ value, setValue, loginCallback }) => {
     const [passwordAgain, setPasswordAgain] = React.useState("");
     const [passwordAgainError, setPasswordAgainError] = React.useState("");
 
+    const [isAdult, setIsAdult] = React.useState(false);
+    const [isProfessional, setIsProfessional] = React.useState(false);
+
     const { authIsLoading, register: registerRequest } = useAuth();
 
     const {
@@ -40,7 +43,9 @@ const Register: React.FC<Props> = ({ value, setValue, loginCallback }) => {
 
         setPasswordAgainError("");
 
-        registerRequest(data, () => setValue(false));
+        registerRequest({ ...data, isAdult, isProfessional }, () =>
+            setValue(false),
+        );
     };
 
     return (
@@ -165,13 +170,15 @@ const Register: React.FC<Props> = ({ value, setValue, loginCallback }) => {
                 <Checkbox
                     id="is_adult"
                     label="Мне есть 18 лет"
-                    {...register("isAdult")}
+                    value={isAdult}
+                    setValue={setIsAdult}
                 />
 
                 <Checkbox
                     id="register_profi"
                     label="Я регистрируюсь как Профи"
-                    {...register("isProfessional")}
+                    value={isProfessional}
+                    setValue={setIsProfessional}
                 />
 
                 <Button loading={authIsLoading}>Зарегистрироваться</Button>

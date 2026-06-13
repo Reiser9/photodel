@@ -357,7 +357,7 @@ const EditProfilePlace = () => {
                             </Button>
 
                             <Button auto onClick={updatePlaceHandler}>
-                                Соххранить
+                                Сохранить
                             </Button>
                         </div>
                     </div>
